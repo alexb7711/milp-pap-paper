@@ -1,0 +1,13 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: debian:unstable
+  script:
+    - apt-get update && apt-get install texlive-full
+    - make pdf
+  artifacts:
+    untracked: true
+    expire_in: 1 week
+  when: on_success
