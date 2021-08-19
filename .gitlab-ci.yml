@@ -5,7 +5,7 @@ build:
   stage: build
   image: debian:unstable
   script:
-    - apt-get update && apt-get install texlive-full
+    - apt-get update && apt-get install -y texlive-full
     - make pdf
   artifacts:
     untracked: true
