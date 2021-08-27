@@ -6,7 +6,8 @@ build:
   image: debian:unstable
   script:
     - apt-get update && apt-get install -y texlive-full make
-    - make pdf
+    - make clean
+    - make
   artifacts:
     untracked: true
     expire_in: 1 week
