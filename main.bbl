@@ -1,0 +1,115 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{#1}
+\csname url@rmstyle\endcsname
+\providecommand{\newblock}{\relax}
+\providecommand{\bibinfo}[2]{#2}
+\providecommand\BIBentrySTDinterwordspacing{\spaceskip=0pt\relax}
+\providecommand\BIBentryALTinterwordstretchfactor{4}
+\providecommand\BIBentryALTinterwordspacing{\spaceskip=\fontdimen2\font plus
+\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
+  \fontdimen4\font\relax}
+\providecommand\BIBforeignlanguage[2]{{%
+\expandafter\ifx\csname l@#1\endcsname\relax
+\typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
+\typeout{** loaded for the language `#1'. Using the pattern for}%
+\typeout{** the default language instead.}%
+\else
+\language=\csname l@#1\endcsname
+\fi
+#2}}
+
+\bibitem{DeFilippo2014}
+G.~De~Filippo, V.~Marano, and R.~Sioshansi, ``Simulation of an electric
+  transportation system at the ohio state university,'' \emph{Applied Energy},
+  vol. 113, pp. 1686--1691, 2014.
+
+\bibitem{Xylia2018}
+M.~Xylia and S.~Silveira, ``The role of charging technologies in upscaling the
+  use of electric buses in public transport: Experiences from demonstration
+  projects,'' \emph{Transportation Research Part A: Policy and Practice}, vol.
+  118, pp. 399--415, 2018.
+
+\bibitem{Guida2017}
+\BIBentryALTinterwordspacing
+U.~Guida and A.~Abdulah, ``Zeeus ebus report\# 2-an updated overview of
+  electric buses in europe,'' International Association of Public Transport
+  (UITP), Tech. Rep.~2, 2017. [Online]. Available:
+  \url{http://zeeus.eu/uploads/publications/documents/zeeus-ebus-report-2.pdf}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Li2016}
+J.-Q. Li, ``Battery-electric transit bus developments and operations: A
+  review,'' \emph{International Journal of Sustainable Transportation},
+  vol.~10, no.~3, pp. 157--169, 2016.
+
+\bibitem{Lutsey2019}
+N.~Lutsey and M.~Nicholas, ``Update on electric vehicle costs in the united
+  states through 2030,'' \emph{The International Council on Clean
+  Transportation}, vol.~2, 2019.
+
+\bibitem{Wei2018}
+R.~Wei, X.~Liu, Y.~Ou, and S.~K. Fayyaz, ``Optimizing the spatio-temporal
+  deployment of battery electric bus system,'' \emph{Journal of Transport
+  Geography}, vol.~68, pp. 160--168, 2018.
+
+\bibitem{Sebastiani2016}
+M.~T. Sebastiani, R.~Lüders, and K.~V.~O. Fonseca, ``Evaluating electric bus
+  operation for a real-world brt public transportation using simulation
+  optimization,'' \emph{IEEE Transactions on Intelligent Transportation
+  Systems}, vol.~17, no.~10, pp. 2777--2786, 2016.
+
+\bibitem{Hoke2014}
+A.~Hoke, A.~Brissette, K.~Smith, A.~Pratt, and D.~Maksimovic, ``Accounting for
+  lithium-ion battery degradation in electric vehicle charging optimization,''
+  \emph{IEEE Journal of Emerging and Selected Topics in Power Electronics},
+  vol.~2, no.~3, pp. 691--700, 2014.
+
+\bibitem{Wang2017}
+\BIBentryALTinterwordspacing
+Y.~Wang, Y.~Huang, J.~Xu, and N.~Barclay, ``Optimal recharging scheduling for
+  urban electric buses: A case study in davis,'' \emph{Transportation Research
+  Part E: Logistics and Transportation Review}, vol. 100, pp. 115--132, 2017.
+  [Online]. Available:
+  \url{https://www.sciencedirect.com/science/article/pii/S1366554516305725}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Zhou2020}
+Y.~Zhou, X.~C. Liu, R.~Wei, and A.~Golub, ``Bi-objective optimization for
+  battery electric bus deployment considering cost and environmental equity,''
+  \emph{IEEE Transactions on Intelligent Transportation Systems}, vol.~22,
+  no.~4, pp. 2487--2497, 2020.
+
+\bibitem{Liu2020}
+\BIBentryALTinterwordspacing
+T.~Liu and A.~{(Avi) Ceder}, ``Battery-electric transit vehicle scheduling with
+  optimal number of stationary chargers,'' \emph{Transportation Research Part
+  C: Emerging Technologies}, vol. 114, pp. 118--139, 2020. [Online]. Available:
+  \url{https://www.sciencedirect.com/science/article/pii/S0968090X19304061}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Yang2018}
+C.~Yang, W.~Lou, J.~Yao, and S.~Xie, ``On charging scheduling optimization for
+  a wirelessly charged electric bus system,'' \emph{IEEE Transactions on
+  Intelligent Transportation Systems}, vol.~19, no.~6, pp. 1814--1826, 2018.
+
+\bibitem{Wang2017a}
+X.~Wang, C.~Yuen, N.~U. Hassan, N.~An, and W.~Wu, ``Electric vehicle charging
+  station placement for urban public bus systems,'' \emph{IEEE Transactions on
+  Intelligent Transportation Systems}, vol.~18, no.~1, pp. 128--139, 2017.
+
+\bibitem{Qin2016}
+\BIBentryALTinterwordspacing
+N.~Qin, A.~Gusrialdi, R.~{Paul Brooker}, and A.~T-Raissi, ``Numerical analysis
+  of electric bus fast charging strategies for demand charge reduction,''
+  \emph{Transportation Research Part A: Policy and Practice}, vol.~94, pp.
+  386--396, 2016. [Online]. Available:
+  \url{https://www.sciencedirect.com/science/article/pii/S096585641630444X}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Qarebagh2019}
+A.~J. Qarebagh, F.~Sabahi, and D.~Nazarpour, ``Optimized scheduling for solving
+  position allocation problem in electric vehicle charging stations,'' in
+  \emph{2019 27th Iranian Conference on Electrical Engineering (ICEE)}, 2019,
+  pp. 593--597.
+
+\end{thebibliography}

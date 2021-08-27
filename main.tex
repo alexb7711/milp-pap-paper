@@ -26,7 +26,7 @@
 % Bibliography
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-    
+
 %%-------------------------------------------------------------------------------
 % Title
 \title{A Position Allocation Approach to Battery Electric Bus Scheduling}
@@ -66,7 +66,7 @@ greg.droge@usu.edu }}
 \end{IEEEkeywords}
 
 %%===============================================================================
-% Paper 
+% Paper
 
 %%-------------------------------------------------------------------------------
 % Introduction
@@ -78,9 +78,10 @@ The public transportation system is crucial in any urban area; however, the incr
 
 [Copied] Two such simplifications are common. First, only fast chargers are utilized in planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge \cite{Liu2020}. Day-to-day operations require higher fidelity charging models to ensure buses have sufficient charge and to better incorporate the monetary cost of charging. In \cite{Sebastiani2016, Qin2016}, high-fidelity models are used at the price of requiring computationally intensive searches; \cite{Sebastiani2016} uses a genetic algorithm and \cite{Qin2016} uses an exhaustive search strategy.
 
-The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station. 
+The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
 
 The remainder of the paper proceeds as follows.
+
 \begin{table*}[!t]
 	\caption{Notation used throughout the paper}
 	\label{tab:variables}
@@ -129,13 +130,13 @@ The remainder of the paper proceeds as follows.
 % Preliminaries
 %\section{Preliminaries}
 %\label{sec:preliminaries}
-%The PAP is a rectangle packing problem where rather than both the x and y-axis representing physical space, the x-axis represents time and the y-axis represents the physical space used by the buses as shown in Fig \cite{fig:}. 
+%The PAP is a rectangle packing problem where rather than both the x and y-axis representing physical space, the x-axis represents time and the y-axis represents the physical space used by the buses as shown in Fig \cite{fig:}.
 %
 %\subsection{}
-%The (BAP) is used to optimally assign incoming vessels to berth positions in order to be served. The length of the quay and vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.  
+%The (BAP) is used to optimally assign incoming vessels to berth positions in order to be served. The length of the quay and vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.
 
 %%-------------------------------------------------------------------------------
-% 
+%
 \section{Problem Formulation}
 \label{sec:problemformulation}
 The MILP is formulated with two sets of constraints: rectangle packing constraints and battery dynamics constraints. This section will progressively construct the Position Allocation MILP. A MILP is first presented purely as a rectangle packing problem that optimized over time and space. Using this MILP as a basis, new variables and battery dynamics are introduced.
@@ -148,7 +149,7 @@ This section presents a MILP formulation of the PAP that optimally schedules veh
 \end{equation}
 
 with the following constraints:
-    
+
 \begin{subequations}
 \begin{align}
     u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 1                     \label{subeq:time}         \\
@@ -166,7 +167,7 @@ with the following constraints:
     p_i \leq g_{iq} - (1 - w_{iq})M                                 \label{subeq:gpsmol}       \\
     Mw_{iq} \geq g_{iq}                                             \label{subeq:gwgret}       \\
     0 \leq g_{iq}                                                   \label{subeq:gwsmol}       \\
-    \sum_{q=1}^Q w_{iq} = 1                                         \label{subeq:wmax} 
+    \sum_{q=1}^Q w_{iq} = 1                                         \label{subeq:wmax}
 \end{align}
 \end{subequations}
 
@@ -372,7 +373,7 @@ packing problem are
 \item
   \(v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 1\)
 \item
-  \(\sigma_{ij} + \sigma{ji} + \delta_{ij} + \delta_{ji} \geq 1\)
+  \(\sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1\)
 \item
   \(\sigma_{ij} + \sigma_{ji} \leq 1\)
 \item
@@ -393,32 +394,35 @@ packing problem are
 
 \(A_{ineq}\) takes the form of:
 
-\scriptsize
-
+\begin{table*}[!t]
 \begin{equation}
+\setlength{\arraycolsep}{2pt}
+\renewcommand{\arraystretch}{0.8}
 \begin{array}{c}
     A_{ineq} =
     \begin{bmatrix}
-        A_{time_{\Xi \times (2\Xi + 2N)}}   & \vmathbb{0}_{\Xi \times (3\Xi + 4N + 3NQ)} & \cdots                                    & \cdots                       & \cdots                              & \cdots                          & \cdots                    & \cdots                & \cdots                    \\
-        \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & A_{queue_{\Xi \times (2\Xi + 2N)}}        & \vmathbb{0}_{\Xi \times (\Xi + 2N)}        & \cdots                       & \cdots                              & \cdots                          & \cdots                    & \cdots                & \cdots                    \\
-        \vmathbb{0}_{\Xi \times 2N}          & A_{\sigma_{\Xi \times \Xi}}               & \vmathbb{0}_{\Xi \times (2N + 3NQ)}        & A_{\delta_{\Xi \times \Xi}}  & \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & \cdots                          & \cdots                    & \cdots                & \cdots                    \\
-        \vmathbb{0}_{\Xi \times 2N}          & -A_{\sigma_{\Xi \times \Xi}}              & \vmathbb{0}_{\Xi \times (3\Xi + 4N + 3NQ)} & \cdots                       & \cdots                              & \cdots                          & \cdots                    & \cdots                & \cdots                    \\
-        \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & \vmathbb{0}_{\Xi \times (2N)}              & \cdots                                    & -A_{\delta_{\Xi \times \Xi}} & \vmathbb{0}_{\Xi \times (2N + 3NQ)}  & \cdots                          & \cdots                    & \cdots                & \cdots                    \\
-        \vmathbb{0}_{N \times (4\Xi + 4N)}   & \cdots                                    & \cdots                                    & \cdots                       & -A_{a_{N \times N}}                 & \vmathbb{0}_{N \times (N + 3NQ)} & \cdots                    & \cdots                & \cdots                    \\
-        \vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                                    & \cdots                                    & \cdots                       & \cdots                              & -A_{c_{N \times N}}             & \vmathbb{0}_{N \times 3NQ} & \cdots                & \cdots                    \\
-        \vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                                    & \cdots                                    & \cdots                       & \cdots                              & -A_{c_{N \times N}}             & \vmathbb{0}_{N \times 3NQ} & \cdots                & \cdots                    \\
-        \vmathbb{0}_{4N \times (4\Xi + 6N)}  & \cdots                                    & \cdots                                    & \cdots                       & \cdots                              & \cdots                          & A_{gg_{4N \times NQ}}     & A_{gw_{4N \times NQ}} & \vmathbb{1}_{4N \times NQ} \\
-    \end{bmatrix}_{(5\Xi + 7N) \times (4\Xi + 6N + 3NQ)}                                                                                                                                                                                                                                                                       \\
+	A_{time_{\Xi \times (2\Xi + 2N)}}    & \vmathbb{0}_{\Xi \times (3\Xi + 4N + 3NQ)} & \cdots                                   & \cdots                     & \cdots                             & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
+	\vmathbb{0}_{\Xi \times (2\Xi + 2N)} & A_{queue_{\Xi \times (2\Xi + 2N)}}         & \vmathbb{0}_{\Xi \times (\Xi + 2N)}      & \cdots                     & \cdots                             & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
+	\vmathbb{0}_{N \times 2N}            & A_{\sigma_{N \times \Xi}}                  & \vmathbb{0}_{N \times (2N + 3NQ)}        & A_{\delta_{N \times \Xi}}  & \vmathbb{0}_{N \times (2\Xi + 2N)} & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
+	\vmathbb{0}_{N \times 2N}            & -A_{\sigma_{N \times \Xi}}                 & \vmathbb{0}_{N \times (3\Xi + 4N + 3NQ)} & \cdots                     & \cdots                             & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
+	\vmathbb{0}_{N \times (2\Xi + 2N)}   & \vmathbb{0}_{N \times (2N)}                & \cdots                                   & -A_{\delta_{N \times \Xi}} & \vmathbb{0}_{N \times (2N + 3NQ)}  & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
+	\vmathbb{0}_{N \times (4\Xi + 4N)}   & \cdots                                     & \cdots                                   & \cdots                     & -A_{a_{N \times N}}                & \vmathbb{0}_{N \times (N + 3NQ)} & \cdots                     & \cdots                & \cdots                    \\
+	\vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                                     & \cdots                                   & \cdots                     & \cdots                             & -A_{c_{N \times N}}              & \vmathbb{0}_{N \times 3NQ} & \cdots                & \cdots                    \\
+	\vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                                     & \cdots                                   & \cdots                     & \cdots                             & -A_{c_{N \times N}}              & \vmathbb{0}_{N \times 3NQ} & \cdots                & \cdots                    \\
+	\vmathbb{0}_{4N \times (4\Xi + 6N)}  & \cdots                                     & \cdots                                   & \cdots                     & \cdots                             & \cdots                           & A_{gg_{4N \times NQ}}      & A_{gw_{4N \times NQ}} & \vmathbb{1}_{4N \times NQ} \\
+    \end{bmatrix}_{(2\Xi + 10N) \times (4\Xi + 6N + 3NQ)}                                                                                                                                                                                                                                                                       \\
+	\\
     x_{ineq} =
     \begin{bmatrix}
-        u_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \sigma_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ v_{i_{N \times 1}} \\ s_{i_{N \times 1}} \\ \delta_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ a_{i_{N \times 1}} \\ c_{i_{N \times 1}} \\ q_{iq_{NQ \times1}} \\w_{iq_{NQ \times 1}} \\ \vmathbb{1}_{NQ \times 1} \\
+	u_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \sigma_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ v_{i_{N \times 1}} \\ s_{i_{N \times 1}} \\ \delta_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ a_{i_{N \times 1}} \\ c_{i_{N \times 1}} \\ q_{iq_{NQ \times1}} \\w_{iq_{NQ \times 1}} \\ \vmathbb{1}_{NQ \times 1} \\
     \end{bmatrix}_{(4\Xi + 6N + 3NQ) \times 1}
     b_{ineq} =
     \begin{bmatrix}
-        \vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{\Xi \times 1} \\ -\vmathbb{1}_{\Xi \times 1} \\ -\vmathbb{1}_{\Xi \times 1} \\ -c_{i_{N \times N}} \\ -(T-p_i)_{N \times N} \\ -\tau_{i_{N \times N}} \\ -p_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \vmathbb{0}_{2N \times 1} \\
+	\vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -c_{i_{N \times N}} \\ -(T-p_i)_{N \times N} \\ -\tau_{i_{N \times N}} \\ -p_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \vmathbb{0}_{2N \times 1} 
     \end{bmatrix}_{(5\Xi + 7N) \times 1}
 \end{array}
 \end{equation}\\
+\end{table*}
 \normalsize
 
 \subsection{Formulating $A_{dynamics}$}
@@ -442,20 +446,20 @@ problem are
 \begin{array}{c}
     A_{ineq} =
     \begin{bmatrix}
-        -A_{\textrm{max charge}_{N \times (N+NQ)}} & \vmathbb{0}_{N \times N}        \\
-        A_{\textrm{min charge}_{N \times (2N+NQ)}} & \cdots                         \\
-        A_{\textrm{last charge}_{N \times N}}      & \vmathbb{0}_{N \times (N + NQ)} \\
+	-A_{\textrm{max charge}_{N \times (N+NQ)}} & \vmathbb{0}_{N \times N}        \\
+	A_{\textrm{min charge}_{N \times (2N+NQ)}} & \cdots                         \\
+	A_{\textrm{last charge}_{N \times N}}      & \vmathbb{0}_{N \times (N + NQ)} \\
     \end{bmatrix}_{3N \times (2N + NQ)} \\
     x_{ineq} =
     \begin{bmatrix}
-        \eta_{i_{N \times 1}} \\
-        g_{iq_{NQ \times 1}} \\
+	\eta_{i_{N \times 1}} \\
+	g_{iq_{NQ \times 1}} \\
     \end{bmatrix}_{(2N + NQ) \times 1}
     b_{ineq} =
     \begin{bmatrix}
-        -\vmathbb{1}_{N + NQ \times 1} \\
-        \vmathbb{0}_{2N + NQ \times 1} \\
-        H_{final}*\vmathbb{1}_{A \times 1} \\
+	-\vmathbb{1}_{N + NQ \times 1} \\
+	\vmathbb{0}_{2N + NQ \times 1} \\
+	H_{final}*\vmathbb{1}_{A \times 1} \\
     \end{bmatrix}_{3N \times 1}
 \end{array}
 \end{equation}
@@ -465,28 +469,28 @@ problem are
 \begin{equation*}
 \begin{array}{c}
     \begin{bmatrix}
-        A_{\textrm{pack}}     \\
-        A_{\textrm{dynamics}} \\
+	A_{\textrm{pack}}     \\
+	A_{\textrm{dynamics}} \\
     \end{bmatrix}_{eq}
     \begin{bmatrix}
-        x_{\textrm{pack}}     \\
-        x_{\textrm{dynamics}} \\
+	x_{\textrm{pack}}     \\
+	x_{\textrm{dynamics}} \\
     \end{bmatrix}_{eq} =
     \begin{bmatrix}
-        b_{\textrm{pack}}     \\
-        b_{\textrm{dynamics}} \\
+	b_{\textrm{pack}}     \\
+	b_{\textrm{dynamics}} \\
     \end{bmatrix}_{eq} \\
     \begin{bmatrix}
-        A_{\textrm{pack}}     \\
-        A_{\textrm{dynamics}} \\
+	A_{\textrm{pack}}     \\
+	A_{\textrm{dynamics}} \\
     \end{bmatrix}_{ineq}
     \begin{bmatrix}
-        x_{\textrm{pack}}     \\
-        x_{\textrm{dynamics}} \\
+	x_{\textrm{pack}}     \\
+	x_{\textrm{dynamics}} \\
     \end{bmatrix}_{ineq} \geq
     \begin{bmatrix}
-        b_{\textrm{pack}}     \\
-        b_{\textrm{dynamics}} \\
+	b_{\textrm{pack}}     \\
+	b_{\textrm{dynamics}} \\
     \end{bmatrix}_{ineq}
 \end{array}
 \end{equation*}
@@ -500,180 +504,83 @@ May also be represented as
 A_{eq} =
 \begin{bmatrix}
     \begin{Bmatrix}
-        A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
-        \vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}          \\
-        \vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}          \\
+	A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
+	\vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}          \\
+	\vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}          \\
     \end{Bmatrix}_{3N \times (2N + NQ)}
     \begin{Bmatrix}
-        \vmathbb{0}
+	\vmathbb{0}
     \end{Bmatrix}_{3N \times (2N + NQ)} \\
     \begin{Bmatrix}
-        \vmathbb{0}_{}
+	\vmathbb{0}_{}
     \end{Bmatrix}_{NA \times (2N + NQ)}
     \begin{Bmatrix}
-        A_{\textrm{next charge}_{N \times 2N + NQ}}
+	A_{\textrm{next charge}_{N \times 2N + NQ}}
     \end{Bmatrix}_{NA \times (2N + NQ + A)} \\
 \end{bmatrix}_{(3N + NA) \times (4N + NQ + A)} \\
 x_{eq} =
 \begin{bmatrix}
     \begin{Bmatrix}
-        p_{i_{N \times 1}} \\
-        u_{i_{N \times 1}} \\
-        w_{iq_{NQ \times 1}} \\
+	p_{i_{N \times 1}} \\
+	u_{i_{N \times 1}} \\
+	w_{iq_{NQ \times 1}} \\
     \end{Bmatrix}_{2N + NQ} \\
     \begin{Bmatrix}
-        \eta_{\Gamma_{i\; N \times 1}} \\
-        g_{iq_{NQ \times 1}}           \\
-        \lambda_{i_{N \times 1}}       \\
+	\eta_{\Gamma_{i\; N \times 1}} \\
+	g_{iq_{NQ \times 1}}           \\
+	\lambda_{i_{N \times 1}}       \\
     \end{Bmatrix}_{(2N + NQ + A) \times 1}
 \end{bmatrix}_{(4N + 2NQ + A) \times 1}
 b_{eq} =
 \begin{bmatrix}
     \begin{Bmatrix}
-        c_{i_{N \times 1}} \\
-        \vmathbb{1}_{N \times 1} \\
-        v_{i_{N \times 1}} \\
+	c_{i_{N \times 1}} \\
+	\vmathbb{1}_{N \times 1} \\
+	v_{i_{N \times 1}} \\
     \end{Bmatrix}_{3N \times 1} \\
     \begin{Bmatrix}
-        \eta_{\gamma_{i}\; N \times 1} \\
+	\eta_{\gamma_{i}\; N \times 1} \\
     \end{Bmatrix}_{N \times 1}
 \end{bmatrix}_{4N \times 1} \\
 \begin{bmatrix}
     \begin{Bmatrix}
-        A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
-        \vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}          \\
-        \vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}          \\
+	A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
+	\vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}          \\
+	\vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}          \\
     \end{Bmatrix}_{3N \times (2N + NQ)}
     \begin{Bmatrix}
-        \vmathbb{0}
+	\vmathbb{0}
     \end{Bmatrix}_{3N \times (2N + NQ)} \\
     \begin{Bmatrix}
-        \vmathbb{0}_{}
+	\vmathbb{0}_{}
     \end{Bmatrix}_{NA \times (2N + NQ)}
     \begin{Bmatrix}
-        A_{\textrm{next charge}_{N \times 2N + NQ}}
+	A_{\textrm{next charge}_{N \times 2N + NQ}}
     \end{Bmatrix}_{NA \times (2N + NQ + A)} \\
 \end{bmatrix}
 \begin{bmatrix}
     \begin{Bmatrix}
-        p_{i_{N \times 1}} \\
-        u_{i_{N \times 1}} \\
-        w_{iq_{NQ \times 1}} \\
+	p_{i_{N \times 1}} \\
+	u_{i_{N \times 1}} \\
+	w_{iq_{NQ \times 1}} \\
     \end{Bmatrix}_{2N + NQ} \\
     \begin{Bmatrix}
-        \eta_{\Gamma_{i\; N \times 1}} \\
-        g_{iq_{NQ \times 1}}           \\
-        \lambda_{i_{N \times 1}}       \\
+	\eta_{\Gamma_{i\; N \times 1}} \\
+	g_{iq_{NQ \times 1}}           \\
+	\lambda_{i_{N \times 1}}       \\
     \end{Bmatrix}_{(2N + NQ + A) \times 1}
-\end{bmatrix}
+\end{bmatrix} \\
 =
 \begin{bmatrix}
     \begin{Bmatrix}
-        c_{i_{N \times 1}} \\
-        \vmathbb{1}_{N \times 1} \\
-        v_{i_{N \times 1}} \\
+	c_{i_{N \times 1}} \\
+	\vmathbb{1}_{N \times 1} \\
+	v_{i_{N \times 1}} \\
     \end{Bmatrix}_{3N \times 1} \\
     \begin{Bmatrix}
-        \eta_{\gamma_{i}\; N \times 1} \\
+	\eta_{\gamma_{i}\; N \times 1} \\
     \end{Bmatrix}
 \end{bmatrix}_{4N \times 1}
-\end{array}
-\end{equation}
-
-\begin{equation}
-\begin{array}{c}
-    A_{ineq} =
-    \begin{bmatrix}
-        \begin{Bmatrix}
-            A_{time_{\Xi \times (2\Xi + 2N)}}   & \vmathbb{0}_{\Xi \times (3\Xi + 4N)} & \cdots                              & \cdots                       & \cdots                            & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & A_{queue_{\Xi \times (2\Xi + 2N)}}  & \vmathbb{0}_{\Xi \times (\Xi + 2N)}  & \cdots                       & \cdots                            & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times 2N}          & A_{\sigma_{\Xi \times \Xi}}         & \vmathbb{0}_{\Xi \times (\Xi + 2N)}  & A_{\delta_{\Xi \times \Xi}}  & \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times 2N}          & -A_{\sigma_{\Xi \times \Xi}}        & \vmathbb{0}_{\Xi \times (5\Xi + 4N)} & \cdots                       & \cdots                            & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & \vmathbb{0}_{\Xi \times (2N)}  & \cdots                              & -A_{\delta_{\Xi \times \Xi}} & \vmathbb{0}_{\Xi \times (\Xi + 2N)}        & \cdots              & \cdots \\
-            \vmathbb{0}_{N \times (4\Xi + 4N)}   & \cdots                              & \cdots                              & \cdots                       & -A_{a_{N \times N}}               & \cdots              & \cdots \\
-            \vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                              & \cdots                              & \cdots                       & \cdots                            & -A_{c_{N \times N}} & \cdots \\
-            \vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                              & \cdots                              & \cdots                       & \cdots                            & -A_{c_{N \times N}} & \cdots \\
-            \vmathbb{0}_{4N \times N}            & A_{gp_{4N \times \Xi}}              & \vmathbb{0}_{4N \times (4\Xi + 3N)}  & \cdots                       & \cdots                            & \cdots              & A_{gw_{4N \times \Xi}}
-        \end{Bmatrix}_{(5\Xi + 7N) \times (5\Xi + 6N)}
-        \begin{Bmatrix}
-            \vmathbb{0}
-        \end{Bmatrix}_{(5 \Xi + 6N) \times (3N + NQ)} \\
-        \begin{Bmatrix}
-            \vmathbb{0}
-        \end{Bmatrix}_{3N \times (5\Xi + 6N)}
-        \begin{Bmatrix}
-            -A_{\textrm{max charge}_{N \times (N+NQ)}} & \vmathbb{0}_{N \times N}                    & \vmathbb{0}_{N \times N}                \\
-                                  & A_{\textrm{min charge}_{N \times (2N+NQ)}} & \vmathbb{0}_{N \times N}                \\
-            \vmathbb{0}_{N \times (2N + NQ)}           & \cdots                                     & A_{\textrm{last charge}_{A \times A}} \\
-        \end{Bmatrix}_{3N \times (3N + NQ)} \\
-    \end{bmatrix} \\
-    x_{ineq} =
-    \begin{bmatrix}
-        \begin{Bmatrix}
-            u_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \sigma_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ v_{i_{N \times 1}} \\ s_{i_{N \times 1}} \\ \delta_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ a_{i_{N \times 1}} \\ c_{i_{N \times 1}} \\
-        \end{Bmatrix}_{(4\Xi + 6N) \times 1} \\
-        \begin{Bmatrix}
-            \eta_{i_{N \times 1}} \\
-            g_{iq_{NQ \times 1}} \\
-            \vmathbb{1}_{A \times 1} \\
-        \end{Bmatrix}_{(3N + NQ) \times 1}
-    \end{bmatrix}_{(4\Xi + 9N + N) \times 1}
-    b_{ineq} =
-    \begin{bmatrix}
-        \begin{Bmatrix}
-            u_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \sigma_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ v_{i_{N \times 1}} \\ s_{i_{N \times 1}} \\ \delta_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ a_{i_{N \times 1}} \\ c_{i_{N \times 1}} \\
-        \end{Bmatrix}_{(4\Xi + 3N) \times 1} \\
-        \begin{Bmatrix}
-            -\vmathbb{1}_{N + NQ \times 1} \\
-            \vmathbb{0}_{2N + NQ \times 1} \\
-            0.95*\vmathbb{1}_{A \times 1} \\
-        \end{Bmatrix}_{3N \times 1}
-    \end{bmatrix}_{(4\Xi + 6N) \times 1} \\
-    \begin{bmatrix}
-        \begin{Bmatrix}
-            A_{time_{\Xi \times (2\Xi + 2N)}}   & \vmathbb{0}_{\Xi \times (3\Xi + 4N)} & \cdots                              & \cdots                       & \cdots                            & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & A_{queue_{\Xi \times (2\Xi + 2N)}}  & \vmathbb{0}_{\Xi \times (\Xi + 2N)}  & \cdots                       & \cdots                            & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times 2N}          & A_{\sigma_{\Xi \times \Xi}}         & \vmathbb{0}_{\Xi \times (\Xi + 2N)}  & A_{\delta_{\Xi \times \Xi}}  & \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times 2N}          & -A_{\sigma_{\Xi \times \Xi}}        & \vmathbb{0}_{\Xi \times (5\Xi + 4N)} & \cdots                       & \cdots                            & \cdots              & \cdots \\
-            \vmathbb{0}_{\Xi \times (2\Xi + 2N)} & \vmathbb{0}_{\Xi \times (2N)}  & \cdots                              & -A_{\delta_{\Xi \times \Xi}} & \vmathbb{0}_{\Xi \times (\Xi + 2N)}        & \cdots              & \cdots \\
-            \vmathbb{0}_{N \times (4\Xi + 4N)}   & \cdots                              & \cdots                              & \cdots                       & -A_{a_{N \times N}}               & \cdots              & \cdots \\
-            \vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                              & \cdots                              & \cdots                       & \cdots                            & -A_{c_{N \times N}} & \cdots \\
-            \vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                              & \cdots                              & \cdots                       & \cdots                            & -A_{c_{N \times N}} & \cdots \\
-            \vmathbb{0}_{4N \times N}            & A_{gp_{4N \times \Xi}}              & \vmathbb{0}_{4N \times (4\Xi + 3N)}  & \cdots                       & \cdots                            & \cdots              & A_{gw_{4N \times \Xi}}
-        \end{Bmatrix}_{(5\Xi + 7N) \times (5\Xi + 6N)}
-        \begin{Bmatrix}
-            \vmathbb{0}
-        \end{Bmatrix}_{(5 \Xi + 6N) \times (3N + NQ)} \\
-        \begin{Bmatrix}
-            \vmathbb{0}
-        \end{Bmatrix}_{3N \times (5\Xi + 6N)}
-        \begin{Bmatrix}
-            -A_{\textrm{max charge}_{N \times (N+NQ)}} & \vmathbb{0}_{N \times N}                    & \vmathbb{0}_{N \times N}                \\
-                                  & A_{\textrm{min charge}_{N \times (2N+NQ)}} & \vmathbb{0}_{N \times N}                \\
-            \vmathbb{0}_{N \times (2N + NQ)}           & \cdots                                     & A_{\textrm{last charge}_{A \times A}} \\
-        \end{Bmatrix}
-    \end{bmatrix}  \\
-    \begin{bmatrix}
-        \begin{Bmatrix}
-            u_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \sigma_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ v_{i_{N \times 1}} \\ s_{i_{N \times 1}} \\ \delta_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ a_{i_{N \times 1}} \\ c_{i_{N \times 1}} \\
-        \end{Bmatrix}_{(4\Xi + 6N) \times 1} \\
-        \begin{Bmatrix}
-            \eta_{i_{N \times 1}} \\
-            g_{iq_{NQ \times 1}} \\
-            \vmathbb{1}_{A \times 1} \\
-        \end{Bmatrix}_{(3N + NQ) \times 1}
-    \end{bmatrix}
-    =
-    \begin{bmatrix}
-        \begin{Bmatrix}
-            u_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \sigma_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ v_{i_{N \times 1}} \\ s_{i_{N \times 1}} \\ \delta_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ a_{i_{N \times 1}} \\ c_{i_{N \times 1}} \\
-        \end{Bmatrix}_{(4\Xi + 3N) \times 1} \\
-        \begin{Bmatrix}
-            -\vmathbb{1}_{N + NQ \times 1} \\
-            \vmathbb{0}_{2N + NQ \times 1} \\
-            0.95*\vmathbb{1}_{A \times 1} \\
-        \end{Bmatrix}_{3N \times 1}
-    \end{bmatrix}
 \end{array}
 \end{equation}
 
