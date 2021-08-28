@@ -327,8 +327,7 @@ Placing them together in \(A_{eq}\) results in:
     \begin{bmatrix}
         A_{detach_{N \times 2N}} & \vmathbb{0}_{N \times NQ} \\
         \vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}      \\
-        \vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}      \\
-    \end{bmatrix}_{3N \times (2N + NQ)} \\
+    \end{bmatrix}_{2N \times (2N + NQ)} \\
     x_{eq} =
     \begin{bmatrix}
         p_{i_{N \times 1}} \\
@@ -339,8 +338,7 @@ Placing them together in \(A_{eq}\) results in:
     \begin{bmatrix}
         c_{i_{N \times 1}} \\
         \vmathbb{1}_{N \times 1} \\
-        v_{i_{N \times 1}} \\
-    \end{bmatrix}_{3N \times 1} \\
+    \end{bmatrix}_{2N \times 1} \\
     \\
     \begin{bmatrix}
         A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
@@ -423,22 +421,39 @@ packing problem are
 \end{array}
 \end{equation}\\
 \end{table*}
-\normalsize
 
 \subsection{Formulating $A_{dynamics}$}
 
 \subsubsection{Formulating $A_{dynamics_{eq}}$}
-The components that make up the equality constraint for the dynamics
-problem are
+The components that make up the equality constraint for the dynamics problem are
 
 \begin{itemize}
-\item
-  \(\eta_i + \sum_{q=1}^Q g_{iq} r_q \leq 1\)
-\item
-  \(\eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq 0\)
-\item
-  \(\eta_{I} \geq H_{final}\)
+    \item 
+    $\eta_{\gamma_i} = \eta_i + g_{iq} r_q - \lambda_i$
 \end{itemize}
+
+$A_{dynamics}$ takes the form of:
+
+\begin{equation}
+\begin{array}{c}
+	A_{eq} =
+	\begin{bmatrix}
+		A_{\textrm{init charge}_{N \times N}}       & \vmathbb{0}_{N \times (N+NQ)} \\
+		A_{\textrm{next charge}_{N \times 2N + NQ}} & \cdots                       \\
+	\end{bmatrix}_{2N \times (2N + NQ)} \\
+	x_{eq} =
+	\begin{bmatrix}
+		\eta_{\i_{N \times 1}}   \\
+		g_{iq_{NQ \times 1}}     \\
+		\lambda_{i_{N \times 1}} \\
+	\end{bmatrix}_{(2N + NQ) \times 1}
+	b_{eq} =
+	\begin{bmatrix}
+		\eta_{i_{N \times 1}} \\	
+		\eta_{\gamma_{i}\; N \times 1} \\	
+	\end{bmatrix}_{2N \times 1}
+\end{array}
+\end{equation}
 
 \(A_{dyanmics_{ineq}}\) takes the form of:
 
