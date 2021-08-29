@@ -78,7 +78,7 @@ The public transportation system is crucial in any urban area; however, the incr
 
 [Copied] Two such simplifications are common. First, only fast chargers are utilized in planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge \cite{Liu2020}. Day-to-day operations require higher fidelity charging models to ensure buses have sufficient charge and to better incorporate the monetary cost of charging. In \cite{Sebastiani2016, Qin2016}, high-fidelity models are used at the price of requiring computationally intensive searches; \cite{Sebastiani2016} uses a genetic algorithm and \cite{Qin2016} uses an exhaustive search strategy.
 
-The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
+The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILD framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
 
 The remainder of the paper proceeds as follows.
 
@@ -130,12 +130,14 @@ The remainder of the paper proceeds as follows.
 % Preliminaries
 \section{Preliminaries}
 \label{sec:preliminaries}
-The PAP is a rectangle packing problem where the width and height of the rectangles represent time and physical space, respectively as shown in Fig \cite{fig:}. 
+The PAP is a rectangle packing problem where a set of rectangles \(vmathbb{R}\) are attempted to be fit in a larger rectangle \(R\) as shown in Fig \cite{fig:packexample}. Both the set \(vmathbb{R\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a subset of the packing problem and can be used to describe many real life problems \cite{}. One of these problems is the Berth Allocation Problem (BAP).
+
+The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \cite{fig:bap} \cite{}. The BAP is commonly formed as a Mixed Integer Linear Program \cite{}. This formulation utilizes the BAP to help determine which queue the bus should be placed in to be charged.
+
+\subsection{The Rectangle Packing Problem}
 
 
-rather than both the x and y-axis representing physical space, the x-axis represents time and the y-axis represents the physical space used by the buses as shown in Fig \cite{fig:}.
-
-\subsection{}
+\subsection{The Berth Allocation Problem}
 The (BAP) is used to optimally assign incoming vessels to berth positions in order to be served. The length of the quay and vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.
 
 %%-------------------------------------------------------------------------------
