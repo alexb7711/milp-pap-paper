@@ -130,15 +130,15 @@ The remainder of the paper proceeds as follows.
 % Preliminaries
 \section{Preliminaries}
 \label{sec:preliminaries}
-The PAP is a rectangle packing problem where a set of rectangles \(vmathbb{R}\) are attempted to be fit in a larger rectangle \(R\) as shown in Fig \cite{fig:packexample}. Both the set \(vmathbb{R\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a subset of the packing problem and can be used to describe many real life problems \cite{}. One of these problems is the Berth Allocation Problem (BAP).
+The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{R}\) are attempted to be fit in a larger rectangle \(R\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{R}\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a subset of the packing problem and can be used to describe many real life problems \cite{}. One of these problems is the Berth Allocation Problem (BAP).
 
-The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \cite{fig:bap} \cite{}. The BAP is commonly formed as a Mixed Integer Linear Program \cite{}. This formulation utilizes the BAP to help determine which queue the bus should be placed in to be charged.
+The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bap} \cite{}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged. Notation is summarized in Table \ref{tab:variables}.
 
 \subsection{The Rectangle Packing Problem}
-
+Rectangle packing can be shown to be a NP-hard problem. As shown in Fig \ref{fig:packexample}, there is static sized rectangle \(R\) for the set of small rectangles \(\vmathbb{R}\) to be packed into where the width and height are used to represent measurable values provided in the problem. In some problems, the dimensions of \(\vmathbb{R}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules. Other problems, such as the BAP, allow one or both sides to be decision variables (i.e. the dimensions is variable) \cite{}. 
 
 \subsection{The Berth Allocation Problem}
-The (BAP) is used to optimally assign incoming vessels to berth positions in order to be served. The length of the quay and vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.
+The BAP is used to optimally assign incoming vessels to berth positions in order to be serviced (Fig \ref{fig:bap}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\). Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $N$ and the space taken by docking vessel $N$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.
 
 %%-------------------------------------------------------------------------------
 %
