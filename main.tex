@@ -128,12 +128,15 @@ The remainder of the paper proceeds as follows.
 
 %%-------------------------------------------------------------------------------
 % Preliminaries
-%\section{Preliminaries}
-%\label{sec:preliminaries}
-%The PAP is a rectangle packing problem where rather than both the x and y-axis representing physical space, the x-axis represents time and the y-axis represents the physical space used by the buses as shown in Fig \cite{fig:}.
-%
-%\subsection{}
-%The (BAP) is used to optimally assign incoming vessels to berth positions in order to be served. The length of the quay and vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.
+\section{Preliminaries}
+\label{sec:preliminaries}
+The PAP is a rectangle packing problem where the width and height of the rectangles represent time and physical space, respectively as shown in Fig \cite{fig:}. 
+
+
+rather than both the x and y-axis representing physical space, the x-axis represents time and the y-axis represents the physical space used by the buses as shown in Fig \cite{fig:}.
+
+\subsection{}
+The (BAP) is used to optimally assign incoming vessels to berth positions in order to be served. The length of the quay and vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.
 
 %%-------------------------------------------------------------------------------
 %
@@ -416,7 +419,7 @@ packing problem are
     \end{bmatrix}_{(4\Xi + 6N + 3NQ) \times 1}
     b_{ineq} =
     \begin{bmatrix}
-	\vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -c_{i_{N \times N}} \\ -(T-p_i)_{N \times N} \\ -\tau_{i_{N \times N}} \\ -p_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \vmathbb{0}_{2N \times 1} 
+	\vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -c_{i_{N \times N}} \\ -(T-p_i)_{N \times N} \\ -\tau_{i_{N \times N}} \\ -p_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \vmathbb{0}_{2N \times 1}
     \end{bmatrix}_{(5\Xi + 7N) \times 1}
 \end{array}
 \end{equation}\\
@@ -428,7 +431,7 @@ packing problem are
 The components that make up the equality constraint for the dynamics problem are
 
 \begin{itemize}
-    \item 
+    \item
     $\eta_{\gamma_i} = \eta_i + g_{iq} r_q - \lambda_i$
 \end{itemize}
 
@@ -449,8 +452,8 @@ $A_{dynamics}$ takes the form of:
 	\end{bmatrix}_{(2N + NQ) \times 1}
 	b_{eq} =
 	\begin{bmatrix}
-		\eta_{i_{N \times 1}} \\	
-		\eta_{\gamma_{i}\; N \times 1} \\	
+		\eta_{i_{N \times 1}} \\
+		\eta_{\gamma_{i}\; N \times 1} \\
 	\end{bmatrix}_{2N \times 1}
 \end{array}
 \end{equation}
