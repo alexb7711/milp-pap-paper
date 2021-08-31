@@ -112,4 +112,37 @@ A.~J. Qarebagh, F.~Sabahi, and D.~Nazarpour, ``Optimized scheduling for solving
   \emph{2019 27th Iranian Conference on Electrical Engineering (ICEE)}, 2019,
   pp. 593--597.
 
+\bibitem{Bruin2013}
+F.~de~Bruin, ``Rectangle packing,'' Master's thesis, University of Amsterdam,
+  2013.
+
+\bibitem{Dai2008}
+J.~Dai, W.~Lin, R.~Moorthy, and C.-P. Teo, \emph{{Supply Chain
+  Analysis}}.\hskip 1em plus 0.5em minus 0.4em\relax Cambridge University
+  Press, 2008, vol. 119.
+
+\bibitem{Frojan2015}
+\BIBentryALTinterwordspacing
+P.~Frojan, J.~F. Correcher, R.~Alvarez-Valdes, G.~Koulouris, and J.~M. Tamarit,
+  ``The continuous berth allocation problem in a container terminal with
+  multiple quays,'' \emph{Expert Systems with Applications}, vol.~42, no.~21,
+  pp. 7356--7366, 2015. [Online]. Available:
+  \url{https://www.sciencedirect.com/science/article/pii/S0957417415003462}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Buhrkal2010}
+\BIBentryALTinterwordspacing
+K.~Buhrkal, S.~Zuglian, S.~Ropke, J.~Larsen, and R.~Lusby, ``Models for the
+  discrete berth allocation problem: A computational comparison,''
+  \emph{Transportation Research Part E: Logistics and Transportation Review},
+  vol.~47, no.~4, pp. 461--473, 2011. [Online]. Available:
+  \url{https://www.sciencedirect.com/science/article/pii/S1366554510001201}
+\BIBentrySTDinterwordspacing
+
+\bibitem{Murata1995}
+H.~Murata, K.~Fujiyoshi, S.~Nakatake, and Y.~Kajitani,
+  ``Rectangle-packing-based module placement,'' in \emph{Proceedings of IEEE
+  International Conference on Computer Aided Design (ICCAD)}, 1995, pp.
+  472--479.
+
 \end{thebibliography}

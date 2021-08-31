@@ -16,6 +16,7 @@
 \usepackage{booktabs, tabularx}   % allows for \toprule in tables
 \usepackage{cite}
 \usepackage{graphicx}
+\graphicspath{ {./img/} }
 \usepackage{multirow}
 \usepackage{newtxmath}
 \usepackage{ragged2e}
@@ -130,15 +131,70 @@ The remainder of the paper proceeds as follows.
 % Preliminaries
 \section{Preliminaries}
 \label{sec:preliminaries}
-The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{R}\) are attempted to be fit in a larger rectangle \(R\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{R}\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a subset of the packing problem and can be used to describe many real life problems \cite{}. One of these problems is the Berth Allocation Problem (BAP).
+The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{R}\) are attempted to be fit in a larger rectangle \(R\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{R}\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a subset of the packing problem and can be used to describe many real life problems \cite{Bruin2013}. One of these problems is the Berth Allocation Problem (BAP).
 
-The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bap} \cite{}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged. Notation is summarized in Table \ref{tab:variables}.
+The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bap} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged. Notation is summarized in Table \ref{tab:variables}.
+
+\begin{figure}
+	\centerline{\includegraphics[width=8cm]{bap.png}}
+	\caption{The representation of the berth-time space}
+	\label{fig:bap}
+\end{figure}
 
 \subsection{The Rectangle Packing Problem}
-Rectangle packing can be shown to be a NP-hard problem. As shown in Fig \ref{fig:packexample}, there is static sized rectangle \(R\) for the set of small rectangles \(\vmathbb{R}\) to be packed into where the width and height are used to represent measurable values provided in the problem. In some problems, the dimensions of \(\vmathbb{R}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules. Other problems, such as the BAP, allow one or both sides to be decision variables (i.e. the dimensions is variable) \cite{}. 
+Rectangle packing can be shown to be a NP-hard problem \cite{Murata1995}. As shown in Fig \ref{fig:packexample}, there is static sized rectangle \(R\) for the set of small rectangles \(\vmathbb{R}\) to be packed into where the width and height are used to represent measurable values provided in the problem. In some problems, the dimensions of \(\vmathbb{R}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides to be decision variables (i.e. the dimension is variable) \cite{Buhrkal2010}.
+
+\begin{figure}
+	\centerline{\includegraphics[width=6cm]{chip-pack.png}}
+	\caption{Example of rectangle packing problem}
+	\label{fig:packexample}
+\end{figure}
 
 \subsection{The Berth Allocation Problem}
 The BAP is used to optimally assign incoming vessels to berth positions in order to be serviced (Fig \ref{fig:bap}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\). Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $N$ and the space taken by docking vessel $N$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be served.
+
+The BAP has characteristics that are both convenient and undesirable properties; to explore these, consider the following MILP:
+
+\begin{equation}
+	\label{eq:bapobjective}
+	min\; \sum_{i=1}^N (c_i - a_i)
+\end{equation}
+
+Subject to the following constraints:
+
+\begin{subequations}
+\label{eq:bapconstrs}
+\begin{align}
+    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 1                     \label{subeq:baptime}         \\
+    v_i - v_j - s_j - (\delta_{ij} - 1)S \geq 1                     \label{subeq:bapspace}        \\
+    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1    \label{subeq:bapvalid_pos}    \\
+    \sigma_{ij} + \sigma_{ji} \leq 1                                \label{subeq:bapsigma}        \\
+    \delta_{ij} + \delta_{ji} \leq 1                                \label{subeq:bapdelta}        \\
+    p_i + u_i = c_i                                                 \label{subeq:bapdetach}       \\
+    a_i \leq u_i \leq (T - p_i)                                     \label{subeq:bapvalid_starts} \\
+\end{align}
+\end{subequations}
+
+Where this problem assumes the following are known
+
+\begin{itemize}
+	\item \(S\)   : berth length
+	\item \(T\)   : time horizon
+	\item \(N\)   : number of incoming vessels
+	\item \(p_i\) : charging time for vessel \(i\;; \forall 1 \leq i \leq N\)
+	\item \(s_i\) : size of vehicle \(i\;; \forall 1 \leq i \leq N\)
+	\item \(a_i\) : arrival time of vessel \(i\;; \forall 1 \leq i \leq N\)
+\end{itemize}
+
+An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics. \(S\) and \(T\) are allowed to be continuous or discrete. This allows the berth (queue) to either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap} \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
+
+The objective function \ref{eq:bapobjective} minimizes the time spent to service each vessel. Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:nooverlap}.
+
+\begin{figure}
+	\centerline{\includegraphics[width=6cm]{bap-assign.png}}
+	\caption{Example of rectangle packing problem}
+	\label{fig:packexample}
+\end{figure}
 
 %%-------------------------------------------------------------------------------
 %
