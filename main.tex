@@ -14,12 +14,14 @@
 \usepackage{algorithmic}
 \usepackage{amsmath,amsfonts}
 \usepackage{booktabs, tabularx}   % allows for \toprule in tables
+\usepackage{caption}
 \usepackage{cite}
 \usepackage{graphicx}
 \graphicspath{ {./img/} }
 \usepackage{multirow}
 \usepackage{newtxmath}
 \usepackage{ragged2e}
+\usepackage{subcaption}
 \usepackage{textcomp}
 \usepackage{xcolor}
 
@@ -137,16 +139,7 @@ The remainder of the paper proceeds as follows.
 \label{sec:preliminaries}
 The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{R}\) are attempted to be optimally placed in a larger rectangle \(R\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{R}\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a subset of the packing problem and can be used to describe many real life problems \cite{Bruin2013}. One of these problems is the Berth Allocation Problem (BAP).
 
-The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bap} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints. Notation is summarized in Table \ref{tab:variables}.
-
-\begin{figure}
-	\centerline{\includegraphics[width=8cm]{bap.png}}
-	\caption{The representation of the berth-time space \TODO{Update Image}}
-	\label{fig:bap}
-\end{figure}
-
-\subsection{The Rectangle Packing Problem}
-Rectangle packing can be shown to be a NP-hard problem \cite{Murata1995}. As shown in Fig \ref{fig:packexample}, there is static sized rectangle \(R\) for the set of small rectangles \(\vmathbb{R}\) to be packed into where the width and height are used to represent measurable values provided by the problem. In some problems, the dimensions of \(\vmathbb{R}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides to be decision variables (i.e. the dimension is variable) \cite{Buhrkal2010}.
+The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bapexample} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints. Notation is summarized in Table \ref{tab:variables}.
 
 \begin{figure}
 	\centerline{\includegraphics[width=6cm]{chip-pack.png}}
@@ -154,16 +147,25 @@ Rectangle packing can be shown to be a NP-hard problem \cite{Murata1995}. As sho
 	\label{fig:packexample}
 \end{figure}
 
-\subsection{The Berth Allocation Problem}
-The BAP solves the problem of optimally assigning incoming vessels to berth positions in order to be serviced (Fig \ref{fig:bapexample}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $N$ and the space taken by docking vessel $N$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels being served.
+\subsection{The Rectangle Packing Problem}
+Rectangle packing can be shown to be a NP-hard problem \cite{Murata1995}. As shown in Fig \ref{fig:bapexample}, there is static sized rectangle \(R\) for the set of small rectangles \(\vmathbb{R}\) to be packed into where the width and height are used to represent measurable values provided by the problem. In some problems, the dimensions of \(\vmathbb{R}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides to be decision variables (i.e. the dimension is variable) \cite{Buhrkal2010}.
 
 \begin{figure}
 	\centerline{\includegraphics[height=4cm]{bapexample.png}}
 	\caption{Example of berth allocation. Vessels flow from top to bottom.\TODO{Update Image}}
-	\label{fig:packexample}
+	\label{fig:bapexample}
 \end{figure}
 
-The BAP has characteristics that are both convenient and undesirable; to explore these, consider the following MILP \cite{ref:}:
+\subsection{The Berth Allocation Problem}
+The BAP solves the problem of optimally assigning incoming vessels to berth positions in order to be serviced (Fig \ref{fig:bapexample}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $i$ and the space taken by docking vessel $i$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels being serviced. A representation of a BAP solution is shown in Fig \ref{fig:bap}.
+
+\begin{figure}
+	\centerline{\includegraphics[width=8cm]{bap.png}}
+	\caption{The representation of the berth-time space \TODO{Update Image}}
+	\label{fig:bap}
+\end{figure}
+
+The BAP has characteristics that are both convenient and undesirable in reference of the formulation we wish to develop; to explore these, consider the following MILP \cite{Qarebagh2019}:
 
 \begin{equation}
 	\label{eq:bapobjective}
@@ -175,14 +177,14 @@ Subject to the following constraints:
 \begin{subequations}
 \label{eq:bapconstrs}
 \begin{align}
-    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                     \label{subeq:baptime}         \\
-    v_i - v_j - s_j - (\delta_{ij} - 1)S \geq 0                     \label{subeq:bapspace}        \\
+    u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 0                     \label{subeq:baptime}         \\
+    v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 0                     \label{subeq:bapspace}        \\
     \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1    \label{subeq:bapvalid_pos}    \\
     \sigma_{ij} + \sigma_{ji} \leq 1                                \label{subeq:bapsigma}        \\
     \delta_{ij} + \delta_{ji} \leq 1                                \label{subeq:bapdelta}        \\
     p_i + u_i = c_i                                                 \label{subeq:bapdetach}       \\
     a_i \leq u_i \leq (T - p_i)                                     \label{subeq:bapvalid_starts} \\
-    \sigma_{ij} \in {0,1},\;\delta_{ij} \in {0,1}                   \label{subeq:sdspace}
+    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}               \label{subeq:sdspace}
 \end{align}
 \end{subequations}
 
@@ -207,18 +209,41 @@ and the following are decision variables
     \item \(\delta_{ij}\) : 1 if vessel \(i\) is head of vessel \(j\) in berth space (i.e. \(i\) is to the below \(j\) in Fig \ref{fig:bap}), 0 otherwise
 \end{itemize}
 
-An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap} \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
+An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap}. Time will be kept continuous. \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
 
-The objective function \ref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time \(c_i\) and arrival time \(a_i\). Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:packexample}.
+The objective function \ref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)). Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:overlap}.
 
-Constraint \ref{subeq:baptime} states that the starting service time \(u_i\) for vessel \(i\) must be greater than the starting time of vessel \(j\) plus its service time \(p_i\). The last term utilizes the big \(M\) method to determine the relevance of the constraint. As stated before, \(\sigma_{ij}\) is used to determine if vessel \(i\) there is any overlap in service time with vessel \(j\). If \(i\) begins being serviced after \(j\) is complete, \(\sigma_{ij} = 1\), otherwise there is some overlap in time and \(\sigma_{ij} = 0\). If \(\sigma = 1\) then \((\sigma_{ij} - 1)T = 0\) leaving \(u_i - u_j - p_j \geq 1\) implying that the constraint is now "active". If \(\sigma = 0\) then the constraint is of the form \(u_i - u_j - p_j - T\) where \(T + u_j + p_j > u_i\) rendering the constraint "inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
+Constraint \ref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the big \(M\) method to determine the relevance of the constraint. As stated before, if \(j\) begins being serviced after \(i\) is complete \(\sigma_{ij} = 1\), otherwise there is some overlap in time and \(\sigma_{ij} = 0\) as shown in Fig \ref{subfig:timeoverlap}. If \(\sigma = 1\) then \((\sigma_{ij} - 1)T = 0\) leaving \(u_i - u_j - p_j \geq 1\) implying that the constraint is now ``active". If \(\sigma = 0\) then the constraint is of the form \(u_i - u_j - p_j - T\) where \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
 
-Similarly, constraint \ref{subeq:bapspace} states that the berth location for vessel \(i\) is less than the starting berth position of vessel \(j\) plus its length. In other words, vessel \(i\) is position behind vessel \(j\)
+Similarly, constraint \ref{subeq:bapspace} states that the berth location for vessel \(i\) is greater than the starting berth position of vessel \(j\) plus its length (no overlap in physical space on the berth) as in Fig \ref{subfig:spaceoverlap}. Again, the big \(M\) method is utilized to determine the relevance of the constraint. If \(\delta_{ij} = 1\) then the big \(M\) term goes to zero rendering the constraint active. If \(\delta_{ij} = 0\) then the constraint is inactive.
 
 \begin{figure}
-	\centerline{\includegraphics[width=6cm]{bap-assign.png}}
-	\caption{Example of rectangle packing problem \TODO{Update Image}}
-	\label{fig:packexample}
+    \centering
+    \begin{subfigure}[b]{0.2\textwidth}
+        \centering
+    	\includegraphics[height=3cm]{hoizontaloverlap.png}
+    	\caption{Example horizontal overlap in time in time-space plot\TODO{Update Image}}
+    	\label{subfig:timeoverlap}
+	\end{subfigure}
+	\hfill
+    \begin{subfigure}[b]{0.2\textwidth}
+        \centering
+    	\includegraphics[height=3cm]{verticaloverlap.png}
+    	\caption{Example of overlap in space in time-space plot\TODO{Update Image}}
+    	\label{subfig:spaceoverlap}
+	\end{subfigure}
+	\caption{Visualization of vessel relative positions}
+	\label{fig:overlap}
+\end{figure}
+
+Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to determine the relative position of each vessel from one another. A useful way of describing \(\sigma_{ij}\) and \(\delta_{ij}\) are in terms of relative position of vessels on the time-space diagram. \(\delta_{ij} = 1\) implies \(i\) is ``to the left of" \(j\) and \(\sigma_{ij} = 1\) implies \(i\) ``is below" \(j\). If vessel \(i\) is to the left of \(j\) then \(i\) cannot intersect \(j\) vertically (\(\sigma_{ij} = 1\) and \(\delta_{ij} = 0\)), see Fig \ref{subfig:timeoverlap}. Similarly, if \(i\) is below \(j\) then \(i\) is unable to overlap \(j\) horizontally (\(\sigma_{ij} = 0\) and \(\delta_{ij} = 1\)), see Fig \ref{subfig:spaceoverlap}. Constraint \ref{subeq:bapvalid_pos} states that vessel \(i\) must be to the left of or below vessel \(j\), or vessel \(j\) must be to the left of or below \(i\). However, this constraint does not restrict \(i\) being to left and right of \(j\) simultaneously (similarly in the vertical sense) as shown in Fig \ref{fig:multipleassign}. Constraints \ref{subeq:bapsigma} and \ref{subeq:bapdelta} add these restrictions by allowing either \(\cdot_{ij} = 1\) or \(\cdot_{ji} = 1\) but not both.
+
+The last constraints enforce continuity for each vessel. Constraint \ref{subeq:bapdetach} states that the service start time (\(u\)) plus the time to service vessel \(i\) (\(p\)) must equal the departure time (\(c\)). Constraint \ref{subeq:bapvalid_starts} enforces the arrival time (\(a\)) must be less than or equal to the service start time (\(u\)) which must also be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \ref{subeq:sdspace} defines the set of values \(\sigma\) and \(\delta\).
+
+\begin{figure}
+	\centerline{\includegraphics[width=6cm]{multipleassign.png}}
+	\caption{Example assigning vessel to multiple locations\TODO{Update Image}}
+	\label{fig:multipleassign}
 \end{figure}
 
 %%-------------------------------------------------------------------------------
