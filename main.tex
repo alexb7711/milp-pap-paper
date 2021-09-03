@@ -155,9 +155,15 @@ Rectangle packing can be shown to be a NP-hard problem \cite{Murata1995}. As sho
 \end{figure}
 
 \subsection{The Berth Allocation Problem}
-The BAP is used to optimally assign incoming vessels to berth positions in order to be serviced (Fig \ref{fig:bap}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $N$ and the space taken by docking vessel $N$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels being served.
+The BAP solves the problem of optimally assigning incoming vessels to berth positions in order to be serviced (Fig \ref{fig:bapexample}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $N$ and the space taken by docking vessel $N$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels being served.
 
-The BAP has characteristics that are both convenient and undesirable; to explore these, consider the following MILP:
+\begin{figure}
+	\centerline{\includegraphics[height=4cm]{bapexample.png}}
+	\caption{Example of berth allocation. Vessels flow from top to bottom.\TODO{Update Image}}
+	\label{fig:packexample}
+\end{figure}
+
+The BAP has characteristics that are both convenient and undesirable; to explore these, consider the following MILP \cite{ref:}:
 
 \begin{equation}
 	\label{eq:bapobjective}
@@ -169,8 +175,8 @@ Subject to the following constraints:
 \begin{subequations}
 \label{eq:bapconstrs}
 \begin{align}
-    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 1                     \label{subeq:baptime}         \\
-    v_i - v_j - s_j - (\delta_{ij} - 1)S \geq 1                     \label{subeq:bapspace}        \\
+    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                     \label{subeq:baptime}         \\
+    v_i - v_j - s_j - (\delta_{ij} - 1)S \geq 0                     \label{subeq:bapspace}        \\
     \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1    \label{subeq:bapvalid_pos}    \\
     \sigma_{ij} + \sigma_{ji} \leq 1                                \label{subeq:bapsigma}        \\
     \delta_{ij} + \delta_{ji} \leq 1                                \label{subeq:bapdelta}        \\
@@ -201,11 +207,13 @@ and the following are decision variables
     \item \(\delta_{ij}\) : 1 if vessel \(i\) is head of vessel \(j\) in berth space (i.e. \(i\) is to the below \(j\) in Fig \ref{fig:bap}), 0 otherwise
 \end{itemize}
 
-An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. This formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap} \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
+An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap} \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
 
-The objective function (\ref{eq:bapobjective}) minimizes the time spent to service each vessel by minimizing over the difference between the departure time \(c_i\) and arrival time \(a_i\). Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:packexample}. 
+The objective function \ref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time \(c_i\) and arrival time \(a_i\). Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:packexample}.
 
-Constraint \ref{subeq:baptime} states that the starting service time \(u_i\) for vessel \(i\) must be greater than the starting time of vessel \(j\) plus its service time \(p_i\). The last term utilizes big M method to determine the relevance of the constraint. As stated before, \(\sigma_{ij}\) is used to determine if vessel \(i\) there is any overlap in service time with vessel \(j\). If \(i\) begins being serviced after \(j\) is complete, \(\sigma_{ij} = 1\), otherwise there is some overlap in time and \(\sigma_{ij} = 0\)
+Constraint \ref{subeq:baptime} states that the starting service time \(u_i\) for vessel \(i\) must be greater than the starting time of vessel \(j\) plus its service time \(p_i\). The last term utilizes the big \(M\) method to determine the relevance of the constraint. As stated before, \(\sigma_{ij}\) is used to determine if vessel \(i\) there is any overlap in service time with vessel \(j\). If \(i\) begins being serviced after \(j\) is complete, \(\sigma_{ij} = 1\), otherwise there is some overlap in time and \(\sigma_{ij} = 0\). If \(\sigma = 1\) then \((\sigma_{ij} - 1)T = 0\) leaving \(u_i - u_j - p_j \geq 1\) implying that the constraint is now "active". If \(\sigma = 0\) then the constraint is of the form \(u_i - u_j - p_j - T\) where \(T + u_j + p_j > u_i\) rendering the constraint "inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
+
+Similarly, constraint \ref{subeq:bapspace} states that the berth location for vessel \(i\) is less than the starting berth position of vessel \(j\) plus its length. In other words, vessel \(i\) is position behind vessel \(j\)
 
 \begin{figure}
 	\centerline{\includegraphics[width=6cm]{bap-assign.png}}
@@ -249,13 +257,13 @@ with the following constraints:
 \end{align}
 \end{subequations}
 
-Where the objective function \eqref{eq:objective} is the summation over the cost of assignment of bus visit \(i\) to charger \(q\) and the usage of charger \(q\). \eqref{subeq:time} and \eqref{subeq:space} are big M constraints to ensure bus visit \(i\) is not overlapping another bus \(j\) in either time or space. \eqref{subeq:valid_pos} is similar to \eqref{subeq:time} and \eqref{subeq:space} in the sense that it verifies that the bus visit \(i\) is not overlapping bus visit \(j\) in either time or space, but it also enforces that at least one of the states must be true. \eqref{subeq:sigma} and \eqref{subeq:delta} are set in place to prevent bus visit \(i\) from being assigned to multiple positions in time or space, respectively. In other words, \eqref{subeq:time}, \eqref{subeq:space}, \eqref{subeq:valid_pos}, \eqref{subeq:sigma}, and \eqref{subeq:delta} are used together to ensure the bus visit is placed in a single valid position in both time (not encroaching on the bus in front or behind of it in the queue) and space (not allowing more than one bus to reside in the same physical space).
+Where the objective function \eqref{eq:objective} is the summation over the cost of assignment of bus visit \(i\) to charger \(q\) and the usage of charger \(q\). \eqref{subeq:time} and \eqref{subeq:space} are big \(M\) constraints to ensure bus visit \(i\) is not overlapping another bus \(j\) in either time or space. \eqref{subeq:valid_pos} is similar to \eqref{subeq:time} and \eqref{subeq:space} in the sense that it verifies that the bus visit \(i\) is not overlapping bus visit \(j\) in either time or space, but it also enforces that at least one of the states must be true. \eqref{subeq:sigma} and \eqref{subeq:delta} are set in place to prevent bus visit \(i\) from being assigned to multiple positions in time or space, respectively. In other words, \eqref{subeq:time}, \eqref{subeq:space}, \eqref{subeq:valid_pos}, \eqref{subeq:sigma}, and \eqref{subeq:delta} are used together to ensure the bus visit is placed in a single valid position in both time (not encroaching on the bus in front or behind of it in the queue) and space (not allowing more than one bus to reside in the same physical space).
  Constraints \eqref{subeq:detach}, \eqref{subeq:valid_starts}, and \eqref{subeq:valid_depart} are used to enforce time constraints. \eqref{subeq:detach} states that the initial charge time plus the time on the charger is the detach time. \eqref{subeq:valid_starts} states that the arrival time is less than the initial charge time and that the initial charge time is sufficient for the bus to be on for the allotted time. \eqref{subeq:valid_depart} enforces that the detach time of bus visit \(i\) is before (or at the same as) the departure time. Constraint \eqref{subeq:wmax} is used to enforce that only a single charger may be chosen for bus visit \(i\).
 
 \subsection{Battery Dynamics Constraints}
 The set of constraints (\eqref{subeq:max_charge}, \eqref{subeq:min_charge}, and \eqref{subeq:next_charge}) are the linear battery dynamic constraints. \eqref{subeq:max_charge} does not allow bus visit \(i\) to over charge, \eqref{subeq:min_charge} does not allow the bus to be undercharged as to ensure that the bus can complete its route, and \eqref{subeq:next_charge} is the linking item that sets the initial charge for bus visit \(i\)'s next visit.
 
-The final set of constraints(\eqref{subeq:gpgret}, \eqref{subeq:gpsmol}, \eqref{subeq:gwgret}, and \eqref{subeq:gwsmol}), are used to linearize the bilinear term \(p_i*w_{iq}\) by using big M constraints.
+The final set of constraints(\eqref{subeq:gpgret}, \eqref{subeq:gpsmol}, \eqref{subeq:gwgret}, and \eqref{subeq:gwsmol}), are used to linearize the bilinear term \(p_i*w_{iq}\) by using big \(M\) constraints.
 
 \subsection{Matrix Notation}\label{matrix-notation}
 
