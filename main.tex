@@ -90,7 +90,7 @@ The contribution of this work is a Mixed Integer Linear Program (MILP) schedulin
 The remainder of the paper proceeds as follows.
 
 \begin{table*}[!t]
-	\caption{Notation used throughout the paper \TODO{Cleaning up notation a little to make it more sensible}}
+	\caption{Notation used throughout the paper}
 	\label{tab:variables}
 	\centering
 	\begin{tabular}{l l l l}
@@ -98,37 +98,39 @@ The remainder of the paper proceeds as follows.
 		\textbf{Variable} & \textbf{Description} & \textbf{Variable} & \textbf{Description} \\
 		\toprule
 		\multicolumn{4}{l}{Input values} \\
-			$T$         & Time Horizon           &
-			$N$         & Number of total visits                    \\
 			$A$         & Number of buses in use &
-			$Q$         & Number of chargers                        \\
-			$I$         & Final index            &
-			$M$         & An arbitrary very large upper bound value \\
+			$I$         & Final index            \\
+			$M$         & An arbitrary very large upper bound value &
+			$N$         & Number of total visits                    \\
+			$Q$         & Number of chargers                        &
+			$T$         & Time Horizon           \\
 			$\Xi$       & $N(N-1)$                                   \\
 		\hline
-		\multicolumn{4}{l}{Input Vectors} \\
-			$a_i$        & Arrival time of visit  $i$              &
-			$m_q$        & Cost of a visit being assigned to charger  $q$                  \\
-			$\epsilon_q$ & Cost of using charger $q$ per unit time &
-			$r_q$        & Charge rate of charger $q$ per unit time                        \\
-			$\Gamma_i$   & Array of visit id's                     &
-			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive \\
-			$\tau_i$     & Time visit $i$ must leave the station   &
-			$\lambda_i$  & Discharge of visit over route  $i$                              \\
-			$\alpha_i$   & Initial charge time for visit  $i$      &
+		\multicolumn{4}{l}{Input variables} \\
+			$\Gamma_i$   & Array of visit id's                                             \\
+			$\alpha_i$   & Initial charge time for visit  $i$                              &
 			$\beta_{i}$  & Final charge for bus $i$ at the end of the work day             \\
-			$\kappa_i$   & Final charge time for visit $i$                                 \\
+			$\epsilon_q$ & Cost of using charger $q$ per unit time                         &
+			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive \\
+			$\kappa_i$   & Battery capacity for bus \(i\)                                  &
+			$\lambda_i$  & Discharge of visit over route  $i$                              \\
+			$\nu$        & Minimum charge allowed on depatrue of visit \(i\)               &
+			$\tau_i$     & Time visit $i$ must leave the station                           \\
+			$\upsilon$   & Minimum final percentage charge at and of time horizon \(T\)    &
+			$a_i$        & Arrival time of visit  $i$                                      \\
+			$m_q$        & Cost of a visit being assigned to charger  $q$                  &
+			$r_q$        & Charge rate of charger $q$ per unit time                        \\
 		\hline
 		\multicolumn{4}{l}{Decision Variables} \\
-			$u_i$         & Initial charge time of visit $i$                          \\
-			$v_i$         & Assigned queue for visit $i$                  &
-			$c_i$         & detach time from charger for visit $i$                    \\
-			$p_i$         & Amount of time spent on charger for visit $i$ &
-			$g_i$         & Linearization term for bilinear terms $g_i := p_i w_{iq}$ \\
-			$\eta_i$      & Initial charge for visit $i$                  &
-			$w_{iq}$      & Vector representation of queue assignment                 \\
+			$\delta_{ij}$ & $v_i < v_j = 1$ \textrm{ or } $i \neq j = 0$              &
+			$\eta_i$      & Initial charge for visit $i$                  \\
 			$\sigma_{ij}$ & $u_i < u_j = 1$ \textrm{ or } $i \neq j = 0$  &
-			$\delta_{ij}$ & $v_i < v_j = 1$ \textrm{ or } $i \neq j = 0$              \\
+			$c_i$         & detach time from charger for visit $i$                    \\
+			$g_i$         & Linearization term for bilinear terms $g_i := p_i w_{iq}$  &
+			$p_i$         & Amount of time spent on charger for visit $i$ \\
+			$u_i$         & Initial charge time of visit $i$                          &
+			$v_i$         & Assigned queue for visit $i$                  \\
+			$w_{iq}$      & Vector representation of queue assignment                 \\
 			\bottomrule
 	\end{tabular}
 \end{table*}
@@ -211,7 +213,7 @@ and the following are decision variables
 
 An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap}. Time will be kept continuous. \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
 
-The objective function \ref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)). Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:overlap}.
+The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)). Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:overlap}.
 
 Constraint \ref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the big \(M\) method to determine the relevance of the constraint. As stated before, if \(j\) begins being serviced after \(i\) is complete \(\sigma_{ij} = 1\), otherwise there is some overlap in time and \(\sigma_{ij} = 0\) as shown in Fig \ref{subfig:timeoverlap}. If \(\sigma = 1\) then \((\sigma_{ij} - 1)T = 0\) leaving \(u_i - u_j - p_j \geq 1\) implying that the constraint is now ``active". If \(\sigma = 0\) then the constraint is of the form \(u_i - u_j - p_j - T\) where \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
 
@@ -250,10 +252,10 @@ The last constraints enforce continuity for each vessel. Constraint \ref{subeq:b
 %
 \section{Problem Formulation}
 \label{sec:problemformulation}
-The MILP is formulated with two sets of constraints: rectangle packing constraints and battery dynamics constraints. This section will progressively construct the Position Allocation MILP. A MILP is first presented purely as a rectangle packing problem that optimized over time and space. Using this MILP as a basis, new variables and battery dynamics are introduced.
+The MILP is formulated with two sets of constraints: rectangle packing constraints and battery dynamics constraints. This section will build off the previous formulation (\eqref{eq:bapobjective} and \eqref{eq:bapconstrs}) and progressively construct the battery dynamic constraints to create the Position Allocation MILP. 
 
 \subsection{Rectangle Packing Approach}
-This section presents a MILP formulation of the PAP that optimally schedules vehicles over both time and space. This section assumes that the length of the Berth ($S$), time horizon ($T$), number of incoming vehicles ($N$), charging time ($p_i$), size of the vehicle ($s_i$), and arrival time ($a_i$) for $\forall 1 \leq i \leq N$ are constant and given.
+Similarly to before, we begin with following MILP:
 
 \begin{equation}\label{eq:objective}
     \sum_{i=1}^N \sum_{q=1}^Q \Big( w_i m_q + g_i \epsilon_q \Big) \\
@@ -262,33 +264,46 @@ This section presents a MILP formulation of the PAP that optimally schedules veh
 with the following constraints:
 
 \begin{subequations}
+\label{eq:packconstrs}
 \begin{align}
-    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 1                     \label{subeq:time}         \\
-    v_i - v_j - s_j - (\delta_{ij} - 1)S \geq 1                     \label{subeq:space}        \\
-    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1    \label{subeq:valid_pos}    \\
-    \sigma_{ij} + \sigma_{ji} \leq 1                                \label{subeq:sigma}        \\
-    \delta_{ij} + \delta_{ji} \leq 1                                \label{subeq:delta}        \\
-    p_i + u_i = c_i                                                 \label{subeq:detach}       \\
-    a_i \leq u_i \leq (T - p_i)                                     \label{subeq:valid_starts} \\
-    c_i \leq \tau_i                                                 \label{subeq:valid_depart} \\
-    \eta_i + \sum_{q=1}^Q g_{iq} r_q \leq 1                         \label{subeq:max_charge}   \\
-    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq 0             \label{subeq:min_charge}   \\
-    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i = \eta_{\gamma_i}  \label{subeq:next_charge}  \\
-    p_i \geq g_{iq}                                                 \label{subeq:gpgret}       \\
-    p_i \leq g_{iq} - (1 - w_{iq})M                                 \label{subeq:gpsmol}       \\
-    Mw_{iq} \geq g_{iq}                                             \label{subeq:gwgret}       \\
-    0 \leq g_{iq}                                                   \label{subeq:gwsmol}       \\
-    \sum_{q=1}^Q w_{iq} = 1                                         \label{subeq:wmax}
+    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                      \label{subeq:time}         \\
+    v_i - v_j - s_j - (\delta_{ij} - 1)S \geq 0                      \label{subeq:space}        \\
+    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1     \label{subeq:valid_pos}    \\
+    \sigma_{ij} + \sigma_{ji} \leq 1                                 \label{subeq:sigma}        \\
+    \delta_{ij} + \delta_{ji} \leq 1                                 \label{subeq:delta}        \\
+    p_i + u_i = c_i                                                  \label{subeq:detach}       \\
+    a_i \leq u_i \leq (T - p_i)                                      \label{subeq:valid_starts} \\
+    c_i \leq \tau_i                                                  \label{subeq:valid_depart} 
 \end{align}
 \end{subequations}
 
+The objective function \eqref{eq:objective}
+
 Where the objective function \eqref{eq:objective} is the summation over the cost of assignment of bus visit \(i\) to charger \(q\) and the usage of charger \(q\). \eqref{subeq:time} and \eqref{subeq:space} are big \(M\) constraints to ensure bus visit \(i\) is not overlapping another bus \(j\) in either time or space. \eqref{subeq:valid_pos} is similar to \eqref{subeq:time} and \eqref{subeq:space} in the sense that it verifies that the bus visit \(i\) is not overlapping bus visit \(j\) in either time or space, but it also enforces that at least one of the states must be true. \eqref{subeq:sigma} and \eqref{subeq:delta} are set in place to prevent bus visit \(i\) from being assigned to multiple positions in time or space, respectively. In other words, \eqref{subeq:time}, \eqref{subeq:space}, \eqref{subeq:valid_pos}, \eqref{subeq:sigma}, and \eqref{subeq:delta} are used together to ensure the bus visit is placed in a single valid position in both time (not encroaching on the bus in front or behind of it in the queue) and space (not allowing more than one bus to reside in the same physical space).
+
  Constraints \eqref{subeq:detach}, \eqref{subeq:valid_starts}, and \eqref{subeq:valid_depart} are used to enforce time constraints. \eqref{subeq:detach} states that the initial charge time plus the time on the charger is the detach time. \eqref{subeq:valid_starts} states that the arrival time is less than the initial charge time and that the initial charge time is sufficient for the bus to be on for the allotted time. \eqref{subeq:valid_depart} enforces that the detach time of bus visit \(i\) is before (or at the same as) the departure time. Constraint \eqref{subeq:wmax} is used to enforce that only a single charger may be chosen for bus visit \(i\).
 
 \subsection{Battery Dynamics Constraints}
 The set of constraints (\eqref{subeq:max_charge}, \eqref{subeq:min_charge}, and \eqref{subeq:next_charge}) are the linear battery dynamic constraints. \eqref{subeq:max_charge} does not allow bus visit \(i\) to over charge, \eqref{subeq:min_charge} does not allow the bus to be undercharged as to ensure that the bus can complete its route, and \eqref{subeq:next_charge} is the linking item that sets the initial charge for bus visit \(i\)'s next visit.
 
 The final set of constraints(\eqref{subeq:gpgret}, \eqref{subeq:gpsmol}, \eqref{subeq:gwgret}, and \eqref{subeq:gwsmol}), are used to linearize the bilinear term \(p_i*w_{iq}\) by using big \(M\) constraints.
+
+\begin{subequations}
+\label{eq:dynconstrs}
+\begin{align}
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i = \eta_{\gamma_i}   \label{subeq:next_charge}  \\
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q \leq \kappa                     \label{subeq:max_charge}   \\
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq \nu * \kappa   \label{subeq:min_charge}   \\
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq \beta * \kappa \label{subeq:final_charge} \\
+    \eta_i \geq \upsilon * \beta                                     \label{subeq:final_charge} \\
+    p_i \geq g_{iq}                                                  \label{subeq:gpgret}       \\
+    p_i \leq g_{iq} - (1 - w_{iq})M                                  \label{subeq:gpsmol}       \\
+    Mw_{iq} \geq g_{iq}                                              \label{subeq:gwgret}       \\
+    0 \leq g_{iq}                                                    \label{subeq:gwsmol}       \\
+    \sum_{q=1}^Q i*w_{iq} = v_i                                      \label{subeq:wmax}         \\
+    \sum_{q=1}^Q w_{iq} = 1                                          \label{subeq:wone}
+\end{align}
+\end{subequations}
 
 \subsection{Matrix Notation}\label{matrix-notation}
 
