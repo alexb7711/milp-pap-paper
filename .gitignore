@@ -1,5 +1,14 @@
+*.swp
 *.log
 *.aux
-*.bcf
+*.dvi
+*.bbl
 *.blg
-tags
+*.fdb_latexmk
+*.fls
+*.gz
+*.bak
+*.sav
+*converted-to.pdf
+main.pdf
+build/
