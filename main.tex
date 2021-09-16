@@ -6,7 +6,6 @@
 
 %\documentclass[conference]{IEEEtran}
 \documentclass[letterpaper, 10pt, conference]{IEEEtran}
-%\documentclass[letterpaper, 10pt, conference]{ieeeconf}
 % \IEEEoverridecommandlockouts
 
 %%-------------------------------------------------------------------------------
@@ -36,7 +35,7 @@
 
 %%-------------------------------------------------------------------------------
 % Title
-\title{A Position Allocation Approach to Battery Electric Bus Scheduling}
+\title{A Position Allocation Approach to the Scheduling of Battery Electric Bus Charging}
 
 %%-------------------------------------------------------------------------------
 % Authors
@@ -79,15 +78,15 @@ greg.droge@usu.edu }}
 % Introduction
 \section{Introduction}
 \label{sec:introduction}
-The public transportation system is crucial in any urban area; however, the increase awareness and concern of environmental impacts of petroleum based public transportation has driven an effort to reduce the pollutant footprint \cite{DeFilippo2014, Xylia2018, Guida2017, Li2016}. Particularly, the electrification of public bus transportation via battery power, known as battery electric buses (BEBs), has received significant attention \cite{Li2016}. Although the technology provides benefits beyond reduction in emissions such as lower driving costs, lower maintenance costs, and reduced vehicle noise; battery powered systems introduce new challenges such as larger upfront costs, and potentially several hour long ``refueling" periods \cite{Xylia2018, Li2016}. Furthermore, the problem is exacerbated by the constraints of the transit schedule the fleet must adhere to, the limited amount of chargers available, as well as the adverse affects in the health of the battery due to fast charging \cite{Lutsey2019}. This paper presents a continuous scheduling framework for a BEB fleet that shares limited fast and slow chargers. This framework takes into consideration linear charging dynamics and a fixed bus schedule while meeting a certain battery percentage threshold while remaining.
+The public transportation system is crucial in any urban area; however, the increase awareness and concern of environmental impacts of petroleum based public transportation has driven an effort to reduce the pollutant footprint \cite{DeFilippo2014, Xylia2018, Guida2017, Li2016}. Particularly, the electrification of public bus transportation via battery power, i.e., battery electric buses (BEBs), has received significant attention \cite{Li2016}. Although the technology provides benefits beyond reduction in emissions such as lower driving costs, lower maintenance costs, and reduced vehicle noise, battery powered systems introduce new challenges such as larger upfront costs, and potentially several hour long ``refueling" periods \cite{Xylia2018, Li2016}. Furthermore, the problem is exacerbated by the constraints of the transit schedule the fleet must adhere to, the limited amount of chargers available, as well as the adverse affects in the health of the battery due to fast charging \cite{Lutsey2019}. This paper presents a continuous scheduling framework for a BEB fleet that shares limited fast and slow chargers. This framework takes into consideration linear charging dynamics and a fixed bus schedule while meeting a certain battery percentage threshold while remaining.
 
 [\TODO{Copied}] Recent research seeks to enable BEB fleet deployment by solving two problems: providing BEB scheduling (when to charge, at which charger) and determining BEB infrastructure (charger placement, route design). Much attention has been given to solving both problems simultaneously \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}. Additional variations in addressing the infrastructure include determining which existing buses should be replaced by a BEB \cite{Zhou2020}, assignments of buses to routes \cite{Liu2020}, and determining locations of fast wireless chargers along the routes \cite{Yang2018, Wang2017a}. The added complexity of considering both the BEB charge scheduling and the infrastructure problems necessitates simplifications for sake of computation.
 
 [\TODO{Copied}] Two such simplifications are common. First, only fast chargers are utilized in planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge \cite{Liu2020}. Day-to-day operations require higher fidelity charging models to ensure buses have sufficient charge and to better incorporate the monetary cost of charging. In \cite{Sebastiani2016, Qin2016}, high-fidelity models are used at the price of requiring computationally intensive searches; \cite{Sebastiani2016} uses a genetic algorithm and \cite{Qin2016} uses an exhaustive search strategy.
 
-The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILD framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
+The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
 
-The remainder of the paper proceeds as follows.
+The remainder of the paper proceeds as follows. \TODO{List out sections}
 
 \begin{table*}[!t]
 	\caption{Notation used throughout the paper}
@@ -139,7 +138,7 @@ The remainder of the paper proceeds as follows.
 % Preliminaries
 \section{Preliminaries}
 \label{sec:preliminaries}
-The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{R}\) are attempted to be optimally placed in a larger rectangle \(R\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{R}\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a subset of the packing problem and can be used to describe many real life problems \cite{Bruin2013}. One of these problems is the Berth Allocation Problem (BAP).
+The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{R}\) are attempted to be optimally placed in a larger rectangle \(R\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{R}\) and rectangle \(R\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a NP-hard problem that is a subset of the packing problem and can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of \(\vmathbb{R}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the Berth Allocation Problem (BAP), allow one or both sides to be decision variables \cite{Buhrkal2010}.
 
 The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bapexample} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints. Notation is summarized in Table \ref{tab:variables}.
 
@@ -149,9 +148,6 @@ The BAP is a form of the rectangle packing problem where the set of rectangles d
 	\label{fig:packexample}
 \end{figure}
 
-\subsection{The Rectangle Packing Problem}
-Rectangle packing can be shown to be a NP-hard problem \cite{Murata1995}. As shown in Fig \ref{fig:bapexample}, there is static sized rectangle \(R\) for the set of small rectangles \(\vmathbb{R}\) to be packed into where the width and height are used to represent measurable values provided by the problem. In some problems, the dimensions of \(\vmathbb{R}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides to be decision variables (i.e. the dimension is variable) \cite{Buhrkal2010}.
-
 \begin{figure}
 	\centerline{\includegraphics[height=4cm]{bapexample.png}}
 	\caption{Example of berth allocation. Vessels flow from top to bottom.\TODO{Update Image}}
@@ -159,15 +155,15 @@ Rectangle packing can be shown to be a NP-hard problem \cite{Murata1995}. As sho
 \end{figure}
 
 \subsection{The Berth Allocation Problem}
-The BAP solves the problem of optimally assigning incoming vessels to berth positions in order to be serviced (Fig \ref{fig:bapexample}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $i$ and the space taken by docking vessel $i$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels being serviced. A representation of a BAP solution is shown in Fig \ref{fig:bap}.
+The BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig \ref{fig:bapexample}). The width and height of \(R\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{R}\) represent the time spent to service vessel $i$ and the space taken by docking vessel $i$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be serviced. A representation of a BAP solution is shown in Fig \ref{fig:bap}.
+
+The BAP objective is generally represented as minimizing some operational time for a given vessel \(i\). The operational time may be chosen to minimize time of arrival to time of departure, time spent being serviced, or overall waiting time (i.e. \(a_i \leq u_i\)) \cite{Cheng2007, Buhrkal2010,Frojan2015}. The model must then constrain the vessel placement as to not allow overlap in time or space as well as disallowing discontinuities in arrival times to departure times. The followng MILP describes the stated objective and constraints. The MILP is also shown in its entirety as it forms the foundation from which the PAP is constructed \cite{Qarebagh2019}.
 
 \begin{figure}
 	\centerline{\includegraphics[width=8cm]{bap.png}}
 	\caption{The representation of the berth-time space \TODO{Update Image}}
 	\label{fig:bap}
 \end{figure}
-
-The BAP has characteristics that are both convenient and undesirable in reference of the formulation we wish to develop; to explore these, consider the following MILP \cite{Qarebagh2019}:
 
 \begin{equation}
 	\label{eq:bapobjective}
@@ -190,7 +186,8 @@ Subject to the following constraints:
 \end{align}
 \end{subequations}
 
-Where this problem assumes the following are known
+\noindent
+Where the following are constants
 
 \begin{itemize}
 	\item \(S\)   : berth length
@@ -201,23 +198,28 @@ Where this problem assumes the following are known
 	\item \(a_i\) : arrival time of vessel \(i\;; \forall 1 \leq i \leq N\)
 \end{itemize}
 
+\noindent
 and the following are decision variables
 
 \begin{itemize}
     \item \(u_i\)         : starting time of service for vessel \(i\;; \forall 1 \leq i \leq N\)
     \item \(v_i\)         : berth position \(i\;; \forall 1 \leq i \leq N\)
     \item \(c_i\)         : departure time for vessel \(i\;; \forall 1 \leq i \leq N\)
-    \item \(\sigma_{ij}\) : 1 if vessel \(i\) is of vessel \(j\) in time (i.e. \(i\) is to the left of \(j\) in Fig \ref{fig:bap}), 0 otherwise
-    \item \(\delta_{ij}\) : 1 if vessel \(i\) is head of vessel \(j\) in berth space (i.e. \(i\) is to the below \(j\) in Fig \ref{fig:bap}), 0 otherwise
+    \item \(\sigma_{ij}\) : \(u_i < u_j\;; \forall 1 \leq i < j \leq N\)
+    \item \(\delta_{ij}\) : \(v_i < u_j\;; \forall 1 \leq i < j \leq N\)
 \end{itemize}
 
-An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap}. Time will be kept continuous. \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
+The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)). 
 
-The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)). Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to prevent overlapping over both space and time as shown in Fig \ref{fig:overlap}.
+Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are the "queuing constraints". They are used to prevent overlapping over both space and time as shown in Fig \ref{fig:overlap}. In terms of the BAP, constraint \eqref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the big \(M\) method to activate or deactivate the constraint. Specifically, \eqref{subeq:baptime} is active if both \(i\) and \(j\) are visiting the same berth (\(u_i = u_j\)). A value of \(\sigma_{ij} = 1\) will activate the constraint to ensure that \(i\) is complete before \(j\) is allowed to begin being serviced. If \(\sigma = 0\), then the constraint is of the form \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
 
-Constraint \ref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the big \(M\) method to determine the relevance of the constraint. As stated before, if \(j\) begins being serviced after \(i\) is complete \(\sigma_{ij} = 1\), otherwise there is some overlap in time and \(\sigma_{ij} = 0\) as shown in Fig \ref{subfig:timeoverlap}. If \(\sigma = 1\) then \((\sigma_{ij} - 1)T = 0\) leaving \(u_i - u_j - p_j \geq 1\) implying that the constraint is now ``active". If \(\sigma = 0\) then the constraint is of the form \(u_i - u_j - p_j - T\) where \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
+In a similar fashion, \(\delta_{ij}\) effectively determines whether the vessel will be located in adjacent berths. If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vessels \(i\) and \(j\) must be in adjacent berthing locations. 
 
-Similarly, constraint \ref{subeq:bapspace} states that the berth location for vessel \(i\) is greater than the starting berth position of vessel \(j\) plus its length (no overlap in physical space on the berth) as in Fig \ref{subfig:spaceoverlap}. Again, the big \(M\) method is utilized to determine the relevance of the constraint. If \(\delta_{ij} = 1\) then the big \(M\) term goes to zero rendering the constraint active. If \(\delta_{ij} = 0\) then the constraint is inactive.
+%Constraint \ref{subeq:bapspace} states that the berth location for vessel \(i\) is greater than the starting berth position of vessel \(j\) plus its length (no overlap in physical space on the berth) as shown in Fig \ref{subfig:spaceoverlap}. Again, the big \(M\) method is utilized to determine the relevance of the constraint. If \(\delta_{ij} = 1\) then the big \(M\) term goes to zero rendering the constraint active. If \(\delta_{ij} = 0\) then the constraint is inactive.
+
+% The BAP has characteristics that are both convenient and undesirable in reference of the formulation to be developed; to explore these, consider the following MILP \cite{Qarebagh2019}:
+
+%An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap}. Time will be kept continuous. \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
 
 \begin{figure}
     \centering
@@ -238,9 +240,11 @@ Similarly, constraint \ref{subeq:bapspace} states that the berth location for ve
 	\label{fig:overlap}
 \end{figure}
 
-Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to determine the relative position of each vessel from one another. A useful way of describing \(\sigma_{ij}\) and \(\delta_{ij}\) are in terms of relative position of vessels on the time-space diagram. \(\delta_{ij} = 1\) implies \(i\) is ``to the left of" \(j\) and \(\sigma_{ij} = 1\) implies \(i\) ``is below" \(j\). If vessel \(i\) is to the left of \(j\) then \(i\) cannot intersect \(j\) vertically (\(\sigma_{ij} = 1\) and \(\delta_{ij} = 0\)), see Fig \ref{subfig:timeoverlap}. Similarly, if \(i\) is below \(j\) then \(i\) is unable to overlap \(j\) horizontally (\(\sigma_{ij} = 0\) and \(\delta_{ij} = 1\)), see Fig \ref{subfig:spaceoverlap}. Constraint \ref{subeq:bapvalid_pos} states that vessel \(i\) must be to the left of or below vessel \(j\), or vessel \(j\) must be to the left of or below \(i\). However, this constraint does not restrict \(i\) being to left and right of \(j\) simultaneously (similarly in the vertical sense) as shown in Fig \ref{fig:multipleassign}. Constraints \ref{subeq:bapsigma} and \ref{subeq:bapdelta} add these restrictions by allowing either \(\cdot_{ij} = 1\) or \(\cdot_{ji} = 1\) but not both.
+Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables (\(u\) and \(v\)). Constraint \eqref{subeq:bapdelta} states that one of the following is true: \(u_i < u_j \iff \sigma_{ij} = 1\) or \(u_j < u_i \iff \sigma_{ji} = 1\) and, \(v_i < v_j \iff \delta_{ij} = 1\) or \(v_j < v_i \iff \delta_{ji} = 1\). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. \(u_i < u_j\) and \(u_j < u_i\) cannot be simultaneously true. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues. 
 
-The last constraints enforce continuity for each vessel. Constraint \ref{subeq:bapdetach} states that the service start time (\(u\)) plus the time to service vessel \(i\) (\(p\)) must equal the departure time (\(c\)). Constraint \ref{subeq:bapvalid_starts} enforces the arrival time (\(a\)) must be less than or equal to the service start time (\(u\)) which must also be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \ref{subeq:sdspace} defines the set of values \(\sigma\) and \(\delta\).
+%A useful way of describing \(\sigma_{ij}\) and \(\delta_{ij}\) are in terms of relative position of vessels on the time-space diagram. \(\delta_{ij} = 1\) implies \(i\) is ``to the left of" \(j\) and \(\sigma_{ij} = 1\) implies \(i\) ``is below" \(j\). If vessel \(i\) is to the left of \(j\) then \(i\) cannot intersect \(j\) vertically (\(\sigma_{ij} = 1\) and \(\delta_{ij} = 0\)), see Fig \ref{subfig:timeoverlap}. Similarly, if \(i\) is below \(j\) then \(i\) is unable to overlap \(j\) horizontally (\(\sigma_{ij} = 0\) and \(\delta_{ij} = 1\)), see Fig \ref{subfig:spaceoverlap}. Constraint \ref{subeq:bapvalid_pos} states that vessel \(i\) must be to the left of or below vessel \(j\), or vessel \(j\) must be to the left of or below \(i\). However, this constraint does not restrict \(i\) being to left and right of \(j\) simultaneously (similarly in the vertical sense) as shown in Fig \ref{fig:multipleassign}. Constraints \ref{subeq:bapsigma} and \ref{subeq:bapdelta} add these restrictions by allowing either \(\cdot_{ij} = 1\) or \(\cdot_{ji} = 1\) but not both.
+
+The last constraints enforce continuity for each vessel. Constraint \eqref{subeq:bapdetach} states that the service start time (\(u\)) plus the time to service vessel \(i\) (\(p\)) must equal the departure time (\(c\)). Constraint \eqref{subeq:bapvalid_starts} enforces the arrival time (\(a\)) must be less than or equal to the service start time (\(u\)) which must also be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:sdspace} defines the set of values \(\sigma\) and \(\delta\).
 
 \begin{figure}
 	\centerline{\includegraphics[width=6cm]{multipleassign.png}}
