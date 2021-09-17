@@ -149,13 +149,19 @@ The BEB charge schedule formulation in this work builds upon the PAP. The PAP is
 The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bapexample} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints. Notation is summarized in Table \ref{tab:variables}.
 
 \begin{figure}
-	\centerline{\begin{tikzpicture}[scale=0.6]
-        \draw [thick,<->] (0,7) node[above]{$Y$}--(0,0)--(7,0) node[right]{$X$};
-	    \draw [thick, -] (0,0) rectangle (5,5) node[right]{$O$};
-	    \draw (0,0) rectangle (5,5) node[right]{$O$};
-	    \draw (0,0) rectangle (5,5) node[right]{$O$};
+	\centerline{\begin{tikzpicture}[scale=0.4]
+        \draw [thick,<->] (0,15) node[above]{$Y$}                      --
+                                 (0,0)node[above right]{$\vmathbb{O}$} --
+                                 (15,0) node[right]{$X$};
+	    \draw [thick, -] (0,0) rectangle (12,12) node[right]{$O$};
+	    \draw[fill=gray] (1,1) rectangle (6,4);
+	    \draw[fill=gray] (11,11) rectangle (9,5);
+	    \draw[fill=gray] (8,11) rectangle (4,5);
+	    \draw[fill=gray] (1,11) rectangle (3,8);
+	    \draw[fill=gray] (1,7) rectangle (3,5);
+	    \draw[fill=gray] (11,1) rectangle (7,4);
 	\end{tikzpicture}}
-	\caption{Example of rectangle packing problem \TODO{Update Image}}
+	\caption{Example of rectangle packing problem}
 	\label{fig:packexample}
 \end{figure}
 
@@ -171,7 +177,20 @@ The BAP solves the problem of optimally assigning incoming vessels to berth posi
 The BAP objective is generally represented as minimizing some operational time for a given vessel \(i\). The operational time may be chosen to minimize time of arrival to time of departure, time spent being serviced, or overall waiting time (i.e. \(a_i \leq u_i\)) \cite{Cheng2007, Buhrkal2010,Frojan2015}. The model must then constrain the vessel placement as to not allow overlap in time or space as well as disallowing discontinuities in arrival times to departure times. The followng MILP describes the stated objective and constraints. The MILP is also shown in its entirety as it forms the foundation from which the PAP is constructed \cite{Qarebagh2019}.
 
 \begin{figure}
-	\centerline{\includegraphics[width=8cm]{bap.png}}
+	\centerline{
+	\begin{tikzpicture}[scale=0.4]
+        \draw [thick,<->] (0,15) node[above]{Quay Length} --
+                                 (0,0)                    --
+                                 (15,0) node[right]{Time};
+        \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (8,12) {A};
+        \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (12,12) {B};
+        \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (6,7) {D};
+        \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (3,2) {C};
+        
+        \draw[dotted] (0, 4.5) -- (15, 4.5);
+        \draw[dotted] (0, 9.5) -- (15, 9.5);
+	\end{tikzpicture}
+    }
 	\caption{The representation of the berth-time space \TODO{Update Image}}
 	\label{fig:bap}
 \end{figure}
