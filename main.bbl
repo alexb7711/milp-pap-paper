@@ -116,6 +116,21 @@ A.~J. Qarebagh, F.~Sabahi, and D.~Nazarpour, ``Optimized scheduling for solving
 F.~de~Bruin, ``Rectangle packing,'' Master's thesis, University of Amsterdam,
   2013.
 
+\bibitem{Murata1995}
+H.~Murata, K.~Fujiyoshi, S.~Nakatake, and Y.~Kajitani,
+  ``Rectangle-packing-based module placement,'' in \emph{Proceedings of IEEE
+  International Conference on Computer Aided Design (ICCAD)}, 1995, pp.
+  472--479.
+
+\bibitem{Buhrkal2010}
+\BIBentryALTinterwordspacing
+K.~Buhrkal, S.~Zuglian, S.~Ropke, J.~Larsen, and R.~Lusby, ``Models for the
+  discrete berth allocation problem: A computational comparison,''
+  \emph{Transportation Research Part E: Logistics and Transportation Review},
+  vol.~47, no.~4, pp. 461--473, 2011. [Online]. Available:
+  \url{https://www.sciencedirect.com/science/article/pii/S1366554510001201}
+\BIBentrySTDinterwordspacing
+
 \bibitem{Dai2008}
 J.~Dai, W.~Lin, R.~Moorthy, and C.-P. Teo, \emph{{Supply Chain
   Analysis}}.\hskip 1em plus 0.5em minus 0.4em\relax Cambridge University
@@ -130,19 +145,8 @@ P.~Frojan, J.~F. Correcher, R.~Alvarez-Valdes, G.~Koulouris, and J.~M. Tamarit,
   \url{https://www.sciencedirect.com/science/article/pii/S0957417415003462}
 \BIBentrySTDinterwordspacing
 
-\bibitem{Buhrkal2010}
-\BIBentryALTinterwordspacing
-K.~Buhrkal, S.~Zuglian, S.~Ropke, J.~Larsen, and R.~Lusby, ``Models for the
-  discrete berth allocation problem: A computational comparison,''
-  \emph{Transportation Research Part E: Logistics and Transportation Review},
-  vol.~47, no.~4, pp. 461--473, 2011. [Online]. Available:
-  \url{https://www.sciencedirect.com/science/article/pii/S1366554510001201}
-\BIBentrySTDinterwordspacing
-
-\bibitem{Murata1995}
-H.~Murata, K.~Fujiyoshi, S.~Nakatake, and Y.~Kajitani,
-  ``Rectangle-packing-based module placement,'' in \emph{Proceedings of IEEE
-  International Conference on Computer Aided Design (ICCAD)}, 1995, pp.
-  472--479.
+\bibitem{Cheng2007}
+S.~Cheng and J.~Leung, ``Container terminal operation and operations
+  research.''
 
 \end{thebibliography}

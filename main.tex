@@ -121,15 +121,15 @@ The remainder of the paper proceeds as follows. \TODO{List out sections}
 			$r_q$        & Charge rate of charger $q$ per unit time                        \\
 		\hline
 		\multicolumn{4}{l}{Decision Variables} \\
-			$\delta_{ij}$ & $v_i < v_j = 1$ \textrm{ or } $i \neq j = 0$              &
-			$\eta_i$      & Initial charge for visit $i$                  \\
-			$\sigma_{ij}$ & $u_i < u_j = 1$ \textrm{ or } $i \neq j = 0$  &
-			$c_i$         & detach time from charger for visit $i$                    \\
-			$g_i$         & Linearization term for bilinear terms $g_i := p_i w_{iq}$  &
-			$p_i$         & Amount of time spent on charger for visit $i$ \\
-			$u_i$         & Initial charge time of visit $i$                          &
-			$v_i$         & Assigned queue for visit $i$                  \\
-			$w_{iq}$      & Vector representation of queue assignment                 \\
+			$\delta_{ij}$ & $v_i < v_j = 1$ \textrm{ or } $i \neq j = 0$                    &
+			$\eta_i$      & Initial charge for visit $i$                                    \\
+			$\sigma_{ij}$ & $u_i < u_j = 1$ \textrm{ or } $i \neq j = 0$                    &
+			$c_i$         & detach time from charger for visit $i$                          \\
+			$g_i$         & Linearization term for bilinear terms $g_i := p_i w_{iq}$       &
+			$p_i$         & Amount of time spent on charger for visit $i$                   \\
+			$u_i$         & Initial charge time of visit $i$                                &
+			$v_i$         & Assigned queue for visit $i$                                    \\
+			$w_{iq}$      & Vector representation of queue assignment                       \\
 			\bottomrule
 	\end{tabular}
 \end{table*}
@@ -209,17 +209,13 @@ and the following are decision variables
     \item \(\delta_{ij}\) : \(v_i < u_j\;; \forall 1 \leq i < j \leq N\)
 \end{itemize}
 
-The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)). 
+The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)).
 
 Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are the "queuing constraints". They are used to prevent overlapping over both space and time as shown in Fig \ref{fig:overlap}. In terms of the BAP, constraint \eqref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the big \(M\) method to activate or deactivate the constraint. Specifically, \eqref{subeq:baptime} is active if both \(i\) and \(j\) are visiting the same berth (\(u_i = u_j\)). A value of \(\sigma_{ij} = 1\) will activate the constraint to ensure that \(i\) is complete before \(j\) is allowed to begin being serviced. If \(\sigma = 0\), then the constraint is of the form \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
 
-In a similar fashion, \(\delta_{ij}\) effectively determines whether the vessel will be located in adjacent berths. If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vessels \(i\) and \(j\) must be in adjacent berthing locations. 
+In a similar fashion, \(\delta_{ij}\) effectively determines whether the vessel will be located in adjacent berths. If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vessels \(i\) and \(j\) must be in adjacent berthing locations.
 
 %Constraint \ref{subeq:bapspace} states that the berth location for vessel \(i\) is greater than the starting berth position of vessel \(j\) plus its length (no overlap in physical space on the berth) as shown in Fig \ref{subfig:spaceoverlap}. Again, the big \(M\) method is utilized to determine the relevance of the constraint. If \(\delta_{ij} = 1\) then the big \(M\) term goes to zero rendering the constraint active. If \(\delta_{ij} = 0\) then the constraint is inactive.
-
-% The BAP has characteristics that are both convenient and undesirable in reference of the formulation to be developed; to explore these, consider the following MILP \cite{Qarebagh2019}:
-
-%An undesirable property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap}. Time will be kept continuous. \cite{Buhrkal2010}. Focus is now directed toward discussing the objective function and constraint properties.
 
 \begin{figure}
     \centering
@@ -240,11 +236,15 @@ In a similar fashion, \(\delta_{ij}\) effectively determines whether the vessel 
 	\label{fig:overlap}
 \end{figure}
 
-Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables (\(u\) and \(v\)). Constraint \eqref{subeq:bapdelta} states that one of the following is true: \(u_i < u_j \iff \sigma_{ij} = 1\) or \(u_j < u_i \iff \sigma_{ji} = 1\) and, \(v_i < v_j \iff \delta_{ij} = 1\) or \(v_j < v_i \iff \delta_{ji} = 1\). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. \(u_i < u_j\) and \(u_j < u_i\) cannot be simultaneously true. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues. 
+Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables (\(u\) and \(v\)). Constraint \eqref{subeq:bapdelta} states that one of the following is true: \(u_i < u_j \iff \sigma_{ij} = 1\) or \(u_j < u_i \iff \sigma_{ji} = 1\), and \(v_i < v_j \iff \delta_{ij} = 1\) or \(v_j < v_i \iff \delta_{ji} = 1\). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. \(u_i < u_j\) and \(u_j < u_i\) cannot be simultaneously true. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues.
 
 %A useful way of describing \(\sigma_{ij}\) and \(\delta_{ij}\) are in terms of relative position of vessels on the time-space diagram. \(\delta_{ij} = 1\) implies \(i\) is ``to the left of" \(j\) and \(\sigma_{ij} = 1\) implies \(i\) ``is below" \(j\). If vessel \(i\) is to the left of \(j\) then \(i\) cannot intersect \(j\) vertically (\(\sigma_{ij} = 1\) and \(\delta_{ij} = 0\)), see Fig \ref{subfig:timeoverlap}. Similarly, if \(i\) is below \(j\) then \(i\) is unable to overlap \(j\) horizontally (\(\sigma_{ij} = 0\) and \(\delta_{ij} = 1\)), see Fig \ref{subfig:spaceoverlap}. Constraint \ref{subeq:bapvalid_pos} states that vessel \(i\) must be to the left of or below vessel \(j\), or vessel \(j\) must be to the left of or below \(i\). However, this constraint does not restrict \(i\) being to left and right of \(j\) simultaneously (similarly in the vertical sense) as shown in Fig \ref{fig:multipleassign}. Constraints \ref{subeq:bapsigma} and \ref{subeq:bapdelta} add these restrictions by allowing either \(\cdot_{ij} = 1\) or \(\cdot_{ji} = 1\) but not both.
 
 The last constraints enforce continuity for each vessel. Constraint \eqref{subeq:bapdetach} states that the service start time (\(u\)) plus the time to service vessel \(i\) (\(p\)) must equal the departure time (\(c\)). Constraint \eqref{subeq:bapvalid_starts} enforces the arrival time (\(a\)) must be less than or equal to the service start time (\(u\)) which must also be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:sdspace} defines the set of values \(\sigma\) and \(\delta\).
+
+This formulation forms the basis of the PAP; however there will are some slight differences in the way the variables are perceived. Starting service time \(u\) is now the starting charge time, berth location \(v\) is now the queue for charger \(q\). Another difference is that \(p\) will now become a decision variable which will be driven by the battery dynamic constraints.
+
+The BAP has characteristics that are both advantageous and inconvenient in reference of the formulation to be developed. An inconvenient property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem later when accounting for battery dynamics where each bus visit must be associated with a specific bus ID. However, this formulation allows \(S\) and \(T\) to be continuous or discrete. Because of this flexibility, the berth can either be left continuous, or discretized to accommodate \(Q\) chargers as shown in Fig \ref{fig:bap}. Time will be kept continuous. \cite{Buhrkal2010}. Focus is now directed toward formulating the PAP.
 
 \begin{figure}
 	\centerline{\includegraphics[width=6cm]{multipleassign.png}}
@@ -256,7 +256,7 @@ The last constraints enforce continuity for each vessel. Constraint \eqref{subeq
 %
 \section{Problem Formulation}
 \label{sec:problemformulation}
-The MILP is formulated with two sets of constraints: rectangle packing constraints and battery dynamics constraints. This section will build off the previous formulation (\eqref{eq:bapobjective} and \eqref{eq:bapconstrs}) and progressively construct the battery dynamic constraints to create the Position Allocation MILP. 
+The MILP is formulated with two sets of constraints: rectangle packing constraints and battery dynamics constraints. This section will build off the previous formulation (\eqref{eq:bapobjective} and \eqref{eq:bapconstrs}) and progressively construct the battery dynamic constraints to create the Position Allocation MILP.
 
 \subsection{Rectangle Packing Approach}
 Similarly to before, we begin with following MILP:
@@ -277,7 +277,7 @@ with the following constraints:
     \delta_{ij} + \delta_{ji} \leq 1                                 \label{subeq:delta}        \\
     p_i + u_i = c_i                                                  \label{subeq:detach}       \\
     a_i \leq u_i \leq (T - p_i)                                      \label{subeq:valid_starts} \\
-    c_i \leq \tau_i                                                  \label{subeq:valid_depart} 
+    c_i \leq \tau_i                                                  \label{subeq:valid_depart}
 \end{align}
 \end{subequations}
 
