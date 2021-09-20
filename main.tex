@@ -48,7 +48,7 @@
 \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
 \textit{Utah State University}\\
 Logan, USA \\
-alex.brown7711@aggiemail.usu.edu}
+A01704744@usu.edu}
 \and
 \IEEEauthorblockN{2\textsuperscript{nd} Greg Droge}
 \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
@@ -67,13 +67,13 @@ greg.droge@usu.edu }}
 %%-------------------------------------------------------------------------------
 % Abstract
 \begin{abstract}
-[\TODO{Copied}] A major challenge to adopting battery electric buses into bus fleets is the scheduling of the battery charging while considering route timing constraints, battery charge, and battery health. This work develops a scheduling framework to balance the use of slow and fast chargers assuming the bus routes and charger locations are fixed. Slow chargers are utilized when possible for sake of battery health and fast chargers are used when needed to accommodate timing constraints and ensure a sufficient charge for route execution. A directed, acyclic graph is used to model the available charge times for buses that periodically return to a depot for charging. A constrained network flow Mixed-Integer Linear Program (MILP) problem is formulated to optimize the scheduling of chargers as well as to determine the number of chargers required to meet charging thresholds. Results are presented using a randomly generated bus schedule for thirty buses and demonstrate the ability of the planner to consider peak time charging costs while planning with fixed and variable numbers of chargers.
+	A major challenge of incorporating electric vehicles into a bus fleet is the scheduling of buses to be charged while considering time constraints as well as battery health. This paper introduces a scheduling framework that utilizes both fast and slow charging assuming bus scheduling is fixed. Slow chargers are prioritized for battery health and fast chargers are utilized to satisfy time constraints. A Berth Allocation Problem (BAP) approach is modified and utilized to construct the Position Allocation Problem (PAP) Mixed Integer Linear Program (MILP) that optimally assigns incoming buses to chargers whilst taking into consideration battery dynamics of the buses. Results are present utilizing a randomly generated bus schedule for 40 buses.
 \end{abstract}
 
 %%-------------------------------------------------------------------------------
 % Keywords
 \begin{IEEEkeywords}
-
+	Berth Allocation Problem (BAP), Position Allocation Problem (PAP), Mixed Integer Linear Program (MILP)
 \end{IEEEkeywords}
 
 %%===============================================================================
@@ -87,7 +87,7 @@ The public transportation system is crucial in any urban area; however, the incr
 
 Recent efforts have been made into solving scheduling and charging fleets as well as the infrastructure. Attention has been given to solving both problems simultaneously \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}.  The added complexity of considering both the BEB charge scheduling and the infrastructure problems necessitates simplifications for sake of computation. First, only fast chargers are utilized in planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge \cite{Liu2020}.
 
-The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
+The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The MILP is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
 
 The PAP framework is constructed from the Berth Allocation Problem (BAP). The BAP solves the problem of allocating space for incoming vessels to be berthed. Each arriving vessel requires both time and space to be serviced and is assigned a berthing location. Vessels are lined up parallel to the berth to be serviced and are horizontally queued as shown in Fig \ref{subfig:bapexample}. The PAP utilizes this notion of queuing to re-use the BAP for queuing BEBs to be charged as shown in Figure \ref{subfig:papexample}.
 
@@ -97,7 +97,7 @@ The PAP framework is constructed from the Berth Allocation Problem (BAP). The BA
 	\centering
 	\begin{subfigure}[b]{0.5\textwidth}
 		\centerline{
-		\begin{tikzpicture}[scale=0.4]
+		\begin{tikzpicture}[scale=0.35]
 			\draw[rotate=90,fill=black] (0,0) rectangle (1,10);
 			\draw[rotate=90](2,0) rectangle (3,3);
 			\draw[rotate=90](2,4) rectangle (3,8);
@@ -136,7 +136,7 @@ The PAP framework is constructed from the Berth Allocation Problem (BAP). The BA
 	\end{subfigure}
 \end{figure}
 
-The remainder of the paper proceeds as follows. \TODO{List out sections}
+The remainder of the paper proceeds as follows: Section \ref{sec:preliminaries} the BAP is introduces with a MILP formulation example. Section \ref{sec:problemformulation} constructs the PAP and introduces battery dynamics into the MILD, and section \ref{sec:example} demonstrates an example of the PAP formulation.
 
 \begin{table*}[!t]
 	\caption{Notation used throughout the paper}
@@ -166,9 +166,10 @@ The remainder of the paper proceeds as follows. \TODO{List out sections}
 			$\lambda_i$  & Discharge of visit over route  $i$                              &
 			$\nu$        & Minimum charge allowed on departure of visit \(i\)              \\
 			$\tau_i$     & Time visit $i$ must leave the station                           &
-			$a_i$        & Arrival time of visit  $i$                                      \\
-			$c_i$        & Detach time from charger for visit \(i\)                        &
-			$m_q$        & Cost of a visit being assigned to charger  $q$                  \\
+			$\zeta_i$    & Discharge rate for vehicle \(i\)                                \\
+			$a_i$        & Arrival time of visit  $i$                                      &
+			$c_i$        & Detach time from charger for visit \(i\)                        \\
+			$m_q$        & Cost of a visit being assigned to charger  $q$                  &
 			$r_q$        & Charge rate of charger $q$ per unit time                        \\
 		\hline
 		\multicolumn{4}{l}{Decision Variables} \\
@@ -194,10 +195,7 @@ The BEB charge schedule formulation in this work builds upon the PAP. The PAP is
 The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{subfig:bapexample} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints. Notation is summarized in Table \ref{tab:variables}.
 
 \begin{figure}
-	\centerline{\begin{tikzpicture}[scale=0.4]
-        \draw [thick,<->] (0,15) node[above]{$Y$}                      --
-                                 (0,0)node[above right]{$\vmathbb{O}$} --
-                                 (15,0) node[right]{$X$};
+	\centerline{\begin{tikzpicture}[scale=0.25]
 	    \draw [thick, -] (0,0) rectangle (12,12) node[right]{$O$};
 	    \draw[fill=gray] (1,1) rectangle (6,4);
 	    \draw[fill=gray] (11,11) rectangle (9,5);
@@ -205,6 +203,9 @@ The BAP is a form of the rectangle packing problem where the set of rectangles d
 	    \draw[fill=gray] (1,11) rectangle (3,8);
 	    \draw[fill=gray] (1,7) rectangle (3,5);
 	    \draw[fill=gray] (11,1) rectangle (7,4);
+        \draw [thick,<->] (0,15) node[above]{$Y$}                      --
+                                 (0,0)node[above right]{$\vmathbb{O}$} --
+                                 (15,0) node[right]{$X$};
 	\end{tikzpicture}}
 	\caption{Example of rectangle packing problem}
 	\label{fig:packexample}
@@ -217,7 +218,7 @@ The BAP objective is generally represented as minimizing some operational time f
 
 \begin{figure}
 	\centerline{
-	\begin{tikzpicture}[scale=0.4]
+	\begin{tikzpicture}[scale=0.35]
         \draw [thick,<->] (0,15) node[above]{Quay Length} --
                                  (0,0)                    --
                                  (15,0) node[right]{Time};
@@ -227,13 +228,13 @@ The BAP objective is generally represented as minimizing some operational time f
         \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (12,2) {C};
 
 	\node [below,align=center] at (1.0,0) {\scriptsize Arrival\\ \scriptsize Time};
-	\draw[dashed] (1.0,5.5)--(1.0,0);
+	\draw[dashed] (1.0,5)--(1.0,0);
 
 	\node [below, align=center] at (3.5,0) {\scriptsize Berthing\\ \scriptsize Time};
-	\draw[dashed] (3.5,5.5)--(3.5,0);
+	\draw[dashed] (3,5)--(3,0);
 
 	\node [below, align=center] at (8.5,0) {\scriptsize Completion\\ \scriptsize Time};
-	\draw[dashed] (8.5,5.5)--(8.5,0);
+	\draw[dashed] (8.75,5)--(8.75,0);
 
         \draw[dotted] (0, 4.5) -- (15, 4.5);
         \draw[dotted] (0, 9.5) -- (15, 9.5);
@@ -338,7 +339,7 @@ Consider the following set of constraints:
 \label{eq:packconstrs}
 \begin{align}
     u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                      \label{subeq:time}         \\
-    v_i - v_j - s_j - (\delta_{ij} - 1)S \geq 0                      \label{subeq:space}        \\
+    v_i - v_j - s_j - (\delta_{ij} - 1)Q \geq 0                      \label{subeq:space}        \\
     \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1     \label{subeq:valid_pos}    \\
     \sigma_{ij} + \sigma_{ji} \leq 1                                 \label{subeq:sigma}        \\
     \delta_{ij} + \delta_{ji} \leq 1                                 \label{subeq:delta}        \\
@@ -387,425 +388,57 @@ Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initial
 The set of constraints \eqref{subeq:gpgret}-\eqref{subeq:gwles} are used to alleviate non-linearity introduced by the bilinear term \(g_{iq} := w_{iq} p_i\). This is accomplished using Big-M notation \cite{Rodriguez2013}. Constraints \eqref{subeq:gpgret} and \eqref{subeq:gples} state that if \(w_{iq} = 1\) then the two equations will take the form of \(p_i \leq g_{eq}\) and \(p_i \geq g_{iq}\) effectively stating \(p_i = g_{iq}\), if \(w_{iq} = 0\) then the two equations will take the form of \(p_i \leq g_{eq}\) and \(p_i \geq g_{iq} - M\) which deactivates the constraint. In a similar fashion, \eqref{subeq:gwgret} and \eqref{subeq:gwles} state if \(w_{iq} = 0\) then the constraints take the form \(0 \geq g_{iq}\) and \(0 \leq g_{iq}\) directly implying \(0 = g_{iq}\). If \(w_{iq} = 1\) then the constraints take the form \(M \leq g_{iq}\) and \(0 \geq g_{iq}\) disabling the constraint. Putting the two sets of constraints together defines the linearized representation of \(w_{iq} p_i\).
 
 The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the queuing constraint \(v\) and \(w\) (i.e \(1*w_{iq} + 2*w_{iq} + \cdots = v_i\)) and enforces that only a single \(w\) may be selected per visit, respectively. The last constraint \eqref{subeq:wspace} defines the set of values that \(w\) may be.
+
+%================================================================================
 % Example
 \section{Example}
+\label{sec:example}
+
+An example will now be presented to demonstrate the utility of the developed MILP. A description of the scenario is first presented followed by results.
+
+\subsection{Scenario}
+The given exampled utilizes \(A = 40\) buses with \(N = 220\) returns to the station divided between the \(A\) buses. Each bus has a 388 KWh battery that is required to stay above 25\% charge (97 KWh) to maintain battery health, and the bus is assumed to start with 90\% charge (349 KWh). Additionally, each bus is required to end with a minimum charge of 95\% (349 KWh). Planning is done over a 24 hour time horizon. \(Q = 9\) chargers are utilized where five of the chargers are slow charging (100 KWh) and four are fast charging (400 KWh). The slow chargers take longer, but are safer for the batter than the fast charger. Therefore the slow chargers are modeled with a lower cost than than the fast charger for both assiging (\(m\)) and utilization (\(\epsilon\)) in the ojective \eqref{eq:objective} as to penalize utilization of the fast chargers.
+
+The bus schedules are randomly generated. It is assumed that each bus has no more than 30 minute between route departures. Bus route times are completely random and may vary between \(\frac{a_i + a_{\gamma_i}}{2}\) to \(a_{\gamma_i}\) i.e. the route time may be anyhwere between the average time between the current and next arrival to the next arrival time. The discharge is assumed to be linear and is calculated via \(\lambda_i = rand(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta{\gamma_i}\) where \(1 \leq i \leq N\).
+
+The optimization is performed using the Gurobi MILP solver \cite{Hespanha2018} on a machine running a quad-core Intel i7-9700 4.7 GHz processor.
+
+\subsection{Results}
+The schedule generated by the MILP is shown in Fig \ref{fig:schedule}. The top graph indicates the slow charger usage, and the bottom indicates the fast charger usage. Although \(Q = 9\) chargers were used, Fig \ref{fig:schedule} shows that only five chargers were utilized. The MILP formalization will, in addition to utilizing the slow chargers as much as possible, use only the minimum required amount of chargers. This behavior is due to the rectangle packing constraints \eqref{eq:packconstrs}.
+
+Each color in Fig \ref{fig:schedule} is used to identify a new bus visit. It is noted that the overlaps in Fig \ref{fig:schedule} indicate the waiting time of vehicle \(j\) whilst vehicle \(i\) charges. This is recognized by viewing the vertical bars. These bars indicate the time bus \(i\) is set to charge. The area before indicate waiting time and the area after indicates the time spent on the charger.
+
+Fig \ref{fig:charges} depicts the charge for every bus for bus over the time horizon. Every vehicle begins at 90\% charge, finishes at 95\% charge, and never goes below 25\% in the intermediate arrivals as stated in the constraints \eqref{eq:dynconstrs}. The total power used is summarized in \ref{fig:usage} which is representative of the linear battery constraints modeled.
+
+\begin{figure*}[h]
+	\centering
+	\includegraphics[trim=3in 0in 3in 0in, width=\linewidth, height=2.5in]{schedule.pdf}
+	\caption{Bus schedule generated with PAP MILP. Each color indicates a new visit. The vertical bars indicate the time the vehicles are set to charge, the area before said bars indicate the waiting times for each visit \(1 \leq i \leq N\). Similarly, the area after the bars indicate the time spent on the charger.}
+	\label{fig:charges}
+\end{figure*}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{charges.pdf}
+	\caption{Charges for each bus.}
+	\label{fig:schedule}
+\end{figure}
 
 
-% There are a few things to note:
-%
-% \begin{itemize}
-% \item
-%   We want to convert this problem to standard LP, for our problem we
-%   will mainly be concerned with
-%
-%   \begin{itemize}
-%   \item
-%     Inequality of \(\geq\) form
-%   \end{itemize}
-% \item
-%   We will be formulating the equation in the form \(Ax = b\) and
-%   \(Ax \geq b\) where
-%
-%   \begin{itemize}
-%   \item
-%     \(A\) is a \(n \times m\) matrix
-%   \item
-%     \(x\) is a \(m \times 1\) vector
-%   \item
-%     \(b\) is a \(n \times 1\) vector
-%   \end{itemize}
-% \end{itemize}
-%
-%
-% \subsection{Position Allocation Problem}
-% \subsection{Charging Dynamics}
-%
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\linewidth]{usage.pdf}
+	\caption{Total power used.}
+	\label{fig:usage}
+\end{figure}
+
 %%-------------------------------------------------------------------------------
+% Conclusion
+\section{Conclusion}
+\label{sec:conclusion}
+This work developed a MILP scheduling framework that optimally assigns slow and fast chargers to a BEB bus fleet assuming a constant schedule. The BAP was introduced with an example formulation and was then compared to the PAP. The PAP constructed on the BAP to allow the time spent on the charger (\(p\)) to be a decision variable. Because the original PAP required service time \(p\) to be given, linear battery dynamics were introduced to drive charging times. Additional constraints were also introduced to provide limits and continuity for the battery dynamics.
 
-% %%-------------------------------------------------------------------------------
-% % Conclusion
-% \section{Conclusion}
-%
-% \subsubsection{Matrix Deconstruction}\label{matrix-deconstruction}
-%
-% The constraint matrix \(A\) will be broken down into two parts:
-% \(A_{eq}\) for all the equality constraints and \(A_{ineq}\) for all the
-% inequality constraints. Both \(A_{eq}\) and \(A_{ineq}\) formulated with
-% two sub-matrices \(A_{pack}\) and \(A_{dynamics}\) to represent the
-% portion of the matrix that is utilized for the box packing constraints
-% and the battery dynamics constraints, respectively. For example,
-% \(A_{eq}\) will be represented in the following manner
-%
-% \[
-% A_{eq} =
-% \begin{bmatrix}
-%     A_{\textrm{pack}}     \\
-%     A_{\textrm{dynamics}} \\
-% \end{bmatrix}_{eq}
-% \]
-%
-% Where we can define the full equality as:
-%
-% \[
-% \begin{array}{c}
-%     \begin{bmatrix}
-%         A_{\textrm{pack}}     \\
-%         A_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq}
-%     \begin{bmatrix}
-%         x_{\textrm{pack}}     \\
-%         x_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq} =
-%     \begin{bmatrix}
-%         b_{\textrm{pack}}     \\
-%         b_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq} \\
-%     \\
-%     A_{eq} x_{eq} = b_{eq} \\
-% \end{array}
-% \]
-%
-% Similarly for the inequality constraints:
-%
-% \[
-% \begin{bmatrix}
-%     A_{\textrm{pack}}     \\
-%     A_{\textrm{dynamics}} \\
-% \end{bmatrix}_{ineq}
-% \begin{bmatrix}
-%     x_{\textrm{pack}}     \\
-%     x_{\textrm{dynamics}} \\
-% \end{bmatrix}_{ineq} \geq
-% \begin{bmatrix}
-%     b_{\textrm{pack}}     \\
-%     b_{\textrm{dynamics}} \\
-% \end{bmatrix}_{ineq}
-% \]
-%
-% Finally, the entire constraint formulation will be written as:
-%
-% \begin{subequations}
-% \begin{align}
-%     \begin{bmatrix}
-%         A_{\textrm{pack}}     \\
-%         A_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq}
-%     \begin{bmatrix}
-%         x_{\textrm{pack}}     \\
-%         x_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq} =
-%     \begin{bmatrix}
-%         b_{\textrm{pack}}     \\
-%         b_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq} \\
-%     \begin{bmatrix}
-%         A_{\textrm{pack}}     \\
-%         A_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{ineq}
-%     \begin{bmatrix}
-%         x_{\textrm{pack}}     \\
-%         x_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{ineq} \geq
-%     \begin{bmatrix}
-%         b_{\textrm{pack}}     \\
-%         b_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{ineq}
-% \end{align}
-% \end{subequations}
-%
-% \subsection{Formulating $A_{pack}$}
-%
-% \subsubsection{Formulating $A_{pack_{eq}}$}
-%
-% The components that make up the equality constraints for the box packing
-% problem are:
-%
-% \begin{itemize}
-% \item
-%   \(p_i + u_i = c_i\)
-% \item
-%   \(\sum_{q=1}^Q w_{iq} = 1\)
-% \end{itemize}
-%
-% Placing them together in \(A_{eq}\) results in:
-%
-% \begin{equation}
-% \begin{array}{c}
-%     A_{eq} =
-%     \begin{bmatrix}
-%         A_{detach_{N \times 2N}} & \vmathbb{0}_{N \times NQ} \\
-%         \vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}      \\
-%     \end{bmatrix}_{2N \times (2N + NQ)} \\
-%     x_{eq} =
-%     \begin{bmatrix}
-%         p_{i_{N \times 1}} \\
-%         u_{i_{N \times 1}} \\
-%         w_{iq_{NQ \times 1}} \\
-%     \end{bmatrix}_{2N + NQ}
-%     b_{eq} =
-%     \begin{bmatrix}
-%         c_{i_{N \times 1}} \\
-%         \vmathbb{1}_{N \times 1} \\
-%     \end{bmatrix}_{2N \times 1} \\
-%     \\
-%     \begin{bmatrix}
-%         A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
-%         \vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}          \\
-%         \vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}          \\
-%     \end{bmatrix}
-%     \begin{bmatrix}
-%         p_{i_{N \times 1}} \\
-%         u_{i_{N \times 1}} \\
-%         w_{iq_{NQ \times 1}} \\
-%     \end{bmatrix}
-%     =
-%     \begin{bmatrix}
-%         c_{i_{N \times 1}} \\
-%         \vmathbb{1}_{N \times 1} \\
-%         v_{i_{N \times 1}} \\
-%     \end{bmatrix}
-% \end{array}
-% \end{equation}
-%
-% Where
-%
-% \subsubsection{Formulating $A_{pack_{ineq}}$}
-% The components that make up the inequality constraints for the box
-% packing problem are
-%
-% \begin{itemize}
-% \item
-%   \(u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 1\)
-% \item
-%   \(v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 1\)
-% \item
-%   \(\sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1\)
-% \item
-%   \(\sigma_{ij} + \sigma_{ji} \leq 1\)
-% \item
-%   \(\delta_{ij} + \delta_{ji} \leq 1\)
-% \item
-%   \(a_i \leq c_i \leq (T - p_i)\)
-% \item
-%   \(c_i \leq \tau_i\)
-% \item
-%   \(p_i \geq g_{iq}\)
-% \item
-%   \(p_i \leq g_{iq} - (1 - w_{iq})M\)
-% \item
-%   \(Mw_{iq} \geq g_{iq}\)
-% \item
-%   \(0 \leq g_{iq}\)
-% \end{itemize}
-%
-% \(A_{ineq}\) takes the form of:
-%
-% \begin{table*}[!t]
-% \begin{equation}
-% \setlength{\arraycolsep}{2pt}
-% \renewcommand{\arraystretch}{0.8}
-% \begin{array}{c}
-%     A_{ineq} =
-%     \begin{bmatrix}
-% 	A_{time_{\Xi \times (2\Xi + 2N)}}    & \vmathbb{0}_{\Xi \times (3\Xi + 4N + 3NQ)} & \cdots                                   & \cdots                     & \cdots                             & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{\Xi \times (2\Xi + 2N)} & A_{queue_{\Xi \times (2\Xi + 2N)}}         & \vmathbb{0}_{\Xi \times (\Xi + 2N)}      & \cdots                     & \cdots                             & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{N \times 2N}            & A_{\sigma_{N \times \Xi}}                  & \vmathbb{0}_{N \times (2N + 3NQ)}        & A_{\delta_{N \times \Xi}}  & \vmathbb{0}_{N \times (2\Xi + 2N)} & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{N \times 2N}            & -A_{\sigma_{N \times \Xi}}                 & \vmathbb{0}_{N \times (3\Xi + 4N + 3NQ)} & \cdots                     & \cdots                             & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{N \times (2\Xi + 2N)}   & \vmathbb{0}_{N \times (2N)}                & \cdots                                   & -A_{\delta_{N \times \Xi}} & \vmathbb{0}_{N \times (2N + 3NQ)}  & \cdots                           & \cdots                     & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{N \times (4\Xi + 4N)}   & \cdots                                     & \cdots                                   & \cdots                     & -A_{a_{N \times N}}                & \vmathbb{0}_{N \times (N + 3NQ)} & \cdots                     & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                                     & \cdots                                   & \cdots                     & \cdots                             & -A_{c_{N \times N}}              & \vmathbb{0}_{N \times 3NQ} & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{N \times (4\Xi + 5N)}   & \cdots                                     & \cdots                                   & \cdots                     & \cdots                             & -A_{c_{N \times N}}              & \vmathbb{0}_{N \times 3NQ} & \cdots                & \cdots                    \\
-% 	\vmathbb{0}_{4N \times (4\Xi + 6N)}  & \cdots                                     & \cdots                                   & \cdots                     & \cdots                             & \cdots                           & A_{gg_{4N \times NQ}}      & A_{gw_{4N \times NQ}} & \vmathbb{1}_{4N \times NQ} \\
-%     \end{bmatrix}_{(2\Xi + 10N) \times (4\Xi + 6N + 3NQ)}                                                                                                                                                                                                                                                                       \\
-% 	\\
-%     x_{ineq} =
-%     \begin{bmatrix}
-% 	u_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \sigma_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ v_{i_{N \times 1}} \\ s_{i_{N \times 1}} \\ \delta_{ij_{\Xi \times 1}} \\ \vmathbb{1}_{\Xi \times 1} \\ a_{i_{N \times 1}} \\ c_{i_{N \times 1}} \\ q_{iq_{NQ \times1}} \\w_{iq_{NQ \times 1}} \\ \vmathbb{1}_{NQ \times 1} \\
-%     \end{bmatrix}_{(4\Xi + 6N + 3NQ) \times 1}
-%     b_{ineq} =
-%     \begin{bmatrix}
-% 	\vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{\Xi \times 1} \\ \vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -\vmathbb{1}_{N \times 1} \\ -c_{i_{N \times N}} \\ -(T-p_i)_{N \times N} \\ -\tau_{i_{N \times N}} \\ -p_{i_{N \times 1}} \\ p_{i_{N \times 1}} \\ \vmathbb{0}_{2N \times 1}
-%     \end{bmatrix}_{(5\Xi + 7N) \times 1}
-% \end{array}
-% \end{equation}\\
-% \end{table*}
-%
-% \subsection{Formulating $A_{dynamics}$}
-%
-% \subsubsection{Formulating $A_{dynamics_{eq}}$}
-% The components that make up the equality constraint for the dynamics problem are
-%
-% \begin{itemize}
-%     \item
-%     $\eta_{\gamma_i} = \eta_i + g_{iq} r_q - \lambda_i$
-% \end{itemize}
-%
-% $A_{dynamics}$ takes the form of:
-%
-% \begin{equation}
-% \begin{array}{c}
-% 	A_{eq} =
-% 	\begin{bmatrix}
-% 		A_{\textrm{init charge}_{N \times N}}       & \vmathbb{0}_{N \times (N+NQ)} \\
-% 		A_{\textrm{next charge}_{N \times 2N + NQ}} & \cdots                       \\
-% 	\end{bmatrix}_{2N \times (2N + NQ)} \\
-% 	x_{eq} =
-% 	\begin{bmatrix}
-% 		\eta_{\i_{N \times 1}}   \\
-% 		g_{iq_{NQ \times 1}}     \\
-% 		\lambda_{i_{N \times 1}} \\
-% 	\end{bmatrix}_{(2N + NQ) \times 1}
-% 	b_{eq} =
-% 	\begin{bmatrix}
-% 		\eta_{i_{N \times 1}} \\
-% 		\eta_{\gamma_{i}\; N \times 1} \\
-% 	\end{bmatrix}_{2N \times 1}
-% \end{array}
-% \end{equation}
-%
-% \(A_{dyanmics_{ineq}}\) takes the form of:
-%
-% \begin{equation}
-% \begin{array}{c}
-%     A_{ineq} =
-%     \begin{bmatrix}
-% 	-A_{\textrm{max charge}_{N \times (N+NQ)}} & \vmathbb{0}_{N \times N}        \\
-% 	A_{\textrm{min charge}_{N \times (2N+NQ)}} & \cdots                         \\
-% 	A_{\textrm{last charge}_{N \times N}}      & \vmathbb{0}_{N \times (N + NQ)} \\
-%     \end{bmatrix}_{3N \times (2N + NQ)} \\
-%     x_{ineq} =
-%     \begin{bmatrix}
-% 	\eta_{i_{N \times 1}} \\
-% 	g_{iq_{NQ \times 1}} \\
-%     \end{bmatrix}_{(2N + NQ) \times 1}
-%     b_{ineq} =
-%     \begin{bmatrix}
-% 	-\vmathbb{1}_{N + NQ \times 1} \\
-% 	\vmathbb{0}_{2N + NQ \times 1} \\
-% 	H_{final}*\vmathbb{1}_{A \times 1} \\
-%     \end{bmatrix}_{3N \times 1}
-% \end{array}
-% \end{equation}
-%
-% \subsection{Putting it back together}\label{putting-it-back-together}
-%
-% \begin{equation*}
-% \begin{array}{c}
-%     \begin{bmatrix}
-% 	A_{\textrm{pack}}     \\
-% 	A_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq}
-%     \begin{bmatrix}
-% 	x_{\textrm{pack}}     \\
-% 	x_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq} =
-%     \begin{bmatrix}
-% 	b_{\textrm{pack}}     \\
-% 	b_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{eq} \\
-%     \begin{bmatrix}
-% 	A_{\textrm{pack}}     \\
-% 	A_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{ineq}
-%     \begin{bmatrix}
-% 	x_{\textrm{pack}}     \\
-% 	x_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{ineq} \geq
-%     \begin{bmatrix}
-% 	b_{\textrm{pack}}     \\
-% 	b_{\textrm{dynamics}} \\
-%     \end{bmatrix}_{ineq}
-% \end{array}
-% \end{equation*}
-%
-% May also be represented as
-%
-% \scriptsize
-%
-% \begin{equation}
-% \begin{array}{c}
-% A_{eq} =
-% \begin{bmatrix}
-%     \begin{Bmatrix}
-% 	A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
-% 	\vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}          \\
-% 	\vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}          \\
-%     \end{Bmatrix}_{3N \times (2N + NQ)}
-%     \begin{Bmatrix}
-% 	\vmathbb{0}
-%     \end{Bmatrix}_{3N \times (2N + NQ)} \\
-%     \begin{Bmatrix}
-% 	\vmathbb{0}_{}
-%     \end{Bmatrix}_{NA \times (2N + NQ)}
-%     \begin{Bmatrix}
-% 	A_{\textrm{next charge}_{N \times 2N + NQ}}
-%     \end{Bmatrix}_{NA \times (2N + NQ + A)} \\
-% \end{bmatrix}_{(3N + NA) \times (4N + NQ + A)} \\
-% x_{eq} =
-% \begin{bmatrix}
-%     \begin{Bmatrix}
-% 	p_{i_{N \times 1}} \\
-% 	u_{i_{N \times 1}} \\
-% 	w_{iq_{NQ \times 1}} \\
-%     \end{Bmatrix}_{2N + NQ} \\
-%     \begin{Bmatrix}
-% 	\eta_{\Gamma_{i\; N \times 1}} \\
-% 	g_{iq_{NQ \times 1}}           \\
-% 	\lambda_{i_{N \times 1}}       \\
-%     \end{Bmatrix}_{(2N + NQ + A) \times 1}
-% \end{bmatrix}_{(4N + 2NQ + A) \times 1}
-% b_{eq} =
-% \begin{bmatrix}
-%     \begin{Bmatrix}
-% 	c_{i_{N \times 1}} \\
-% 	\vmathbb{1}_{N \times 1} \\
-% 	v_{i_{N \times 1}} \\
-%     \end{Bmatrix}_{3N \times 1} \\
-%     \begin{Bmatrix}
-% 	\eta_{\gamma_{i}\; N \times 1} \\
-%     \end{Bmatrix}_{N \times 1}
-% \end{bmatrix}_{4N \times 1} \\
-% \begin{bmatrix}
-%     \begin{Bmatrix}
-% 	A_{detach_{N \times 2N}}    & \vmathbb{0}_{N \times NQ} \\
-% 	\vmathbb{0}_{N \times 2N} & A_{w_{N \times NQ}}          \\
-% 	\vmathbb{0}_{N \times 2N} & A_{v_{N \times NQ}}          \\
-%     \end{Bmatrix}_{3N \times (2N + NQ)}
-%     \begin{Bmatrix}
-% 	\vmathbb{0}
-%     \end{Bmatrix}_{3N \times (2N + NQ)} \\
-%     \begin{Bmatrix}
-% 	\vmathbb{0}_{}
-%     \end{Bmatrix}_{NA \times (2N + NQ)}
-%     \begin{Bmatrix}
-% 	A_{\textrm{next charge}_{N \times 2N + NQ}}
-%     \end{Bmatrix}_{NA \times (2N + NQ + A)} \\
-% \end{bmatrix}
-% \begin{bmatrix}
-%     \begin{Bmatrix}
-% 	p_{i_{N \times 1}} \\
-% 	u_{i_{N \times 1}} \\
-% 	w_{iq_{NQ \times 1}} \\
-%     \end{Bmatrix}_{2N + NQ} \\
-%     \begin{Bmatrix}
-% 	\eta_{\Gamma_{i\; N \times 1}} \\
-% 	g_{iq_{NQ \times 1}}           \\
-% 	\lambda_{i_{N \times 1}}       \\
-%     \end{Bmatrix}_{(2N + NQ + A) \times 1}
-% \end{bmatrix} \\
-% =
-% \begin{bmatrix}
-%     \begin{Bmatrix}
-% 	c_{i_{N \times 1}} \\
-% 	\vmathbb{1}_{N \times 1} \\
-% 	v_{i_{N \times 1}} \\
-%     \end{Bmatrix}_{3N \times 1} \\
-%     \begin{Bmatrix}
-% 	\eta_{\gamma_{i}\; N \times 1} \\
-%     \end{Bmatrix}
-% \end{bmatrix}_{4N \times 1}
-% \end{array}
-% \end{equation}
+An example was presented that demonstrated the ability of the formulation to utilize slow chargers when possible and fast chargers when necessary. The example also demonstrated that if a surplus of chargers are given, the minimum amount of chargers will be utilized. This behavior is given by the packing constraints. The battery dynamic constraints to limit maximum and minimum charges was also observed. Future work may expand on this model by introducing first order battery dynamics to increase fidelity of the battery dynamic model.
 
 %%================================================================================
 % Bibliography

@@ -157,4 +157,8 @@ M.~A. Rodriguez and A.~Vecchietti, ``A comparative assessment of linearization
   \url{https://www.sciencedirect.com/science/article/pii/S009813541200289X}
 \BIBentrySTDinterwordspacing
 
+\bibitem{Hespanha2018}
+J.~P. Hespanha, \emph{Linear systems theory}.\hskip 1em plus 0.5em minus
+  0.4em\relax Princeton university press, 2018.
+
 \end{thebibliography}
