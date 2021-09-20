@@ -89,7 +89,7 @@ Recent efforts have been made into solving scheduling and charging fleets as wel
 
 The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The MILP is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
 
-The PAP framework is constructed from the Berth Allocation Problem (BAP). The BAP solves the problem of allocating space for incoming vessels to be berthed. Each arriving vessel requires both time and space to be serviced and is assigned a berthing location. Vessels are lined up parallel to the berth to be serviced and are horizontally queued as shown in Fig \ref{subfig:bapexample}. The PAP utilizes this notion of queuing to re-use the BAP for queuing BEBs to be charged as shown in Figure \ref{subfig:papexample}.
+The PAP framework is constructed from the Berth Allocation Problem (BAP). The BAP solves the problem of allocating space for incoming vessels to be berthed. Each arriving vessel requires both time and space to be serviced and is assigned a berthing location. Vessels are lined up parallel to the berth to be serviced and are horizontally queued as shown in Fig \ref{subfig:bapexample}. The PAP utilizes this notion of queuing to reuse the BAP for queuing BEBs to be charged as shown in Figure \ref{subfig:papexample}.
 
 \begin{figure}
 	\label{fig:bappap}
@@ -110,7 +110,6 @@ The PAP framework is constructed from the Berth Allocation Problem (BAP). The BA
 			\node at (1.5,0.5) {Berth};
 			\node at (1.5,3.5) {Vessels};
 		\end{tikzpicture}}
-		% \centerline{\includegraphics[height=4cm]{bapexample.png}}
 	\caption{Example of berth allocation. Vessels are docked in berth locations (horizontal) and are queued over time (vertical), and move in the directions indicated by the arrows.}
 		\label{subfig:bapexample}
 	\end{subfigure}
@@ -130,7 +129,6 @@ The PAP framework is constructed from the Berth Allocation Problem (BAP). The BA
 			\node[rotate=90] at (-12,2.5) {Vehicles};
 			\node[rotate=90] at (1.5,2.5) {Chargers};
 		\end{tikzpicture}}
-		% \centerline{\includegraphics[height=4cm]{bapexample.png}}
 	\caption{Example of position allocation. Vehicles are placed in queues to be charged and move in the direction indicated by the arrow.}
 		\label{subfig:papexample}
 	\end{subfigure}
@@ -225,7 +223,7 @@ The BAP objective is generally represented as minimizing some operational time f
         \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (3,12) {A};
         \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (9,12) {B};
         \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (6,7) {D};
-        \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (12,2) {C};
+        \node[rectangle, draw, fill=gray, minimum width=1.5cm, minimum height = 1.2cm] at (12,2) {C};
 
 	\node [below,align=center] at (1.0,0) {\scriptsize Arrival\\ \scriptsize Time};
 	\draw[dashed] (1.0,5)--(1.0,0);
@@ -295,15 +293,15 @@ and the following are decision variables
 
 The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)).
 
-Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are the ``queuing constraints". They are used to prevent overlapping over both space and time as shown in Fig \ref{fig:multipleassign}. In terms of the BAP, constraint \eqref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the Big-M notation to activate or deactivate the constraint. Specifically, \eqref{subeq:baptime} is active if both \(i\) and \(j\) are visiting the same berth (\(u_i = u_j\)). A value of \(\sigma_{ij} = 1\) will activate the constraint to ensure that \(i\) is complete before \(j\) is allowed to begin being serviced. If \(\sigma = 0\), then the constraint is of the form \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
+Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are the ``queuing constraints". They are used to prevent overlapping over both space and time as shown in Fig \ref{fig:multipleassign}. In terms of the BAP, constraint \eqref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the Big-M notation to activate or deactivate the constraint. Specifically, \eqref{subeq:baptime} is active if both \(i\) and \(j\) are to visit the same berth space (\(v_i = v_j\)). A value of \(\sigma_{ij} = 1\) will activate the constraint to ensure that \(i\) is complete before \(j\) is allowed to begin being serviced. If \(\sigma = 0\), then the constraint is of the form \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
 
-In a similar fashion, \(\delta_{ij}\) effectively determines whether the vessel will be located in adjacent berths. If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vessels \(i\) and \(j\) must be in adjacent berthing locations.
+In a similar fashion, \(\delta_{ij}\) effectively determines whether the vessel will be located in adjacent berths at the same time (\(u_i = u_j\)). If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vessels \(i\) and \(j\) must be in adjacent berthing locations.
 
-Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables (\(u\) and \(v\)). Constraint \eqref{subeq:bapdelta} states that one of the following is true: \(u_i < u_j \iff \sigma_{ij} = 1\) or \(u_j < u_i \iff \sigma_{ji} = 1\), and \(v_i < v_j \iff \delta_{ij} = 1\) or \(v_j < v_i \iff \delta_{ji} = 1\). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. \(u_i < u_j\) and \(u_j < u_i\) cannot be simultaneously true. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues.
+Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables (\(u\) and \(v\)). Constraint \eqref{subeq:bapdelta} states that one of the following is true: \(u_i + p_i < u_j \iff \sigma_{ij} = 1\) or \(u_j < u_i + s_i \iff \sigma_{ji} = 1\), and \(v_i + s_i < v_j \iff \delta_{ij} = 1\) or \(v_j < v_i + s_i\iff \delta_{ji} = 1\). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. \(u_i + p_i < u_j\) and \(u_j < u_i + p_i\) cannot be simultaneously. In a similar manner, \(v_i + s_i < u_j\) and \(u_j < v_i + s_i\) cannot be true simultaneously. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues.
 
 The last constraints enforce continuity for each vessel. Constraint \eqref{subeq:bapdetach} states that the service start time (\(u\)) plus the time to service vessel \(i\) (\(p\)) must equal the departure time (\(c\)). Constraint \eqref{subeq:bapvalid_starts} enforces the arrival time (\(a\)) must be less than or equal to the service start time (\(u\)) which must also be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:sdspace} defines the set of values \(\sigma\) and \(\delta\).
 
-This formulation forms the basis of the PAP; however there will are some slight differences in the way the variables are perceived. Starting service time \(u\) is now the starting charge time and the berth location \(v\) is now the queue for charger \(q\). Another difference is that \(p\) will now become a decision variable which will be driven by the battery dynamic constraints.
+This formulation forms the basis of the PAP; however there will are some slight differences in the way the variables are perceived. Starting service time (\(u\)) is now the starting charge time and the berth location (\(v\)) is now the queue for charger (\(q\)). Another difference is that (\(p\)) will now become a decision variable which will be driven by the battery dynamic constraints.
 
 In addition, the BAP has characteristics that can be leveraged and others that must be addressed to fit the desired model. An inconvenient property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem for accounting for battery dynamics when busses revisit after completing a route. Each bus visit must then be associated with a specific bus ID. However, due to the nature of the BAP, little effort is required to convert the problem from serial berth docking to parallel charge queuing. The results may be vectorized to achieve this goal \cite{Qarebagh2019}. Furthermore, this formulation allows \(S\) and \(T\) to be continuous or discrete \cite{Frojan2015,Buhrkal2010}. Because of this flexibility, the berth is discretized to accommodate \(Q\) chargers while time is kept continuous as shown in Fig \ref{fig:bap}.
 
@@ -321,7 +319,7 @@ In addition, the BAP has characteristics that can be leveraged and others that m
 		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (4,2) {\(k_2\)};
 	\end{tikzpicture}
 	}
-	\caption{Examples of different methods of overlapping. Space overlap: \(v_{k_1} < v_{i} + s[i] \therefore \delta_{k_{1}i} = 0\). Time overlap \(u_{k_1} < u_{j} + p[j] \therefore \sigma_{k_{2}j} = 0\). Both space and time overlap \(\sigma_{k_{3}i} = 0\) and \(\delta_{k_{3}j} = 0\).}
+	\caption{Examples of different methods of overlapping. Space overlap: \(v_{k_1} < v_{i} + s_i \therefore \delta_{k_{1}i} = 0\). Time overlap \(u_{k_1} < u_{j} + p_j \therefore \sigma_{k_{2}j} = 0\). Both space and time overlap \(\sigma_{k_{3}i} = 0\) and \(\delta_{k_{3}j} = 0\).}
 	\label{fig:multipleassign}
 \end{figure}
 
@@ -351,7 +349,7 @@ Consider the following set of constraints:
 \end{align}
 \end{subequations}
 
-Constraints \eqref{subeq:time}-\eqref{subeq:valid_starts} are the same as previously described in section \ref{sec:preliminaries}, except charging time \(p\) is now a decision variable. Additionally, starting charge time \(u\) is continuous and charging queue \(v\) discrete as represented in \eqref{subeq:vspace}. Constraint \eqref{subeq:valid_depart} states that the ending charge time \(c\) must be less than or equal to the required departure time from the station \(\tau\).
+Constraints \eqref{subeq:time}-\eqref{subeq:valid_starts} are the same as previously described in section \ref{sec:preliminaries}, except charging time \(p\) is now a decision variable. Additionally, starting charge time \(u\), charge duration \(p\), and detach time\(c\) are continuous and charging queue \(v\) discrete as represented in \eqref{subeq:vspace}. Constraint \eqref{subeq:valid_depart} states that the ending charge time \(c\) must be less than or equal to the required departure time from the station \(\tau\).
 
 The constraints \eqref{eq:packconstrs} as stated are flawed. If the objective function given in \eqref{eq:bapobjective} were minimized while being subject to the constraints in \eqref{eq:packconstrs}, \(p\) being defined as a decision variable would naturally cause the solution to converge to 0. This effectively minimizes the objective \(c_i - a_i\), but also would imply no charging should ever be done. To remedy this, battery dynamic constraints will be introduced.
 
@@ -371,7 +369,7 @@ Subject to the following constraints:
     \eta_i = \alpha \kappa_{\Gamma_i}                                         \label{subeq:init_charge}  \\
     \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i = \eta_{\gamma_i}            \label{subeq:next_charge}  \\
     \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq \nu \kappa_{\Gamma_i}   \label{subeq:min_charge}   \\
-    \eta_i + \sum_{q=1}^Q g_{iq} r_q \leq \kappa                              \label{subeq:max_charge}   \\
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q \leq \kappa_{\Gamma_i}                   \label{subeq:max_charge}   \\
     \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq \beta \kappa_{\Gamma_i} \label{subeq:final_charge} \\
     p_i + (1 - w_{iq})M \geq g_{iq}                                           \label{subeq:gpgret}       \\
     p_i \leq g_{iq}                                                           \label{subeq:gples}        \\
@@ -383,11 +381,11 @@ Subject to the following constraints:
 \end{align}
 \end{subequations}
 
-Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the first arrival for each bus is initialized with a charge of \(\alpha \kappa_{\Gamma_i}\). Constraint \eqref{subeq:next_charge} defines that the previous charge \(\eta\) plus the charging done by charger \(q\) minus the discharge amount due to completing route \(\lambda\). Constraints \eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the charge after being charged by \(q\) and the discharge from route \(\lambda\) must be greater than some percentage of its capacity \(\kappa\). Constraint \eqref{subeq:max_charge} states that the charging done for visit \(i\) cannot be greater than the capacity of the battery \(\kappa\). Constraint \eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of \(\beta \kappa_{\Gamma_i}\).
+Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the first arrival for each bus is initialized with a charge of (\(\alpha \kappa_{\Gamma_i}\)). Constraint \eqref{subeq:next_charge} defines that the previous charge (\(\eta\)) plus the charging done by charger (\(q\)) minus the discharge amount due to completing route (\(\lambda\)). Constraints \eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the charge after being charged by (\(q\)) and the discharge from route (\(\lambda\)) must be greater than some percentage of its capacity (\(\kappa\)). Constraint \eqref{subeq:max_charge} states that the charging done for visit \(i\) cannot be greater than the capacity of the battery (\(\kappa\)). Constraint \eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of (\(\beta \kappa_{\Gamma_i}\)).
 
 The set of constraints \eqref{subeq:gpgret}-\eqref{subeq:gwles} are used to alleviate non-linearity introduced by the bilinear term \(g_{iq} := w_{iq} p_i\). This is accomplished using Big-M notation \cite{Rodriguez2013}. Constraints \eqref{subeq:gpgret} and \eqref{subeq:gples} state that if \(w_{iq} = 1\) then the two equations will take the form of \(p_i \leq g_{eq}\) and \(p_i \geq g_{iq}\) effectively stating \(p_i = g_{iq}\), if \(w_{iq} = 0\) then the two equations will take the form of \(p_i \leq g_{eq}\) and \(p_i \geq g_{iq} - M\) which deactivates the constraint. In a similar fashion, \eqref{subeq:gwgret} and \eqref{subeq:gwles} state if \(w_{iq} = 0\) then the constraints take the form \(0 \geq g_{iq}\) and \(0 \leq g_{iq}\) directly implying \(0 = g_{iq}\). If \(w_{iq} = 1\) then the constraints take the form \(M \leq g_{iq}\) and \(0 \geq g_{iq}\) disabling the constraint. Putting the two sets of constraints together defines the linearized representation of \(w_{iq} p_i\).
 
-The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the queuing constraint \(v\) and \(w\) (i.e \(1*w_{iq} + 2*w_{iq} + \cdots = v_i\)) and enforces that only a single \(w\) may be selected per visit, respectively. The last constraint \eqref{subeq:wspace} defines the set of values that \(w\) may be.
+The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the queuing constraint \(v\) and \(w\) (i.e \(1*w_{iq} + 2*w_{iq} + \cdots = v_i\)) and enforces that only a single \(w\) may be selected per visit, respectively. The last constraint \eqref{subeq:wspace} defines the set of values for \(w\).
 
 %================================================================================
 % Example
@@ -397,7 +395,7 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 An example will now be presented to demonstrate the utility of the developed MILP. A description of the scenario is first presented followed by results.
 
 \subsection{Scenario}
-The given exampled utilizes \(A = 40\) buses with \(N = 220\) returns to the station divided between the \(A\) buses. Each bus has a 388 KWh battery that is required to stay above 25\% charge (97 KWh) to maintain battery health, and the bus is assumed to start with 90\% charge (349 KWh). Additionally, each bus is required to end with a minimum charge of 95\% (349 KWh). Planning is done over a 24 hour time horizon. \(Q = 9\) chargers are utilized where five of the chargers are slow charging (100 KWh) and four are fast charging (400 KWh). The slow chargers take longer, but are safer for the batter than the fast charger. Therefore the slow chargers are modeled with a lower cost than than the fast charger for both assiging (\(m\)) and utilization (\(\epsilon\)) in the ojective \eqref{eq:objective} as to penalize utilization of the fast chargers.
+The given exampled utilizes \(A = 40\) buses with \(N = 220\) returns to the station divided between the \(A\) buses. Each bus has a 388 KWh battery that is required to stay above 25\% charge (97 KWh) to maintain battery health, and the bus is assumed to start with 90\% charge (349 KWh). Additionally, each bus is required to end with a minimum charge of 95\% (349 KWh). Planning is done over a 24 hour time horizon. \(Q = 9\) chargers are utilized where five of the chargers are slow charging (100 KWh) and four are fast charging (400 KWh). The slow chargers take longer, but are safer for the battery than the fast charger. Therefore, the slow chargers are modeled with a lower cost than than the fast charger for both assigning (\(m\)) and utilization (\(\epsilon\)) in the objective \eqref{eq:objective} as to penalize utilization of the fast chargers.
 
 The bus schedules are randomly generated. It is assumed that each bus has no more than 30 minute between route departures. Bus route times are completely random and may vary between \(\frac{a_i + a_{\gamma_i}}{2}\) to \(a_{\gamma_i}\) i.e. the route time may be anyhwere between the average time between the current and next arrival to the next arrival time. The discharge is assumed to be linear and is calculated via \(\lambda_i = rand(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta{\gamma_i}\) where \(1 \leq i \leq N\).
 
@@ -408,7 +406,7 @@ The schedule generated by the MILP is shown in Fig \ref{fig:schedule}. The top g
 
 Each color in Fig \ref{fig:schedule} is used to identify a new bus visit. It is noted that the overlaps in Fig \ref{fig:schedule} indicate the waiting time of vehicle \(j\) whilst vehicle \(i\) charges. This is recognized by viewing the vertical bars. These bars indicate the time bus \(i\) is set to charge. The area before indicate waiting time and the area after indicates the time spent on the charger.
 
-Fig \ref{fig:charges} depicts the charge for every bus for bus over the time horizon. Every vehicle begins at 90\% charge, finishes at 95\% charge, and never goes below 25\% in the intermediate arrivals as stated in the constraints \eqref{eq:dynconstrs}. The total power used is summarized in \ref{fig:usage} which is representative of the linear battery constraints modeled.
+Fig \ref{fig:charges} depicts the charge for every bus for bus over the time horizon. Every vehicle begins at 90\% charge, finishes at 95\% charge, and never goes below 25\% in the intermediate arrivals as stated in the constraints \eqref{eq:dynconstrs}. The total power used is summarized in Fig \ref{fig:usage} which is representative of the linear battery constraints modeled.
 
 \begin{figure*}[h]
 	\centering
@@ -419,7 +417,7 @@ Fig \ref{fig:charges} depicts the charge for every bus for bus over the time hor
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.75\linewidth]{charges.pdf}
+	\includegraphics[trim=0in 0in 0in 0.75in, width=0.75\linewidth]{charges.pdf}
 	\caption{Charges for each bus.}
 	\label{fig:schedule}
 \end{figure}
@@ -427,7 +425,7 @@ Fig \ref{fig:charges} depicts the charge for every bus for bus over the time hor
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.75\linewidth]{usage.pdf}
+	\includegraphics[trim=0in 0in 0in 0.5in, width=0.75\linewidth]{usage.pdf}
 	\caption{Total power used.}
 	\label{fig:usage}
 \end{figure}
@@ -436,7 +434,7 @@ Fig \ref{fig:charges} depicts the charge for every bus for bus over the time hor
 % Conclusion
 \section{Conclusion}
 \label{sec:conclusion}
-This work developed a MILP scheduling framework that optimally assigns slow and fast chargers to a BEB bus fleet assuming a constant schedule. The BAP was introduced with an example formulation and was then compared to the PAP. The PAP constructed on the BAP to allow the time spent on the charger (\(p\)) to be a decision variable. Because the original PAP required service time \(p\) to be given, linear battery dynamics were introduced to drive charging times. Additional constraints were also introduced to provide limits and continuity for the battery dynamics.
+This work developed a MILP scheduling framework that optimally assigns slow and fast chargers to a BEB bus fleet assuming a constant schedule. The BAP was introduced with an example formulation and was then compared to the PAP. The PAP constructed on the BAP to allow the time spent on the charger (\(p\)) to be a decision variable. Because the original PAP required service time (\(p\)) to be given, linear battery dynamics were introduced to drive charging times. Additional constraints were also introduced to provide limits and continuity for the battery dynamics.
 
 An example was presented that demonstrated the ability of the formulation to utilize slow chargers when possible and fast chargers when necessary. The example also demonstrated that if a surplus of chargers are given, the minimum amount of chargers will be utilized. This behavior is given by the packing constraints. The battery dynamic constraints to limit maximum and minimum charges was also observed. Future work may expand on this model by introducing first order battery dynamics to increase fidelity of the battery dynamic model.
 
