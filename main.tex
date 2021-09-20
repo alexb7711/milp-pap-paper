@@ -24,6 +24,7 @@
 \usepackage{subcaption}
 \usepackage{textcomp}
 \usepackage{tikz}
+\usetikzlibrary{automata,positioning}
 \usepackage{xcolor}
 
 \usetikzlibrary{arrows.meta}
@@ -84,11 +85,56 @@ greg.droge@usu.edu }}
 \label{sec:introduction}
 The public transportation system is crucial in any urban area; however, the increase awareness and concern of environmental impacts of petroleum based public transportation has driven an effort to reduce the pollutant footprint \cite{DeFilippo2014, Xylia2018, Guida2017, Li2016}. Particularly, the electrification of public bus transportation via battery power, i.e., battery electric buses (BEBs), has received significant attention \cite{Li2016}. Although the technology provides benefits beyond reduction in emissions such as lower driving costs, lower maintenance costs, and reduced vehicle noise, battery powered systems introduce new challenges such as larger upfront costs, and potentially several hour long ``refueling" periods \cite{Xylia2018, Li2016}. Furthermore, the problem is exacerbated by the constraints of the transit schedule the fleet must adhere to, the limited amount of chargers available, as well as the adverse affects in the health of the battery due to fast charging \cite{Lutsey2019}. This paper presents a continuous scheduling framework for a BEB fleet that shares limited fast and slow chargers. This framework takes into consideration linear charging dynamics and a fixed bus schedule while meeting a certain battery percentage threshold while remaining.
 
-[\TODO{Copied}] Recent research seeks to enable BEB fleet deployment by solving two problems: providing BEB scheduling (when to charge, at which charger) and determining BEB infrastructure (charger placement, route design). Much attention has been given to solving both problems simultaneously \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}. Additional variations in addressing the infrastructure include determining which existing buses should be replaced by a BEB \cite{Zhou2020}, assignments of buses to routes \cite{Liu2020}, and determining locations of fast wireless chargers along the routes \cite{Yang2018, Wang2017a}. The added complexity of considering both the BEB charge scheduling and the infrastructure problems necessitates simplifications for sake of computation.
-
-[\TODO{Copied}] Two such simplifications are common. First, only fast chargers are utilized in planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge \cite{Liu2020}. Day-to-day operations require higher fidelity charging models to ensure buses have sufficient charge and to better incorporate the monetary cost of charging. In \cite{Sebastiani2016, Qin2016}, high-fidelity models are used at the price of requiring computationally intensive searches; \cite{Sebastiani2016} uses a genetic algorithm and \cite{Qin2016} uses an exhaustive search strategy.
+Recent efforts have been made into solving scheduling and charging fleets as well as the infrastructure. Attention has been given to solving both problems simultaneously \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}.  The added complexity of considering both the BEB charge scheduling and the infrastructure problems necessitates simplifications for sake of computation. First, only fast chargers are utilized in planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge \cite{Liu2020}.
 
 The contribution of this work is a Mixed Integer Linear Program (MILP) scheduling framework that considers bus schedules, charging battery dynamics, charge limits, and availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. The linear program is formed, and extends upon, the Position Allocation Problem (PAP) \cite{Qarebagh2019}. Linear charging dynamics are assumed, costs are assumed to be constant for the duration of the time horizon, and the amount of chargers is assumed to be constant. The MILP framework allows the addition and replacing of constraints. As such, battery dynamic constraints may be replaced with first-order dynamic modeling and costs can be made dynamic. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station.
+
+The PAP framework is constructed from the Berth Allocation Problem (BAP). The BAP solves the problem of allocating space for incoming vessels to be berthed. Each arriving vessel requires both time and space to be serviced and is assigned a berthing location. Vessels are lined up parallel to the berth to be serviced and are horizontally queued as shown in Fig \ref{subfig:bapexample}. The PAP utilizes this notion of queuing to re-use the BAP for queuing BEBs to be charged as shown in Figure \ref{subfig:papexample}.
+
+\begin{figure}
+	\label{fig:bappap}
+	\caption{Comparison between BAP and PAP}
+	\centering
+	\begin{subfigure}[b]{0.5\textwidth}
+		\centerline{
+		\begin{tikzpicture}[scale=0.4]
+			\draw[rotate=90,fill=black] (0,0) rectangle (1,10);
+			\draw[rotate=90](2,0) rectangle (3,3);
+			\draw[rotate=90](2,4) rectangle (3,8);
+			\draw[rotate=90](2,9) rectangle (3,10);
+			\draw[rotate=90](4,0) rectangle (5,10);
+
+			\draw[thick,->] (-11,5)--(-11,0);
+			\draw[thick,->] (-10,6)--(0,6);
+
+			\node at (1.5,0.5) {Berth};
+			\node at (1.5,3.5) {Vessels};
+		\end{tikzpicture}}
+		% \centerline{\includegraphics[height=4cm]{bapexample.png}}
+	\caption{Example of berth allocation. Vessels are docked in berth locations (horizontal) and are queued over time (vertical), and move in the directions indicated by the arrows.}
+		\label{subfig:bapexample}
+	\end{subfigure}
+
+	\begin{subfigure}[b]{0.5\textwidth}
+		\centerline{
+		\begin{tikzpicture}[scale=0.4]
+			\draw[fill=black] (0,0) rectangle (1,5);
+
+			\draw[rotate=90](1,1) rectangle (2,4);
+			\draw[rotate=90](1,5) rectangle (2,9);
+			\draw[rotate=90](1,10) rectangle (2,11);
+			\draw[rotate=90](3,1) rectangle (4,11);
+
+			\draw[thick,->] (-11,5)--(-1,5);
+
+			\node[rotate=90] at (-12,2.5) {Vehicles};
+			\node[rotate=90] at (1.5,2.5) {Chargers};
+		\end{tikzpicture}}
+		% \centerline{\includegraphics[height=4cm]{bapexample.png}}
+	\caption{Example of position allocation. Vehicles are placed in queues to be charged and move in the direction indicated by the arrow.}
+		\label{subfig:papexample}
+	\end{subfigure}
+\end{figure}
 
 The remainder of the paper proceeds as follows. \TODO{List out sections}
 
@@ -109,21 +155,20 @@ The remainder of the paper proceeds as follows. \TODO{List out sections}
 			$\vmathbb{O}$ & Set of rectangles to be packed in \(O\)   \\
 			$Q$           & Number of chargers                        &
 			$T$           & Time Horizon                              \\
-			$\Xi$         & $N(N-1)$                                  \\
 		\hline
 		\multicolumn{4}{l}{Input variables} \\
-			$\Gamma_i$   & Array of visit id's                                             \\
-			$\alpha_i$   & Initial charge time for visit  $i$                              &
-			$\beta_{i}$  & Final charge for bus $i$ at the end of the work day             \\
-			$\epsilon_q$ & Cost of using charger $q$ per unit time                         &
-			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive \\
-			$\kappa_i$   & Battery capacity for bus \(i\)                                  &
-			$\lambda_i$  & Discharge of visit over route  $i$                              \\
-			$\nu$        & Minimum charge allowed on depatrue of visit \(i\)               &
-			$\tau_i$     & Time visit $i$ must leave the station                           \\
-			$\upsilon$   & Minimum final percentage charge at and of time horizon \(T\)    &
+			$\Gamma_i$   & Array of visit id's                                             &
+			$\alpha_i$   & Initial charge time for visit  $i$                              \\
+			$\beta_{i}$  & Final charge for bus $i$ at the end of the time horizon         &
+			$\epsilon_q$ & Cost of using charger $q$ per unit time                         \\
+			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive &
+			$\kappa_i$   & Battery capacity for bus \(i\)                                  \\
+			$\lambda_i$  & Discharge of visit over route  $i$                              &
+			$\nu$        & Minimum charge allowed on departure of visit \(i\)              \\
+			$\tau_i$     & Time visit $i$ must leave the station                           &
 			$a_i$        & Arrival time of visit  $i$                                      \\
-			$m_q$        & Cost of a visit being assigned to charger  $q$                  &
+			$c_i$        & Detach time from charger for visit \(i\)                        &
+			$m_q$        & Cost of a visit being assigned to charger  $q$                  \\
 			$r_q$        & Charge rate of charger $q$ per unit time                        \\
 		\hline
 		\multicolumn{4}{l}{Decision Variables} \\
@@ -144,9 +189,9 @@ The remainder of the paper proceeds as follows. \TODO{List out sections}
 % Preliminaries
 \section{Preliminaries}
 \label{sec:preliminaries}
-The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{O}\) are attempted to be optimally placed in a larger rectangle \(O\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{O}\) and rectangle \(O\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a NP-hard problem that is a subset of the packing problem and can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of \(\vmathbb{O}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the Berth Allocation Problem (BAP), allow one or both sides to be decision variables \cite{Buhrkal2010}.
+The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{O}\) are attempted to be optimally placed in a larger rectangle \(O\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{O}\) and rectangle \(O\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a NP-hard problem that is a subset of the packing problem and can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of \(\vmathbb{O}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides to be decision variables \cite{Buhrkal2010}.
 
-The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{fig:bapexample} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints. Notation is summarized in Table \ref{tab:variables}.
+The BAP is a form of the rectangle packing problem where the set of rectangles describe incoming vessels to a be docked on a berth to be serviced as shown in Fig \ref{subfig:bapexample} \cite{Dai2008}. The BAP is commonly formed as a Mixed Integer Linear Program (MILP) \cite{Frojan2015,Buhrkal2010}. This formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints. Notation is summarized in Table \ref{tab:variables}.
 
 \begin{figure}
 	\centerline{\begin{tikzpicture}[scale=0.4]
@@ -165,14 +210,8 @@ The BAP is a form of the rectangle packing problem where the set of rectangles d
 	\label{fig:packexample}
 \end{figure}
 
-\begin{figure}
-	\centerline{\includegraphics[height=4cm]{bapexample.png}}
-	\caption{Example of berth allocation. Vessels flow from top to bottom.\TODO{Update Image}}
-	\label{fig:bapexample}
-\end{figure}
-
 \subsection{The Berth Allocation Problem}
-The BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig \ref{fig:bapexample}). The width and height of \(O\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{O}\) represent the time spent to service vessel $i$ and the space taken by docking vessel $i$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be serviced. A representation of a BAP solution is shown in Fig \ref{fig:bap}.
+The BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig \ref{subfig:bapexample}). The width and height of \(O\) represent the berth length \(S\) and time horizon \(T\), respectively. Similarly, the width and height for \(\vmathbb{O}\) represent the time spent to service vessel $i$ and the space taken by docking vessel $i$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired departure time) are assumed to be known for all $N$ vessels to be serviced. A representation of a BAP solution is shown in Fig \ref{fig:bap}.
 
 The BAP objective is generally represented as minimizing some operational time for a given vessel \(i\). The operational time may be chosen to minimize time of arrival to time of departure, time spent being serviced, or overall waiting time (i.e. \(a_i \leq u_i\)) \cite{Cheng2007, Buhrkal2010,Frojan2015}. The model must then constrain the vessel placement as to not allow overlap in time or space as well as disallowing discontinuities in arrival times to departure times. The followng MILP describes the stated objective and constraints. The MILP is also shown in its entirety as it forms the foundation from which the PAP is constructed \cite{Qarebagh2019}.
 
@@ -182,16 +221,30 @@ The BAP objective is generally represented as minimizing some operational time f
         \draw [thick,<->] (0,15) node[above]{Quay Length} --
                                  (0,0)                    --
                                  (15,0) node[right]{Time};
-        \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (8,12) {A};
-        \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (12,12) {B};
+        \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (3,12) {A};
+        \node[rectangle, draw, fill=gray, minimum width=1cm, minimum height = 1.2cm] at (9,12) {B};
         \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (6,7) {D};
-        \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (3,2) {C};
-        
+        \node[rectangle, draw, fill=gray, minimum width=2cm, minimum height = 1.2cm] at (12,2) {C};
+
+	\node [below,align=center] at (1.0,0) {\scriptsize Arrival\\ \scriptsize Time};
+	\draw[dashed] (1.0,5.5)--(1.0,0);
+
+	\node [below, align=center] at (3.5,0) {\scriptsize Berthing\\ \scriptsize Time};
+	\draw[dashed] (3.5,5.5)--(3.5,0);
+
+	\node [below, align=center] at (8.5,0) {\scriptsize Completion\\ \scriptsize Time};
+	\draw[dashed] (8.5,5.5)--(8.5,0);
+
         \draw[dotted] (0, 4.5) -- (15, 4.5);
         \draw[dotted] (0, 9.5) -- (15, 9.5);
+
+	\node[rotate=90] at (-1, 2.25) {Berth 1};
+	\node[rotate=90] at (-1, 7.25) {Berth 2};
+	\node[rotate=90] at (-1, 12.25) {Berth 3};
+
 	\end{tikzpicture}
     }
-	\caption{The representation of the berth-time space \TODO{Update Image}}
+	\caption{The representation of the berth-time space}
 	\label{fig:bap}
 \end{figure}
 
@@ -236,39 +289,16 @@ and the following are decision variables
     \item \(v_i\)         : berth position \(i\;; \forall 1 \leq i \leq N\)
     \item \(c_i\)         : departure time for vessel \(i\;; \forall 1 \leq i \leq N\)
     \item \(\sigma_{ij}\) : \(u_i < u_j\;; \forall 1 \leq i < j \leq N\)
-    \item \(\delta_{ij}\) : \(v_i < u_j\;; \forall 1 \leq i < j \leq N\)
+    \item \(\delta_{ij}\) : \(v_i < v_j\;; \forall 1 \leq i < j \leq N\)
 \end{itemize}
 
 The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vessel by minimizing over the difference between the departure time (\(c\)) and arrival time (\(a\)).
 
-Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are the "queuing constraints". They are used to prevent overlapping over both space and time as shown in Fig \ref{fig:overlap}. In terms of the BAP, constraint \eqref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the Big-M notation to activate or deactivate the constraint. Specifically, \eqref{subeq:baptime} is active if both \(i\) and \(j\) are visiting the same berth (\(u_i = u_j\)). A value of \(\sigma_{ij} = 1\) will activate the constraint to ensure that \(i\) is complete before \(j\) is allowed to begin being serviced. If \(\sigma = 0\), then the constraint is of the form \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
+Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are the ``queuing constraints". They are used to prevent overlapping over both space and time as shown in Fig \ref{fig:multipleassign}. In terms of the BAP, constraint \eqref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the Big-M notation to activate or deactivate the constraint. Specifically, \eqref{subeq:baptime} is active if both \(i\) and \(j\) are visiting the same berth (\(u_i = u_j\)). A value of \(\sigma_{ij} = 1\) will activate the constraint to ensure that \(i\) is complete before \(j\) is allowed to begin being serviced. If \(\sigma = 0\), then the constraint is of the form \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
 
 In a similar fashion, \(\delta_{ij}\) effectively determines whether the vessel will be located in adjacent berths. If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vessels \(i\) and \(j\) must be in adjacent berthing locations.
 
-%Constraint \ref{subeq:bapspace} states that the berth location for vessel \(i\) is greater than the starting berth position of vessel \(j\) plus its length (no overlap in physical space on the berth) as shown in Fig \ref{subfig:spaceoverlap}. Again, the big \(M\) method is utilized to determine the relevance of the constraint. If \(\delta_{ij} = 1\) then the big \(M\) term goes to zero rendering the constraint active. If \(\delta_{ij} = 0\) then the constraint is inactive.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.2\textwidth}
-        \centering
-    	\includegraphics[height=3cm]{hoizontaloverlap.png}
-    	\caption{Example horizontal overlap in time in time-space plot\TODO{Update Image}}
-    	\label{subfig:timeoverlap}
-	\end{subfigure}
-	\hfill
-    \begin{subfigure}[b]{0.2\textwidth}
-        \centering
-    	\includegraphics[height=3cm]{verticaloverlap.png}
-    	\caption{Example of overlap in space in time-space plot\TODO{Update Image}}
-    	\label{subfig:spaceoverlap}
-	\end{subfigure}
-	\caption{Visualization of vessel relative positions}
-	\label{fig:overlap}
-\end{figure}
-
 Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables (\(u\) and \(v\)). Constraint \eqref{subeq:bapdelta} states that one of the following is true: \(u_i < u_j \iff \sigma_{ij} = 1\) or \(u_j < u_i \iff \sigma_{ji} = 1\), and \(v_i < v_j \iff \delta_{ij} = 1\) or \(v_j < v_i \iff \delta_{ji} = 1\). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. \(u_i < u_j\) and \(u_j < u_i\) cannot be simultaneously true. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues.
-
-%A useful way of describing \(\sigma_{ij}\) and \(\delta_{ij}\) are in terms of relative position of vessels on the time-space diagram. \(\delta_{ij} = 1\) implies \(i\) is ``to the left of" \(j\) and \(\sigma_{ij} = 1\) implies \(i\) ``is below" \(j\). If vessel \(i\) is to the left of \(j\) then \(i\) cannot intersect \(j\) vertically (\(\sigma_{ij} = 1\) and \(\delta_{ij} = 0\)), see Fig \ref{subfig:timeoverlap}. Similarly, if \(i\) is below \(j\) then \(i\) is unable to overlap \(j\) horizontally (\(\sigma_{ij} = 0\) and \(\delta_{ij} = 1\)), see Fig \ref{subfig:spaceoverlap}. Constraint \ref{subeq:bapvalid_pos} states that vessel \(i\) must be to the left of or below vessel \(j\), or vessel \(j\) must be to the left of or below \(i\). However, this constraint does not restrict \(i\) being to left and right of \(j\) simultaneously (similarly in the vertical sense) as shown in Fig \ref{fig:multipleassign}. Constraints \ref{subeq:bapsigma} and \ref{subeq:bapdelta} add these restrictions by allowing either \(\cdot_{ij} = 1\) or \(\cdot_{ji} = 1\) but not both.
 
 The last constraints enforce continuity for each vessel. Constraint \eqref{subeq:bapdetach} states that the service start time (\(u\)) plus the time to service vessel \(i\) (\(p\)) must equal the departure time (\(c\)). Constraint \eqref{subeq:bapvalid_starts} enforces the arrival time (\(a\)) must be less than or equal to the service start time (\(u\)) which must also be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:sdspace} defines the set of values \(\sigma\) and \(\delta\).
 
@@ -277,8 +307,20 @@ This formulation forms the basis of the PAP; however there will are some slight 
 In addition, the BAP has characteristics that can be leveraged and others that must be addressed to fit the desired model. An inconvenient property is that each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a new (i.e. unique) visit. This becomes a problem for accounting for battery dynamics when busses revisit after completing a route. Each bus visit must then be associated with a specific bus ID. However, due to the nature of the BAP, little effort is required to convert the problem from serial berth docking to parallel charge queuing. The results may be vectorized to achieve this goal \cite{Qarebagh2019}. Furthermore, this formulation allows \(S\) and \(T\) to be continuous or discrete \cite{Frojan2015,Buhrkal2010}. Because of this flexibility, the berth is discretized to accommodate \(Q\) chargers while time is kept continuous as shown in Fig \ref{fig:bap}.
 
 \begin{figure}
-	\centerline{\includegraphics[width=6cm]{multipleassign.png}}
-	\caption{Example assigning vessel to multiple locations\TODO{Update Image}}
+	\centerline{
+	\begin{tikzpicture}[scale=0.35]
+		\draw [thick,<->] (0,15) node[above]{Quay Length} --
+					 (0,0)                    --
+					 (15,0) node[right]{Time};
+
+		\node[rectangle, draw, minimum width=1.5cm, minimum height = 2cm] at (5,8) {\(i\)};
+		\node[rectangle, draw, minimum width=1cm, minimum height = 1cm] at (2,2) {\(j\)};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (5,12) {\(k_1\)};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (7,6) {\(k_3\)};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (4,2) {\(k_2\)};
+	\end{tikzpicture}
+	}
+	\caption{Examples of different methods of overlapping. Space overlap: \(v_{k_1} < v_{i} + s[i] \therefore \delta_{k_{1}i} = 0\). Time overlap \(u_{k_1} < u_{j} + p[j] \therefore \sigma_{k_{2}j} = 0\). Both space and time overlap \(\sigma_{k_{3}i} = 0\) and \(\delta_{k_{3}j} = 0\).}
 	\label{fig:multipleassign}
 \end{figure}
 
@@ -350,12 +392,12 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 
 
 % There are a few things to note:
-% 
+%
 % \begin{itemize}
 % \item
 %   We want to convert this problem to standard LP, for our problem we
 %   will mainly be concerned with
-% 
+%
 %   \begin{itemize}
 %   \item
 %     Inequality of \(\geq\) form
@@ -363,7 +405,7 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 % \item
 %   We will be formulating the equation in the form \(Ax = b\) and
 %   \(Ax \geq b\) where
-% 
+%
 %   \begin{itemize}
 %   \item
 %     \(A\) is a \(n \times m\) matrix
@@ -373,19 +415,19 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     \(b\) is a \(n \times 1\) vector
 %   \end{itemize}
 % \end{itemize}
-% 
-% 
+%
+%
 % \subsection{Position Allocation Problem}
 % \subsection{Charging Dynamics}
-% 
+%
 %%-------------------------------------------------------------------------------
 
 % %%-------------------------------------------------------------------------------
 % % Conclusion
 % \section{Conclusion}
-% 
+%
 % \subsubsection{Matrix Deconstruction}\label{matrix-deconstruction}
-% 
+%
 % The constraint matrix \(A\) will be broken down into two parts:
 % \(A_{eq}\) for all the equality constraints and \(A_{ineq}\) for all the
 % inequality constraints. Both \(A_{eq}\) and \(A_{ineq}\) formulated with
@@ -393,7 +435,7 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 % portion of the matrix that is utilized for the box packing constraints
 % and the battery dynamics constraints, respectively. For example,
 % \(A_{eq}\) will be represented in the following manner
-% 
+%
 % \[
 % A_{eq} =
 % \begin{bmatrix}
@@ -401,9 +443,9 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     A_{\textrm{dynamics}} \\
 % \end{bmatrix}_{eq}
 % \]
-% 
+%
 % Where we can define the full equality as:
-% 
+%
 % \[
 % \begin{array}{c}
 %     \begin{bmatrix}
@@ -422,9 +464,9 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     A_{eq} x_{eq} = b_{eq} \\
 % \end{array}
 % \]
-% 
+%
 % Similarly for the inequality constraints:
-% 
+%
 % \[
 % \begin{bmatrix}
 %     A_{\textrm{pack}}     \\
@@ -439,9 +481,9 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     b_{\textrm{dynamics}} \\
 % \end{bmatrix}_{ineq}
 % \]
-% 
+%
 % Finally, the entire constraint formulation will be written as:
-% 
+%
 % \begin{subequations}
 % \begin{align}
 %     \begin{bmatrix}
@@ -470,23 +512,23 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     \end{bmatrix}_{ineq}
 % \end{align}
 % \end{subequations}
-% 
+%
 % \subsection{Formulating $A_{pack}$}
-% 
+%
 % \subsubsection{Formulating $A_{pack_{eq}}$}
-% 
+%
 % The components that make up the equality constraints for the box packing
 % problem are:
-% 
+%
 % \begin{itemize}
 % \item
 %   \(p_i + u_i = c_i\)
 % \item
 %   \(\sum_{q=1}^Q w_{iq} = 1\)
 % \end{itemize}
-% 
+%
 % Placing them together in \(A_{eq}\) results in:
-% 
+%
 % \begin{equation}
 % \begin{array}{c}
 %     A_{eq} =
@@ -524,13 +566,13 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     \end{bmatrix}
 % \end{array}
 % \end{equation}
-% 
+%
 % Where
-% 
+%
 % \subsubsection{Formulating $A_{pack_{ineq}}$}
 % The components that make up the inequality constraints for the box
 % packing problem are
-% 
+%
 % \begin{itemize}
 % \item
 %   \(u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 1\)
@@ -555,9 +597,9 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 % \item
 %   \(0 \leq g_{iq}\)
 % \end{itemize}
-% 
+%
 % \(A_{ineq}\) takes the form of:
-% 
+%
 % \begin{table*}[!t]
 % \begin{equation}
 % \setlength{\arraycolsep}{2pt}
@@ -587,19 +629,19 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 % \end{array}
 % \end{equation}\\
 % \end{table*}
-% 
+%
 % \subsection{Formulating $A_{dynamics}$}
-% 
+%
 % \subsubsection{Formulating $A_{dynamics_{eq}}$}
 % The components that make up the equality constraint for the dynamics problem are
-% 
+%
 % \begin{itemize}
 %     \item
 %     $\eta_{\gamma_i} = \eta_i + g_{iq} r_q - \lambda_i$
 % \end{itemize}
-% 
+%
 % $A_{dynamics}$ takes the form of:
-% 
+%
 % \begin{equation}
 % \begin{array}{c}
 % 	A_{eq} =
@@ -620,9 +662,9 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 % 	\end{bmatrix}_{2N \times 1}
 % \end{array}
 % \end{equation}
-% 
+%
 % \(A_{dyanmics_{ineq}}\) takes the form of:
-% 
+%
 % \begin{equation}
 % \begin{array}{c}
 %     A_{ineq} =
@@ -644,9 +686,9 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     \end{bmatrix}_{3N \times 1}
 % \end{array}
 % \end{equation}
-% 
+%
 % \subsection{Putting it back together}\label{putting-it-back-together}
-% 
+%
 % \begin{equation*}
 % \begin{array}{c}
 %     \begin{bmatrix}
@@ -675,11 +717,11 @@ The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking 
 %     \end{bmatrix}_{ineq}
 % \end{array}
 % \end{equation*}
-% 
+%
 % May also be represented as
-% 
+%
 % \scriptsize
-% 
+%
 % \begin{equation}
 % \begin{array}{c}
 % A_{eq} =

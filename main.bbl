@@ -149,4 +149,12 @@ P.~Frojan, J.~F. Correcher, R.~Alvarez-Valdes, G.~Koulouris, and J.~M. Tamarit,
 S.~Cheng and J.~Leung, ``Container terminal operation and operations
   research.''
 
+\bibitem{Rodriguez2013}
+\BIBentryALTinterwordspacing
+M.~A. Rodriguez and A.~Vecchietti, ``A comparative assessment of linearization
+  methods for bilinear models,'' \emph{Computers and Chemical Engineering},
+  vol.~48, pp. 218--233, 2013. [Online]. Available:
+  \url{https://www.sciencedirect.com/science/article/pii/S009813541200289X}
+\BIBentrySTDinterwordspacing
+
 \end{thebibliography}
