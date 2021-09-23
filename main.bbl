@@ -112,6 +112,14 @@ A.~J. Qarebagh, F.~Sabahi, and D.~Nazarpour, ``Optimized scheduling for solving
   \emph{2019 27th Iranian Conference on Electrical Engineering (ICEE)}, 2019,
   pp. 593--597.
 
+\bibitem{Imai2001}
+\BIBentryALTinterwordspacing
+A.~Imai, E.~Nishimura, and S.~Papadimitriou, ``The dynamic berth allocation
+  problem for a container port,'' \emph{Transportation Research Part B:
+  Methodological}, vol.~35, no.~4, pp. 401--417, may 2001. [Online]. Available:
+  \url{https://doi.org/10.1016/S0191-2615(99)00057-0}
+\BIBentrySTDinterwordspacing
+
 \bibitem{Bruin2013}
 F.~de~Bruin, ``Rectangle packing,'' Master's thesis, University of Amsterdam,
   2013.
