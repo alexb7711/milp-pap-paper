@@ -68,7 +68,7 @@ greg.droge@usu.edu }}
 %%-------------------------------------------------------------------------------
 % Abstract
 \begin{abstract}
-	This paper introduces a scheduling framework that utilizes both fast and slow charging assuming bus scheduling is fixed. Slow chargers are prioritized for battery health and fast chargers are utilized to satisfy time constraints. A Berth Allocation Problem (BAP) approach is modified and utilized to construct the Position Allocation Problem (PAP) Mixed Integer Linear Program (MILP) that optimally assigns incoming buses to chargers whilst taking into consideration battery dynamics of the buses. Results are present utilizing a randomly generated bus schedule for 40 buses.
+This paper introduces an electric bus scheduling framework that utilizes both fast and slow charging assuming a fixed route schedule. Slow chargers are prioritized for battery health and fast chargers are utilized to satisfy time constraints. A Berth Allocation Problem (BAP) approach is modified and utilized to construct the Position Allocation Problem (PAP) Mixed Integer Linear Program (MILP) that optimally assigns incoming buses to chargers whilst taking into consideration battery dynamics of the buses. Results are present utilizing a randomly generated bus schedule for 40 buses.
 \end{abstract}
 
 %%-------------------------------------------------------------------------------
@@ -88,9 +88,9 @@ The public transportation system is crucial in any urban area; however, the incr
 
 Recent research efforts have been made into solving the problem of scheduling and charging fleets as well as determining the infrastructure that they rely upon. Attention has been given to solving both problems simultaneously \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}.  The added complexity of considering both the BEB charge scheduling and the infrastructure problems necessitates simplifications for sake of computation. First, only fast chargers are utilized in planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge \cite{Liu2020}.
 
-Recent work has used the Position Allocation Problem (PAP) as a means to schedule electric vehicles \cite{Qarebagh2019}. The PAP framework is constructed from the Berth Allocation Problem (BAP) \cite{Qarebagh2019}. The BAP solves the problem of allocating space for incoming vessels to be berthed. Each arriving vessel requires both time and space to be serviced and is assigned a berthing location \cite{Imai2001}. Vessels are lined up parallel to the berth to be serviced and are horizontally queued as shown in Fig \ref{subfig:bapexample}. The PAP utilizes this notion of queuing to reuse the BAP for queuing vehicles to be charged as shown in Figure \ref{subfig:papexample}. The PAP assumes that the time to charge (\(p\)) is given and defines the full charge time. Additionally, a single, continuous charger is assumed \cite{Qarebagh2019}.
+Recent work has used the Position Allocation Problem (PAP) as a means to schedule electric vehicles \cite{Qarebagh2019}. The PAP framework is constructed from the Berth Allocation Problem (BAP) \cite{Qarebagh2019}. The BAP solves the problem of allocating space for incoming vessels to be berthed. Each arriving vessel requires both time and space to be serviced and is assigned a berthing location \cite{Imai2001}. Vessels are lined up parallel to the berth to be serviced and are horizontally queued as shown in Fig \ref{subfig:bapexample}. The PAP utilizes this notion of queuing to reuse the BAP for queuing vehicles to be charged as shown in Fig \ref{subfig:papexample}. The PAP assumes that the time to charge (\(p\)) is given and defines the full charge time. Additionally, a single, continuous charger is assumed \cite{Qarebagh2019}.
 
-The contribution of this work is a BEB charger scheduling framework that considers route schedules, a proportional model for battery dynamics, charge limits, and the availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. A MILP is formed as a modified PAP \cite{Qarebagh2019}. The solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station. This paper expands upon the PAP by allowing charge times to be dynamically chosen, including a linear battery dynamic model, allowing multiple charger types (fast, and slow), as well as the ability to link consecutive visits to specific vehicles to accommodate revisiting BEBs.
+The contribution of this work is a BEB charger scheduling framework that considers route schedules, a proportional model for battery dynamics, charge limits, and the availability of slow and fast chargers. The bus schedules are assumed to be fixed for the duration of the time horizon. A MILP is formed as a modified PAP \cite{Qarebagh2019} where the solution of the problem provides the arrival time, selected charger (fast or slow), initial charge time, final charge time, and departure time from the station. This paper expands upon the PAP by allowing charge times to be dynamically chosen, including a linear battery dynamic model, allowing multiple charger types (fast, and slow), as well as the ability to link consecutive visits to specific vehicles to accommodate revisiting BEBs.
 
 \begin{figure}
 	\label{fig:bappap}
@@ -146,43 +146,41 @@ The remainder of the paper proceeds as follows: Section \ref{sec:positionallocat
 		\textbf{Variable} & \textbf{Description} & \textbf{Variable} & \textbf{Description} \\
 		\toprule
 		\multicolumn{4}{l}{Input values} \\
-			$A$           & Number of buses in use &
-			$I$           & Final index                               \\
-			$M$           & An arbitrary very large upper bound value &
-			$N$           & Number of total visits                    \\
-			$O$           & Bounding box for rectangle packing        &
-			$\vmathbb{O}$ & Set of rectangles to be packed in \(O\)   \\
-			$Q$           & Number of chargers                        &
-			$S$           & Length of charger                         \\
+			$A$           & Number of buses in use                       &
+			$M$           & An arbitrary very large upper bound value \\
+			$N$           & Number of total visits                    &
+			$O$           & Bounding box for rectangle packing        \\
+			$\vmathbb{O}$ & Set of rectangles to be packed in \(O\)   &
+			$Q$           & Number of chargers                        \\
+			$S$           & Length of charger                         &
 			$T$           & Time Horizon                              \\
 		\hline
 		\multicolumn{4}{l}{Input variables} \\
-			$\Gamma_i$   & Array of visit id's                                             &
-			$\alpha_i$   & Initial charge time for visit  $i$                              \\
-			$\beta_{i}$  & Final charge for bus $i$ at the end of the time horizon         &
-			$\epsilon_q$ & Cost of using charger $q$ per unit time                         \\
-			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive &
-			$\kappa_i$   & Battery capacity for bus \(i\)                                  \\
-			$\lambda_i$  & Discharge of visit over route  $i$                              &
-			$\nu$        & Minimum charge allowed on departure of visit \(i\)              \\
-			$\tau_i$     & Time visit $i$ must leave the station                           &
-			$\zeta_i$    & Discharge rate for vehicle \(i\)                                \\
-			$a_i$        & Arrival time of visit  $i$                                      &
-			$c_i$        & Detach time from charger for visit \(i\)                        \\
-			$m_q$        & Cost of a visit being assigned to charger  $q$                  &
-			$r_q$        & Charge rate of charger $q$ per unit time                        \\
-			$s_q$        & Length of vehicle \(i\)                                         \\
+			$\Gamma_i$   & Array of visit ID's                                                &
+			$\alpha_i$   & Initial charge percentage time for visit  $i$                      \\
+			$\beta_{i}$  & Final charge percentage for bus $i$ at the end of the time horizon &
+			$\epsilon_q$ & Cost of using charger $q$ per unit time                            \\
+			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive    &
+			$\kappa_i$   & Battery capacity for bus \(i\)                                     \\
+			$\lambda_i$  & Discharge of visit over route  $i$                                 &
+			$\nu$        & Minimum charge allowed on departure of visit \(i\)                 \\
+			$\tau_i$     & Time visit $i$ must leave the station                              &
+			$\zeta_i$    & Discharge rate for vehicle \(i\)                                   \\
+			$a_i$        & Arrival time of visit  $i$                                         &
+			$m_q$        & Cost of a visit being assigned to charger  $q$                     \\
+			$r_q$        & Charge rate of charger $q$ per unit time                           &
+			$s_q$        & Length of vehicle \(i\)                                            \\
 		\hline
 		\multicolumn{4}{l}{Decision Variables} \\
 			$\delta_{ij}$ & If $v_i + s_i \leq v_j$ (\(\delta = 1\)) otherwise \(\delta = 0\)   &
 			$\eta_i$      & Initial charge for visit $i$                                        \\
 			$\sigma_{ij}$ & If \(u_i + p_i \leq u_j\) (\(\sigma = 1\)) otherwise \(\sigma = 0\) &
-			$c_i$         & detach time from charger for visit $i$                              \\
+			$c_i$         & Detach time from charger for visit $i$                              \\
 			$g_i$         & Linearization term for bilinear terms $g_i := p_i w_{iq}$           &
 			$p_i$         & Amount of time spent on charger for visit $i$                       \\
 			$u_i$         & Initial charge time of visit $i$                                    &
 			$v_i$         & Assigned queue for visit $i$                                        \\
-			$w_{iq}$      & Vector representation of queue assignment                           \\
+			$w_{iq}$      & Vector representation of queue assignment \(v\)                     \\
 			\bottomrule
 	\end{tabular}
 \end{table*}
@@ -191,9 +189,9 @@ The remainder of the paper proceeds as follows: Section \ref{sec:positionallocat
 % The Position Allocation Problem
 \section{The Position Allocation Problem}
 \label{sec:positionallocationproblem}
-The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set of rectangles \(\vmathbb{O}\) are attempted to be optimally placed in a larger rectangle \(O\) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{O}\) and rectangle \(O\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a NP-hard problem that can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of \(\vmathbb{O}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides of each rectangle to be decision variables \cite{Buhrkal2010}.
+The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set of rectangles (\(\vmathbb{O}\)) are attempted to be optimally placed in a larger rectangle (\(O\)) as shown in Fig \ref{fig:packexample}. Both the set \(\vmathbb{O}\) and rectangle \(O\)'s width and height are used to represent quantifiable values. The rectangle packing problem is a NP-hard problem that can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of \(\vmathbb{O}\) are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides of each rectangle to be decision variables \cite{Buhrkal2010}.
 
-Within BAP, the set of rectangles (\(\vmathbb{O}\)) describe incoming vessels to be docked on a berth to be serviced and are to be packed into the rectangle (\(O\)) defined by the time horizon (\(T\)) and berth length (\(S\)) \cite{Dai2008}, as shown in Fig \ref{subfig:bapexample}. The BAP is commonly formed as a MILP \cite{Frojan2015,Buhrkal2010}. The PAP formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints \cite{Qarebagh2019}. Notation is summarized in Table \ref{tab:variables}.
+% Within BAP, the set of rectangles (\(\vmathbb{O}\)) describe incoming vessels to be docked on a berth to be serviced and are to be packed into the rectangle (\(O\)) defined by the time horizon (\(T\)) and berth length (\(S\)) \cite{Dai2008}, as shown in Fig \ref{subfig:bapexample}. The BAP is commonly formed as a MILP \cite{Frojan2015,Buhrkal2010}. The PAP formulation utilizes the BAP to help determine which queue the bus should be placed on to be charged without violating time or space constraints \cite{Qarebagh2019}. Notation is summarized in Table \ref{tab:variables}.
 
 \begin{figure}
 	\centerline{\begin{tikzpicture}[scale=0.25]
@@ -299,7 +297,7 @@ The objective function \eqref{eq:bapobjective} minimizes the time spent to servi
 
 Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are the ``queuing constraints". They are used to prevent overlapping in both space and time as shown in Fig \ref{fig:multipleassign}. In terms of the BAP, constraint \eqref{subeq:baptime} states that the starting service time (\(u\)) for vessel \(j\) must be greater than the starting time of vessel \(i\) plus its service time (\(p\)). The last term utilizes the Big-M notation to activate or deactivate the constraint. Specifically, \eqref{subeq:baptime} is active if both \(i\) and \(j\) are to visit the same queue (\(v_i = v_j\)). A value of \(\sigma_{ij} = 1\) will activate the constraint to ensure that \(i\) is complete before \(j\) is allowed to begin being serviced. If \(\sigma = 0\), then the constraint is of the form \(T + u_j + p_j > u_i\) rendering the constraint ``inactive" because \(u_i\) cannot be larger than \(T + u_j + p_j\).
 
-In a similar fashion, \(\delta_{ij}\) effectively determines whether the vehicles will be charging at the same time (\(u_i + p_i \geq u_j\)). If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vehicle \(i\) and \(j\) must be charging at the same time but in different queues.
+In a similar fashion, \(\delta_{ij}\) effectively determines whether the vehicles will be charging at the same time (\(u_i + p_i \geq u_j\)). If \(\delta_{ij} = 1\) then \eqref{subeq:bapspace} is rendered active and vehicle \(i\) and \(j\) must be charging at the same time but in different queues. If \(\delta_{ij} = 0\) then the constraint is deactivated and the vehicles charge times do not overlap (\(u_i + p_i \leq u_j\)).
 
 Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables (\(u\) and \(v\)). Constraint \eqref{subeq:bapdelta} states that one of the following is true for each vehicle pair: \(u_i + p_i < u_j\) (\(\sigma_{ij} = 1\)), \(u_j < u_i + p_i\) (\(\sigma_{ji} = 1\)), \(v_i + s_i < v_j\) (\(\delta_{ij} = 1\)), \(v_j < v_i + s_i\) (\(\delta_{ji} = 1\)). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. \(u_i + p_i < u_j\) and \(u_j < u_i + p_i\) cannot hold true simultaneously. In a similar manner, \(v_i + s_i < u_j\) and \(u_j < v_i + s_i\) cannot be true simultaneously. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues.
 
@@ -347,16 +345,16 @@ Consider the following set of constraints:
     a_i \leq u_i \leq (T - p_i)                                      \label{subeq:valid_starts} \\
     c_i \leq \tau_i                                                  \label{subeq:valid_depart} \\
     \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}                \label{subeq:sdspace}      \\
-    v_i \in \{1,2, ... , Q\}                                         \label{subeq:vspace}        \\
+    v_i \in \{1,2, ... , Q\}                                         \label{subeq:vspace}
 \end{align}
 \end{subequations}
 
-Constraints \eqref{subeq:time}-\eqref{subeq:valid_starts} are the same as previously described in Section \ref{sec:positionallocationproblem}, except charging time (\(p\)) is now a decision variable. Additionally, starting charge time (\(u\)), charge duration (\(p\)), and detach time (\(c\)) are continuous and charging queue (\(v\)) is discrete as represented in \eqref{subeq:vspace}. Constraint \eqref{subeq:valid_depart} states that the ending charge time \((c\)) must be less than or equal to the required departure time from the station \(\tau\).
+Constraints \eqref{subeq:time}-\eqref{subeq:valid_starts} are the same as previously described in Section \ref{sec:positionallocationproblem}, except charging time (\(p\)) is now a decision variable. Additionally, starting charge time (\(u\)), charge duration (\(p\)), and detach time (\(c\)) are continuous and charging queue (\(v\)) is discrete as represented in Fig \ref{fig:bap} . Constraint \eqref{subeq:valid_depart} states that the ending charge time \((c\)) must be less than or equal to the required departure time from the station (\(\tau\)). Constraints \eqref{subeq:sdspace} and \eqref{subeq:vspace} are the sets of valid values that \(\sigma\), \(\delta\), and \(v\) may be.
 
 Using purely the constraints in \eqref{eq:packconstrs} with the objective in \eqref{eq:bapobjective} would results in \(c_i\) being chosen as small as possible by employing \(p_i = 0,\; u_i = c_i\). Thus, the vehicles would not charge. Furthermore, it does not encode any revisiting of the BEB to the charging station. To remedy this, battery dynamic constraints are introduced.
 
 \subsection{Battery Dynamic Constraints}
-The battery dynamic constraints are used to drive time spent on the charger (\(p\)) as well define initial, final, and intermediate bus charges for each visit \(i\). The initial and final bus charges are predefined and are represented by the equations \(\eta = \alpha \kappa\) and \(\eta = \beta \kappa\), respectively, where \(\alpha\) and \(\beta\) are percentages of the battery capacity. The intermediate charges must be determined at solve time. 
+The battery dynamic constraints are used to drive time spent on the charger (\(p\)) as well define initial, final, and intermediate bus charges for each visit \(i\). The initial and final bus charges are predefined and are represented by the equations \(\eta = \alpha \kappa\) and \(\eta = \beta \kappa\), respectively, where \(\alpha\) and \(\beta\) are percentages of the battery capacity. The intermediate charges must be determined at solve time.
 
 To accomplish such a task, each arrival \(i\) must be associated with a initial charge (\(\eta_i\)) which represents the charge received from the previous visit minus the discharge observed while on route; however, because the PAP assumes each arrival is unique, bus visits must be associated with a unique bus ID to appropriately initialize charges for each visit. This visit/ID pair is represented as vector denoted by \(\Gamma\) where the index represents visit \(i\) and the value is the ID. To propagate charges forward, another term \(\gamma\) is introduced to represent the next index bus \(i\) arrives. For example, assume \(A = 3\) buses, \(N = 5\) visits, and \(\Gamma = [1,2,3,1,2]\) (that is to say, bus 1 arrives at the same time or before 2, bus 2 arrives at the same time or before 3, etc.). This would imply \(\gamma = [3,4,-1,-1,-1]\), where 0-indexing is assumed and -1 represents no further visits for bus \(\Gamma_i\). Assuming proportional battery dynamics, the charge propagation is represented by:
 
@@ -379,7 +377,7 @@ Maximum and minimum values for the intermediate charges are to be placed to ensu
 \end{align*}
 \end{subequations}
 
-Where the upper bound is the battery capacity (\(\kappa\)) and the lower bound is a percentage of the battery capacity (\(\nu \kappa\)). Although the bounds and battery propagation have been defined, the term \(p_i w_{iq}\) is recognized as a bilinear term (two decision variables being multiplied together) which is nonlinear \cite{Rodriguez2013}. A standard way of linearizing a bilinear term that contains a continuous (\(p\)) and integer (\(w\)) term by introducing an either/or constraint and utilizing Big-M notation \cite{Chen2010,Rodriguez2013}.
+Where the upper bound is the battery capacity (\(\kappa\)) and the lower bound is a percentage of the battery capacity (\(\nu \kappa\)). Although the bounds and battery propagation have been defined, the term \(p_i w_{iq}\) is recognized as a bilinear term (two decision variables being multiplied together) which is nonlinear \cite{Rodriguez2013}. A standard way of linearizing a bilinear term that contains a continuous (\(p\)) and integer (\(w\)) term is by introducing a new term, an either/or constraint, and utilizing Big-M notation \cite{Chen2010,Rodriguez2013}.
 
 \begin{subequations}
 \begin{align}

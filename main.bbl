@@ -139,10 +139,10 @@ K.~Buhrkal, S.~Zuglian, S.~Ropke, J.~Larsen, and R.~Lusby, ``Models for the
   \url{https://www.sciencedirect.com/science/article/pii/S1366554510001201}
 \BIBentrySTDinterwordspacing
 
-\bibitem{Dai2008}
-J.~Dai, W.~Lin, R.~Moorthy, and C.-P. Teo, \emph{{Supply Chain
-  Analysis}}.\hskip 1em plus 0.5em minus 0.4em\relax Cambridge University
-  Press, 2008, vol. 119.
+\bibitem{Voss2007}
+S.~Voss, \emph{Container terminal operation and operations research – Recent
+  challenges}.\hskip 1em plus 0.5em minus 0.4em\relax Hong Kong Society for
+  Transportation Studies, 01 2007, pp. 387--396.
 
 \bibitem{Frojan2015}
 \BIBentryALTinterwordspacing
@@ -153,10 +153,6 @@ P.~Frojan, J.~F. Correcher, R.~Alvarez-Valdes, G.~Koulouris, and J.~M. Tamarit,
   \url{https://www.sciencedirect.com/science/article/pii/S0957417415003462}
 \BIBentrySTDinterwordspacing
 
-\bibitem{Cheng2007}
-S.~Cheng and J.~Leung, ``Container terminal operation and operations
-  research.''
-
 \bibitem{Rodriguez2013}
 \BIBentryALTinterwordspacing
 M.~A. Rodriguez and A.~Vecchietti, ``A comparative assessment of linearization
@@ -164,6 +160,10 @@ M.~A. Rodriguez and A.~Vecchietti, ``A comparative assessment of linearization
   vol.~48, pp. 218--233, 2013. [Online]. Available:
   \url{https://www.sciencedirect.com/science/article/pii/S009813541200289X}
 \BIBentrySTDinterwordspacing
+
+\bibitem{Chen2010}
+D.-S. Chen, R.~G. Batson, and Y.~Dang, \emph{Applied integer
+  programming}.\hskip 1em plus 0.5em minus 0.4em\relax Wiley, 2010.
 
 \bibitem{Hespanha2018}
 J.~P. Hespanha, \emph{Linear systems theory}.\hskip 1em plus 0.5em minus
