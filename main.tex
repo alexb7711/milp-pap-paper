@@ -28,7 +28,7 @@
 \usepackage{xcolor}
 
 \usetikzlibrary{arrows.meta}
-\pgfplotsset{compat=1.17}
+\pgfplotsset{compat=1.16}
 
 %%-------------------------------------------------------------------------------
 % Custom Commands
@@ -356,16 +356,19 @@ Using purely the constraints in \eqref{eq:packconstrs} with the objective in \eq
 \subsection{Battery Dynamic Constraints}
 The battery dynamic constraints are used to drive time spent on the charger (\(p\)) as well define initial, final, and intermediate bus charges for each visit \(i\). The initial and final bus charges are predefined and are represented by the equations \(\eta = \alpha \kappa\) and \(\eta = \beta \kappa\), respectively, where \(\alpha\) and \(\beta\) are percentages of the battery capacity. The intermediate charges must be determined at solve time.
 
-To accomplish such a task, each arrival \(i\) must be associated with a initial charge (\(\eta_i\)) which represents the charge received from the previous visit minus the discharge observed while on route; however, because the PAP assumes each arrival is unique, bus visits must be associated with a unique bus ID to appropriately initialize charges for each visit. This visit/ID pair is represented as vector denoted by \(\Gamma\) where the index represents visit \(i\) and the value is the ID. To propagate charges forward, another term \(\gamma\) is introduced to represent the next index bus \(i\) arrives. For example, assume \(A = 3\) buses, \(N = 5\) visits, and \(\Gamma = [1,2,3,1,2]\) (that is to say, bus 1 arrives at the same time or before 2, bus 2 arrives at the same time or before 3, etc.). This would imply \(\gamma = [3,4,-1,-1,-1]\), where 0-indexing is assumed and -1 represents no further visits for bus \(\Gamma_i\). Assuming proportional battery dynamics, the charge propagation is represented by:
+To accomplish such a task, each arrival \(i\) must be associated with a initial charge (\(\eta_i\)) which represents the charge received from the previous visit minus the discharge observed while on route; however, because the PAP assumes each arrival is unique, bus visits must be associated with a unique bus ID to appropriately initialize charges for each visit. This visit/ID pair is represented as vector denoted by \(\Gamma\) where the index represents visit \(i\) and the value is the ID. To propagate charges forward, another term \(\gamma\) is introduced to represent the next index bus \(i\) arrives. For example, assume \(A = 3\) buses, \(N = 5\) visits, and \(\Gamma = [1,2,3,1,2]\) (that is to say, bus 1 arrives at the same time or before 2, bus 2 arrives at the same time or before 3, etc.). This would imply \(\gamma = [3,4,-1,-1,-1]\), where 0-indexing is assumed and -1 represents no further visits for bus \(\Gamma_i\).
 
+It is assumed that the charge received is proportional to the time spent charging. The charge rate for charger $q$ is denoted as $r_q$, the charge at visit $i$ as $\eta_i$, and the amount of discharge between visit $i$ and the next visit of the same bus, $\gamma_i$. If visit $i$ occured at charger $q$, the charge of the bus coming into visit $\gamma_i$ would be
+$$
+	\eta_{\gamma_i} = \eta_i + p_i r_q - \lambda_i.
+$$
+The binary decision decision variable $w_{iq}$ is introduced to determine whether visit $i$ uses charger $q$. This allows the charge of the bus coming into visit $\gamma_i$ to be written in summation form as
 \begin{subequations}
 \begin{align*}
     \eta_{\gamma_i} = \eta_i + \sum_{q=1}^Q p_i w_{iq} r_q - \lambda_i \\
     w_{iq} \in \{0,1\}
 \end{align*}
 \end{subequations}
-
-Where \(\eta_{\gamma_i}\) is the initial charge for the next visit for bus \(\Gamma_i\), \(\eta_i\) is the initial charge for bus \(\Gamma_i\) for the current visit, \(\sum_{q=1}^Q p_i w_{iq} r_q\) represents the the amount of charge given by \(q\), and \(\lambda_i\) is the amount of discharge accrued during the route (\(\lambda = \textit{Discharge Rate [KW]}\cdot\textit{Route Duration [hr]}\)).
 
 Maximum and minimum values for the intermediate charges are to be placed to ensure the battery is not overcharged and to guarantee sufficient charge for subsequent visits, respectively. In a similar fashion, these upper and lower bounds can be represented as:
 
