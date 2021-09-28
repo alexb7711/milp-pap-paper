@@ -303,7 +303,7 @@ Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish 
 
 The last constraints force relationships between arrival time, charge start time, and departure time. Constraint \eqref{subeq:bapdetach} states that the service start time, \(u_i\), plus the time to service vessel \(i\), \(p_i\) must equal the departure time, \(c_i\). Constraint \eqref{subeq:bapvalid_starts} enforces the arrival time, \(a_i\), must be less than or equal to the service start time, \(u_i\) which int turn must be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:bapsdspace} ensures that \(\sigma_{ij}\) and \(\delta_{ij}\) are binary.
 
-Applying the PAP to BEB charging requires two fundamental, but significant changes. The first is that the BEB may not charge for a set amount of time. Thus, \(p_i\) becomes a variable of optimization and the resulting charge of each battery must be tracked. Second, in the PAP each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a different vehicle. This  a problem for accounting for battery dynamics when buses revisit after completing a route.
+Applying the PAP to BEB charging requires two fundamental, but significant changes. The first is that the BEB may not charge for a set amount of time. Thus, \(p_i\) becomes a variable of optimization and the resulting charge of each battery must be tracked. Second, in the PAP each vessel \(i\;; \forall 1 \leq i \leq N\) is assumed to be a different vehicle. This is a problem when accounting for battery dynamics when buses revisit after completing a route.
 
 \begin{figure}
 	\centerline{
