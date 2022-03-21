@@ -5,9 +5,8 @@ build:
   stage: build
   image: debian:unstable
   script:
-    - apt-get update && apt-get install -y texlive-full make
-    - make clean
-    - make
+    - apt-get update && apt-get install -y texlive-full latexmk
+    - latexmk -pdf main.tex
   artifacts:
     untracked: true
     expire_in: 1 week
