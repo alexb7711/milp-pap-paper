@@ -46,16 +46,29 @@
 %%-------------------------------------------------------------------------------
 % Authors
 \author{\IEEEauthorblockN{1\textsuperscript{st} Alexander Brown}
-\IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
-\textit{Utah State University}\\
-Logan, USA \\
-A01704744@usu.edu}
-\and
-\IEEEauthorblockN{2\textsuperscript{nd} Greg Droge}
-\IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
-\textit{Utah State University}\\
-Logan, USA \\
-greg.droge@usu.edu }}
+  \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
+    \textit{Utah State University}\\
+    Logan, USA \\
+    A01704744@usu.edu}
+  \and
+  \IEEEauthorblockN{2\textsuperscript{nd} Greg Droge}
+  \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
+    \textit{Utah State University}\\
+    Logan, USA \\
+    greg.droge@usu.edu }
+  \and
+  \IEEEauthorblockN{3\textsuperscript{nd} Mario Harper}
+  \IEEEauthorblockA{\textit{Department of Computer Science} \\
+    \textit{Utah State University}\\
+    Logan, USA \\
+    mario.harper@usu.edu}
+  \and
+  \IEEEauthorblockN{4\textsuperscript{nd} Jake Gunther}
+  \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
+    \textit{Utah State University}\\
+    Logan, USA \\
+    jake.gunther@usu.edu}
+}
 
 %%===============================================================================
 % Title, Authors, Abstract, Keywords
@@ -152,7 +165,7 @@ The remainder of the paper proceeds as follows: Section \ref{sec:positionallocat
 			$O$           & Bounding box for rectangle packing        \\
 			$\vmathbb{O}$ & Set of rectangles to be packed in $O$     &
 			$Q$           & Number of chargers                        \\
-			$S$           & Length of charger                         &
+			$S$           & Length of charger/berth                   &
 			$T$           & Time horizon                              \\
 		\hline
 		\multicolumn{4}{l}{Input variables} \\
@@ -167,6 +180,8 @@ The remainder of the paper proceeds as follows: Section \ref{sec:positionallocat
 			$\tau_i$     & Time visit $i$ must depart the station                             &
 			$\zeta_i$    & Discharge rate for vehicle $i$                                     \\
 			$a_i$        & Arrival time of visit  $i$                                         &
+			$i_0$        & Indices associated with the initial arrival for every bus in $A$   \\
+			$i_f$        & Indices associated with the final arrival for every bus in $A$     &
 			$m_q$        & Cost of a visit being assigned to charger $q$                      \\
 			$r_q$        & Charge rate of charger $q$ per unit time                           &
 			$s_q$        & Length of vehicle $i$                                              \\
@@ -189,7 +204,7 @@ The remainder of the paper proceeds as follows: Section \ref{sec:positionallocat
 % The Position Allocation Problem
 \section{The Position Allocation Problem}
 \label{sec:positionallocationproblem}
-The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set of rectangles ($\vmathbb{O}$) are attempted to be optimally placed in a larger rectangle ($O$) as shown in Fig \ref{fig:packexample}. Both the set $\vmathbb{O}$ and rectangle $O$'s width and height are used to represent quantifiable values. The rectangle packing problem is an NP-hard problem that can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of $\vmathbb{O}$ are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, allow one or both sides of each rectangle to be decision variables \cite{Buhrkal2010}.
+The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set of rectangles ($\vmathbb{O}$) are attempted to be optimally placed in a larger rectangle ($O$) as shown in Fig \ref{fig:packexample}. Both the set $\vmathbb{O}$ and rectangle $O$'s width and height are used to represent quantifiable values. The rectangle packing problem is an NP-hard problem that can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of $\vmathbb{O}$ are held constant such as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP in some instances, allow one side of the rectangle to vary depending on its assigned position (i.e. the handling time is dependent on the berth) \cite{Buhrkal2010}.
 
 \begin{figure}
 	\centerline{\begin{tikzpicture}[scale=0.25]
@@ -257,14 +272,15 @@ Subject to the following constraints:
 \begin{subequations}
 \label{eq:bapconstrs}
 \begin{align}
-    u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 0                     \label{subeq:baptime}         \\
-    v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 0                     \label{subeq:bapspace}        \\
-    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1    \label{subeq:bapvalid_pos}    \\
-    \sigma_{ij} + \sigma_{ji} \leq 1                                \label{subeq:bapsigma}        \\
-    \delta_{ij} + \delta_{ji} \leq 1                                \label{subeq:bapdelta}        \\
-    p_i + u_i = c_i                                                 \label{subeq:bapdetach}       \\
-    a_i \leq u_i \leq (T - p_i)                                     \label{subeq:bapvalid_starts} \\
-    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}               \label{subeq:bapsdspace}
+    u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 0                 \label{subeq:baptime}         \\
+    v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 0                 \label{subeq:bapspace}        \\
+    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1  \label{subeq:bapvalid_pos}    \\
+    \sigma_{ij} + \sigma_{ji} \leq 1                            \label{subeq:bapsigma}        \\
+    \delta_{ij} + \delta_{ji} \leq 1                            \label{subeq:bapdelta}        \\
+    p_i + u_i = c_i                                            \label{subeq:bapdetach}       \\
+    a_i \leq u_i \leq (T - p_i)                                \label{subeq:bapvalid_starts} \\
+    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;         \label{subeq:bapsdspace}      \\
+    v_i \in \{1,2,...,S\}                                      \label{subeq:bapvspace}
 \end{align}
 \end{subequations}
 
@@ -299,7 +315,7 @@ In a similar fashion, $\delta_{ij}$ determines whether the vehicles will be char
 
 Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} are used to establish queuing by providing a relationship between queuing variables. Constraint \eqref{subeq:bapvalid_pos} states that one of the following is true for each vehicle pair: $u_i + p_i < u_j$ ($\sigma_{ij} = 1$), $u_j < u_i + p_i$ ($\sigma_{ji} = 1$), $v_i + s_i < v_j$ ($\delta_{ij} = 1$), $v_j < v_i + s_i$ ($\delta_{ji} = 1$). Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce consistency, i.e. $u_i + p_i < u_j$ and $u_j < u_i + p_i$ cannot hold true simultaneously. In a similar manner, $v_i + s_i < u_j$ and $u_j < v_i + s_i$ cannot be true simultaneously. This enforces a relationship between vessels: either one is before the other temporally or they are in different queues.
 
-The last constraints force relationships between arrival time, charge start time, and departure time. Constraint \eqref{subeq:bapdetach} states that the service start time, $u_i$, plus the time to service vessel $i$, $p_i$, must equal the departure time, $c_i$. Constraint \eqref{subeq:bapvalid_starts} enforces the arrival time, $a_i$, must be less than or equal to the service start time, $u_i$, which in turn must be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:bapsdspace} ensures that $\sigma_{ij}$ and $\delta_{ij}$ are binary.
+The last constraints force relationships between arrival time, charge start time, and departure time. Constraint \eqref{subeq:bapdetach} states that the service start time, $u_i$, plus the time to service vessel $i$, $p_i$, must equal the departure time, $c_i$. Constraint \eqref{subeq:bapvalid_starts} enforces the arrival time, $a_i$, must be less than or equal to the service start time, $u_i$, which in turn must be less than or equal to the latest time the vessel may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:bapsdspace} ensures that $\sigma_{ij}$ and $\delta_{ij}$ are binary. Constraint \eqref{subeq:bapvspace} ensures that the assigned value of $v_i$ is a valid charging position.
 
 Applying the PAP to BEB charging requires two fundamental, but significant changes. The first is that the BEB may not charge for a set amount of time. Thus, $p_i$ becomes a variable of optimization and the resulting charge of each battery must be tracked. Second, in the PAP each vessel $i;\; \forall 1 \leq i \leq N$ is assumed to be a different vehicle. This is a problem when accounting for battery dynamics when buses revisit after completing a route.
 
@@ -347,7 +363,7 @@ Consider the following set of constraints:
 \end{align}
 \end{subequations}
 
-Constraints \eqref{subeq:time}-\eqref{subeq:valid_starts} and \eqref{subeq:sdspace} are the same as previously described in Section \ref{sec:positionallocationproblem}. Additionally, the charging queue, $v_i$ is discrete as represented in Fig \ref{fig:bap}. Constraint \eqref{subeq:valid_depart} states that the ending charge time, $c_i$, must be less than or equal to the required departure time from the station, $\tau_i$.
+Constraints \eqref{subeq:time}-\eqref{subeq:valid_starts} and \eqref{subeq:sdspace} are the same as previously described in Section \ref{sec:positionallocationproblem}. Additionally, the charging queue, $v_i \in Q$ is discrete as represented in Fig \ref{fig:bap}. This is to say, rather than using a continuous charger of length $S$, it is discretized into $Q$ available chargers. Constraint \eqref{subeq:valid_depart} states that the ending charge time, $c_i$, must be less than or equal to the required departure time from the station, $\tau_i$.
 
 Using purely the constraints in \eqref{eq:packconstrs} with the objective in \eqref{eq:bapobjective} would results in $c_i$ being chosen as small as possible by employing $p_i = 0,\; u_i = c_i$. Thus, the vehicles would not charge. Furthermore, it does not encode any revisiting of the BEB to the charging station. To remedy this, battery dynamic constraints are introduced.
 
@@ -407,24 +423,27 @@ The optimization is performed to the constraints in \eqref{eq:packconstrs} as we
 \begin{subequations}
 \label{eq:dynconstrs}
 \begin{align}
-    \eta_i = \alpha \kappa_{\Gamma_i}                                    \label{subeq:init_charge}  \\
+    \eta_{i_0} = \alpha_{i_0} \kappa_{\Gamma_{i_0}}                          \label{subeq:init_charge}  \\
     \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i = \eta_{\gamma_i}          \label{subeq:next_charge}  \\
     \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq \nu \kappa_{\Gamma_i} \label{subeq:min_charge}   \\
     \eta_i + \sum_{q=1}^Q g_{iq} r_q \leq \kappa_{\Gamma_i}                 \label{subeq:max_charge}   \\
-    \eta_i \geq \beta \kappa_{\Gamma_i}                                   \label{subeq:final_charge} \\
+    \eta_{i_f} \geq \beta_{i_f} \kappa_{\Gamma_{i_f}}                        \label{subeq:final_charge} \\
     p_i + (1 - w_{iq})M \geq g_{iq}                                      \label{subeq:gpgret}       \\
     p_i \leq g_{iq}                                                     \label{subeq:gples}        \\
     Mw_{iq} \geq g_{iq}                                                  \label{subeq:gwgret}       \\
     0 \leq g_{iq}                                                       \label{subeq:gwles}        \\
     \sum_{q=1}^Q qw_{iq} = v_i                                            \label{subeq:wmax}         \\
     \sum_{q=1}^Q w_{iq} = 1                                               \label{subeq:wone}         \\
-    w_{iq} \in \{0,1\}                                                   \label{subeq:wspace}
+    w_{iq} \in \{0,1\}                                                   \label{subeq:wspace}       \\
+    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;                   \label{subeq:bapsdspace}   \\
+    v_i \in \{1,...,Q\}                                                  \label{subeq:bapvspace}    \\
+    i \in \{1,...,N\}                                                    \label{subeq:ispace}
 \end{align}
 \end{subequations}
 
-Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the first arrival for each bus is initialized with a charge of $\alpha \kappa_{\Gamma_i}$. Constraint \eqref{subeq:next_charge} defines that the previous charge, $\eta_i$, plus the charging done by charger $q$ minus the discharge amount due to completing route, $\lambda_i$. Constraint \eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the initial charge, $\eta_i$, plus the charge from $q$ and the discharge from route, $\lambda_i$, must be greater than some percentage of its capacity, $\kappa_{\Gamma_i}$, in order to guarantee sufficient charge to complete the next route. Constraint \eqref{subeq:max_charge} states that the charging done for visit $i$ cannot be greater than the capacity of the battery, $\kappa_{\Gamma_i}$. Constraint \eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of $\beta \kappa_{\Gamma_i}$. Constraint \eqref{subeq:gpgret} is included to guarantee a minimum initial charge for the next working day.
+Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the first arrival for each bus is initialized with a charge of $\alpha \kappa_{\Gamma_i}$. Constraint \eqref{subeq:next_charge} defines that the previous charge, $\eta_i$, plus the charging done by charger $q$ minus the discharge amount due to completing route, $\lambda_i$. This constraint is only used with indices with valid next visit values (i.e. $\gamma_i \neq -1$). Constraint \eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the initial charge, $\eta_i$, plus the charge from $q$ and the discharge from route, $\lambda_i$, must be greater than some percentage of its capacity, $\kappa_{\Gamma_i}$, in order to guarantee sufficient charge to complete the next route. Constraint \eqref{subeq:max_charge} states that the charging done for visit $i$ cannot be greater than the capacity of the battery, $\kappa_{\Gamma_i}$. Constraint \eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of $\beta \kappa_{\Gamma_i}$. Constraint \eqref{subeq:gpgret} is included to guarantee a minimum initial charge for the next working day.
 
-The constraints \eqref{subeq:gples}-\eqref{subeq:gwles} represent the linear form of the bilinear term the $g_{iq} := p_i w_{iq}$. The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the queuing constraint and $w_{iq}$ (i.e $1w_{i1} + 2w_{i2} + \cdots + Qw_{iQ} = v_i$) and enforces that only a single $w$ may be selected per visit, respectively. The last constraint \eqref{subeq:wspace} defines $w_{iq}$ to be binary.
+The constraints \eqref{subeq:gples}-\eqref{subeq:gwles} represent the linear form of the bilinear term the $g_{iq} := p_i w_{iq}$. The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the queuing constraint and $w_{iq}$ (i.e $1w_{i1} + 2w_{i2} + \cdots + Qw_{iQ} = v_i$) and enforces that only a single $w$ may be selected per visit, respectively. The last constraints \eqref{subeq:wspace}-\eqref{subeq:ispace} defines the sets of valid values for each.
 
 %================================================================================
 % Example
@@ -436,14 +455,14 @@ An example will now be presented to demonstrate the utility of the developed MIL
 \subsection{Scenario}
 The given exampled utilizes $A = 40$ buses with $N = 220$ returns to the station divided between the $A$ buses. Each bus has a 388 KWh battery that is required to stay above 25\% charge (97 KWh) to maintain battery health, and the bus is assumed to begin the working day with 90\% charge (349 KWh). Additionally, each bus is required to end the day with a minimum charge of 95\% (368 KWh). Planning is done over a 24 hour time horizon. $Q = 9$ chargers are utilized where five of the chargers are slow charging (100 KWh) and four are fast charging (400 KWh). The slow chargers take longer, but are safer for the battery than the fast charger. Therefore, the slow chargers are modeled with a lower cost than than the fast charger for both assignment, $m_q = r_q$, and utilization, $\epsilon_q = r_q$, in the objective, \eqref{eq:objective}.
 
-The bus schedules are randomly generated. It is assumed that each bus has no more than 30 minutes between route departures. Bus route durations are completely random. They may vary anywhere from a minimum of the average time between the current and next arrival to a maximum of the next arrival time (i.e. $\frac{a_i + a_{\gamma_i}}{2}$ to $a_{\gamma_i}$). The discharge is assumed to be linear and is calculated via $\lambda_i = rand(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta_{i}{\gamma_i}$ where $1 \leq i \leq N$ and $\zeta_i$ is the discharge rate for each bus.
+The bus schedules are randomly generated. It is assumed that each bus has no more than 30 minutes between route departures. Bus routes are created by generating a random list of arrival times, assigning bus ID's to each visit, then generating route durations. They may vary anywhere from a minimum of the average time between the current and next arrival to a maximum of the next arrival time (i.e. $\frac{a_i + a_{\gamma_i}}{2}$ to $a_{\gamma_i}$). The discharge is assumed to be linear and is calculated via $\lambda_i = rand(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta_{\gamma_i}$ where $1 \leq i \leq N$ and $\zeta_i$ is the discharge rate for each bus.
 
 The optimization was performed using the Gurobi MILP solver \cite{Hespanha2018} on a machine running a quad-core Intel i7-9700 4.7 GHz processor. The optimizer ran for 5 seconds to produce the optimal solution.
 
 \subsection{Results}
-The schedule generated by the MILP is shown in Fig \ref{fig:schedule}. The top graph indicates the slow charger usage, and the bottom indicates the fast charger usage. Although $Q = 9$ chargers were used, Fig \ref{fig:schedule} shows that only five chargers were utilized. %The MILP formalization will, in addition to utilizing the slow chargers as much as possible, use only the minimum required amount of chargers. This behavior is due to the rectangle packing constraints \eqref{eq:packconstrs}.
+The schedule generated by the MILP is shown in Fig \ref{fig:schedule}. The top graph indicates the slow charger usage, and the bottom indicates the fast charger usage. Although $Q = 9$ chargers were used, Fig \ref{fig:schedule} shows that only five chargers were utilized.
 
-Each color in Fig \ref{fig:schedule} is used to identify the bus ID assigned. It is noted that the overlaps in Fig \ref{fig:schedule} indicate the waiting time of vehicle $j$ while vehicle $i$ charges. This is recognized by viewing the vertical bars. These bars indicate the time bus $i$ is set to charge. The area before indicate waiting time and the area after indicates the time spent on the charger. Note that, based upon vehicles needs, bus $i$ may arrive before bus $j$, but wait until after bus $j$ charges before starting its charge (Fig \ref{fig:unoptimal}). This is a very unintuitive schedule that would not be achieved through a greedy scheduling algorithm.
+Each color in Fig \ref{fig:schedule} is used to identify the bus ID assigned. It is noted that the overlaps in Fig \ref{fig:schedule} indicate the waiting time of vehicle $j$ while vehicle $i$ charges. This is recognized by viewing the vertical bars. These bars indicate the time bus $i$ is set to charge. The area before indicate waiting time and the area after indicates the time spent on the charger. Note that, based upon vehicles needs, bus $i$ may arrive before bus $j$, but wait until after bus $j$ charges before starting its charge (Fig \ref{fig:unoptimal}). This is an unintuitive schedule caused by the cost of assignment parameter in the objective function, $m_q$. This type of constraint would not be achieved through a greedy scheduling algorithm.
 
 \begin{figure*}[ht]
 	\centering
