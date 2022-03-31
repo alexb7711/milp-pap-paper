@@ -81,7 +81,7 @@
 %%-------------------------------------------------------------------------------
 % Abstract
 \begin{abstract}
-This paper introduces an electric bus scheduling framework that utilizes both fast and slow charging assuming a fixed route schedule. Slow chargers are prioritized for battery health and fast chargers are utilized to satisfy time constraints. A Berth Allocation Problem (BAP) approach is modified and utilized to construct the Position Allocation Problem (PAP) Mixed Integer Linear Program (MILP) that optimally assigns incoming buses to chargers while taking into consideration battery dynamics of the buses. Results are present utilizing a randomly generated bus schedule for 40 buses.
+This paper introduces an electric bus scheduling framework that utilizes both fast and slow charging assuming a fixed route schedule. Slow chargers are prioritized for battery health and fast chargers are utilized to satisfy time constraints. A Berth Allocation Problem (BAP) approach is modified and utilized to construct the Position Allocation Problem (PAP) Mixed Integer Linear Program (MILP) that optimally assigns incoming buses to chargers while taking into consideration battery dynamics of the buses. Results are presented utilizing a randomly generated bus schedule for 40 buses.
 \end{abstract}
 
 %%-------------------------------------------------------------------------------
@@ -264,7 +264,7 @@ The BAP formulation forms the basis of the PAP; however there are some slight di
 
 \begin{equation}
 	\label{eq:bapobjective}
-	min\; \sum_{i=1}^N (c_i - a_i)
+	\min\; \sum_{i=1}^N (c_i - a_i)
 \end{equation}
 
 Subject to the following constraints:
@@ -359,7 +359,7 @@ Consider the following set of constraints:
     a_i \leq u_i \leq (T - p_i)                                      \label{subeq:valid_starts} \\
     c_i \leq \tau_i                                                  \label{subeq:valid_depart} \\
     \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}                \label{subeq:sdspace}      \\
-    v_i \in \{1,2, ... , Q\}                                         \label{subeq:vspace}
+    v_i \in [1,2, ... , Q]                                          \label{subeq:vspace}
 \end{align}
 \end{subequations}
 
@@ -415,7 +415,7 @@ The last consideration is the objective function. The goal of the MILP is to uti
 
 \begin{equation}
 \label{eq:objective}
-	\sum_{i=1}^N \sum_{q=1}^Q \Big( w_{iq} m_q + g_{iq} \epsilon_q \Big) \\
+	\min \sum_{i=1}^N \sum_{q=1}^Q \Big( w_{iq} m_q + g_{iq} \epsilon_q \Big) \\
 \end{equation}
 
 \subsection{The BEB Charging Problem}
@@ -424,27 +424,36 @@ The resulting problem to be optimized is as follows
 \begin{subequations}
 \label{eq:dynconstrs}
 \begin{align}
-    \eta_{i_0} = \alpha_{i_0} \kappa_{\Gamma_{i_0}}                          \label{subeq:init_charge}  \\
-    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i = \eta_{\gamma_i}          \label{subeq:next_charge}  \\
-    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq \nu \kappa_{\Gamma_i} \label{subeq:min_charge}   \\
-    \eta_i + \sum_{q=1}^Q g_{iq} r_q \leq \kappa_{\Gamma_i}                 \label{subeq:max_charge}   \\
-    \eta_{i_f} \geq \beta_{i_f} \kappa_{\Gamma_{i_f}}                        \label{subeq:final_charge} \\
-    p_i + (1 - w_{iq})M \geq g_{iq}                                      \label{subeq:gpgret}       \\
-    p_i \leq g_{iq}                                                     \label{subeq:gples}        \\
-    Mw_{iq} \geq g_{iq}                                                  \label{subeq:gwgret}       \\
-    0 \leq g_{iq}                                                       \label{subeq:gwles}        \\
-    \sum_{q=1}^Q qw_{iq} = v_i                                            \label{subeq:wmax}         \\
-    \sum_{q=1}^Q w_{iq} = 1                                               \label{subeq:wone}         \\
-    w_{iq} \in \{0,1\}                                                   \label{subeq:wspace}       \\
-    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;                   \label{subeq:sdspace}      \\
-    v_i \in  [1,...,Q ]                                                  \label{subeq:vspace}       \\
-    i \in \{1,...,N\}                                                    \label{subeq:ispace}
+    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                             \label{subeq:m_time}         \\
+    v_i - v_j - s_j - (\delta_{ij} - 1)Q \geq 0                             \label{subeq:m_space}        \\
+    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1            \label{subeq:m_valid_pos}    \\
+    \sigma_{ij} + \sigma_{ji} \leq 1                                        \label{subeq:m_sigma}        \\
+    \delta_{ij} + \delta_{ji} \leq 1                                        \label{subeq:m_delta}        \\
+    p_i + u_i = c_i                                                         \label{subeq:m_detach}       \\
+    a_i \leq u_i \leq (T - p_i)                                             \label{subeq:m_valid_starts} \\
+    c_i \leq \tau_i                                                         \label{subeq:m_valid_depart} \\
+    \eta_{i_0} = \alpha_{i_0} \kappa_{\Gamma_{i_0}}                         \label{subeq:init_charge}    \\
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i = \eta_{\gamma_i}          \label{subeq:next_charge}    \\
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q - \lambda_i \geq \nu \kappa_{\Gamma_i} \label{subeq:min_charge}     \\
+    \eta_i + \sum_{q=1}^Q g_{iq} r_q \leq \kappa_{\Gamma_i}                 \label{subeq:max_charge}     \\
+    \eta_{i_f} \geq \beta_{i_f} \kappa_{\Gamma_{i_f}}                       \label{subeq:final_charge}   \\
+    p_i + (1 - w_{iq})M \geq g_{iq}                                         \label{subeq:gpgret}         \\
+    p_i \leq g_{iq}                                                         \label{subeq:gples}          \\
+    Mw_{iq} \geq g_{iq}                                                     \label{subeq:gwgret}         \\
+    0 \leq g_{iq}                                                           \label{subeq:gwles}          \\
+    \sum_{q=1}^Q qw_{iq} = v_i                                              \label{subeq:wmax}           \\
+    \sum_{q=1}^Q w_{iq} = 1                                                 \label{subeq:wone}           \\
+    w_{iq} \in \{0,1\}                                                      \label{subeq:wspace}         \\
+    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;                     \label{subeq:sdspace}        \\
+    v_i \in  [1,...,Q ]                                                     \label{subeq:vspace}         \\
+    i \in [1,...,N]                                                        \label{subeq:ispace}          \\
+    q \in [1,...,Q] 							   \label{subeq:qspace}
 \end{align}
 \end{subequations}
 
-Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the first arrival for each bus is initialized with a charge of $\alpha \kappa_{\Gamma_i}$. Constraint \eqref{subeq:next_charge} defines that the previous charge, $\eta_i$, plus the charging done by charger $q$ minus the discharge amount due to completing route, $\lambda_i$. This constraint is only used with indices with valid next visit values (i.e. $\gamma_i \neq -1$). Constraint \eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the initial charge, $\eta_i$, plus the charge from $q$ and the discharge from route, $\lambda_i$, must be greater than some percentage of its capacity, $\kappa_{\Gamma_i}$, in order to guarantee sufficient charge to complete the next route. Constraint \eqref{subeq:max_charge} states that the charging done for visit $i$ cannot be greater than the capacity of the battery, $\kappa_{\Gamma_i}$. Constraint \eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of $\beta \kappa_{\Gamma_i}$. Constraint \eqref{subeq:gpgret} is included to guarantee a minimum initial charge for the next working day.
+Constraints \eqref{subeq:m_time}-\eqref{subeq:m_valid_depart} are reiterations of queuing constraints in \eqref{eq:packconstrs}. Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the first arrival for each bus is initialized with a charge of $\alpha \kappa_{\Gamma_i}$. Constraint \eqref{subeq:next_charge} defines that the previous charge, $\eta_i$, plus the charging done by charger $q$ minus the discharge amount due to completing route, $\lambda_i$. This constraint is only used with indices with valid next visit values (i.e. $\gamma_i \neq -1$). Constraint \eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the initial charge, $\eta_i$, plus the charge from $q$ and the discharge from route, $\lambda_i$, must be greater than some percentage of its capacity, $\kappa_{\Gamma_i}$, in order to guarantee sufficient charge to complete the next route. Constraint \eqref{subeq:max_charge} states that the charging done for visit $i$ cannot be greater than the capacity of the battery, $\kappa_{\Gamma_i}$. Constraint \eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of $\beta \kappa_{\Gamma_i}$. Constraint \eqref{subeq:gpgret} is included to guarantee a minimum initial charge for the next working day.
 
-The constraints \eqref{subeq:gples}-\eqref{subeq:gwles} represent the linear form of the bilinear term the $g_{iq} := p_i w_{iq}$. The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the queuing constraint and $w_{iq}$ (i.e $1w_{i1} + 2w_{i2} + \cdots + Qw_{iQ} = v_i$) and enforces that only a single $w$ may be selected per visit, respectively. The last constraints \eqref{subeq:wspace}-\eqref{subeq:ispace} defines the sets of valid values for each.
+The constraints \eqref{subeq:gples}-\eqref{subeq:gwles} represent the linear form of the bilinear term the $g_{iq} := p_i w_{iq}$. The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the queuing constraint and $w_{iq}$ (i.e $1w_{i1} + 2w_{i2} + \cdots + Qw_{iQ} = v_i$) and enforces that only a single $w$ may be selected per visit, respectively. The last constraints \eqref{subeq:wspace}-\eqref{subeq:qspace} defines the sets of valid values for each.
 
 %================================================================================
 % Example
@@ -454,11 +463,11 @@ The constraints \eqref{subeq:gples}-\eqref{subeq:gwles} represent the linear for
 An example will now be presented to demonstrate the utility of the developed MILP. A description of the scenario is first presented followed by results.
 
 \subsection{Scenario}
-The given exampled utilizes $A = 40$ buses with $N = 220$ returns to the station divided between the $A$ buses. Each bus has a 388 KWh battery that is required to stay above 25\% charge (97 KWh) to maintain battery health, and the bus is assumed to begin the working day with 90\% charge (349 KWh). Additionally, each bus is required to end the day with a minimum charge of 95\% (368 KWh). Planning is done over a 24 hour time horizon. $Q = 9$ chargers are utilized where five of the chargers are slow charging (100 KWh) and four are fast charging (400 KWh). The slow chargers take longer, but are safer for the battery than the fast charger. Therefore, the slow chargers are modeled with a lower cost than than the fast charger for both assignment, $m_q = r_q$, and utilization, $\epsilon_q = r_q$, in the objective, \eqref{eq:objective}.
+The given exampled utilizes $A = 40$ buses with $N = 220$ returns to the station divided between the $A$ buses. Each bus has a 388 KWh battery that is required to stay above 25\% charge (97 KWh) to maintain battery health, and the bus is assumed to begin the working day with 90\% charge (349 KWh). Additionally, each bus is required to end the day with a minimum charge of 95\% (368 KWh). Planning is done over a 24 hour time horizon. $Q = 9$ chargers are utilized where five of the chargers are slow charging (100 KWh) and four are fast charging (400 KWh). The slow chargers take longer, but are better for battery health than the fast chargers. Therefore, the slow chargers are modeled with a lower cost than than the fast chargers for both assignment, $m_q = r_q$, and utilization, $\epsilon_q = r_q$, in the objective, \eqref{eq:objective}.
 
-The bus schedules are randomly generated. It is assumed that each bus has no more than 30 minutes between route departures. Bus routes are created by generating a random list of arrival times, assigning bus ID's to each visit, then generating route durations. They may vary anywhere from a minimum of the average time between the current and next arrival to a maximum of the next arrival time (i.e. $\frac{a_i + a_{\gamma_i}}{2}$ to $a_{\gamma_i}$). The discharge is assumed to be linear and is calculated via $\lambda_i = rand(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta_{\gamma_i}$ where $1 \leq i \leq N$ and $\zeta_i$ is the discharge rate for each bus.
+The bus schedules are randomly generated. It is assumed that each bus has no more than 30 minutes between route departures. Bus routes are created by generating a random list of arrival times, assigning bus ID's to each visit, then generating route durations. They may vary anywhere from a minimum of the average time between the current and next arrival to a maximum of the next arrival time (i.e. $\frac{a_i + a_{\gamma_i}}{2}$ to $a_{\gamma_i}$). The discharge is assumed to be linear and is calculated via $\lambda_i = \text{rand}(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta_{\gamma_i}$ where $1 \leq i \leq N$ and $\zeta_i$ is the discharge rate for each bus.
 
-The optimization was performed using the Gurobi MILP solver \cite{Hespanha2018} on a machine running a quad-core Intel i7-9700 4.7 GHz processor. The optimizer ran for 5 seconds to produce the optimal solution.
+The optimization was performed using the Gurobi MILP solver \cite{Hespanha2018} on a machine running a quad-core Intel i7-9700 4.7 GHz processor. The optimizer ran for 5 seconds to completion to produce the optimal solution.
 
 \subsection{Results}
 The schedule generated by the MILP is shown in Fig \ref{fig:schedule}. The top graph indicates the slow charger usage, and the bottom indicates the fast charger usage. Although $Q = 9$ chargers were used, Fig \ref{fig:schedule} shows that only five chargers were utilized.
@@ -475,7 +484,7 @@ Each color in Fig \ref{fig:schedule} is used to identify the bus ID assigned. It
 \begin{figure}[ht]
 	\centering
 	\includegraphics[trim=0in 0in 0in 0in, width=\linewidth]{unoptimal.pdf}
-	\caption{Example of a bus $i$ arriving before $j$, having $i$ wait for $j$ to arrive, and charge $i$ after $j$ is detached.}
+	\caption{An example, from Fig \ref{fig:schedule}, of a bus $i$ arriving before $j$, having $i$ wait for $j$ to arrive, and charge $i$ after $j$ is detached.}
 	\label{fig:unoptimal}
 \end{figure}
 
@@ -499,7 +508,7 @@ Fig \ref{fig:charges} depicts the charge for every bus over the time horizon. Ev
 % Conclusion
 \section{Conclusion}
 \label{sec:conclusion}
-This work developed a MILP scheduling framework that optimally assigns slow and fast chargers to a BEB bus fleet assuming a constant schedule. The BAP was introduced with an example formulation and was then compared to the PAP. The PAP constructed on the BAP to allow the time spent on the charger, $p_i$, to be a decision variable. Because the original PAP required service time, $p_i$, to be given, linear battery dynamics were introduced to drive charging times. Additional constraints were also introduced to provide limits for the battery dynamics. An example was presented that demonstrated the ability of the formulation to utilize slow chargers when possible and fast chargers when necessary. The battery dynamic constraints to limit maximum and minimum charges was also observed.
+This work developed a MILP scheduling framework that optimally assigns slow and fast chargers to a BEB bus fleet assuming a constant schedule. The BAP was introduced with an example formulation and was then compared to the PAP. The PAP constructed on the BAP to allow the time spent on the charger, $p_i$, to be a decision variable. Because the original PAP required service time, $p_i$, to be given, linear battery dynamics were introduced to drive charging times. Additional constraints were also introduced to provide limits for the battery dynamics. An example was presented that demonstrated the ability of the formulation to utilize slow chargers when possible and fast chargers when necessary. The battery dynamic constraints to limit maximum and minimum charges were also observed.
 
 %%================================================================================
 % Bibliography
