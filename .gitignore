@@ -11,5 +11,4 @@
 *.bak
 *.sav
 *converted-to.pdf
-main.pdf
 build/
