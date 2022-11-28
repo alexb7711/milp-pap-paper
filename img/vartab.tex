@@ -1,0 +1,49 @@
+\begin{table*}[!t]
+	\caption{Notation used throughout the paper}
+	\label{tab:variables}
+	\centering
+	\begin{tabular}{l l l l}
+		\toprule
+		\textbf{Variable} & \textbf{Description} & \textbf{Variable} & \textbf{Description} \\
+		\toprule
+		\multicolumn{4}{l}{Input values}                                  \\
+			$A$           & Number of buses in use                    &
+			$M$           & An arbitrary very large upper bound value \\
+			$N$           & Number of total visits                    &
+			$O$           & Bounding box for rectangle packing        \\
+			$\vmathbb{O}$ & Set of rectangles to be packed in $O$     &
+			$Q$           & Number of chargers                        \\
+			$S$           & Length of charger                         &
+			$T$           & Time horizon                              \\
+		\hline
+		\multicolumn{4}{l}{Input variables} \\
+			$\Gamma_i$   & Array of ID's for each visit $i$                                   &
+			$\alpha_i$   & Initial charge percentage time for visit $i$                       \\
+			$\beta_i$    & Final charge percentage for bus $i$ at the end of the time horizon &
+			$\epsilon_q$ & Cost of using charger $q$ per unit time                            \\
+			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive    &
+			$\kappa_i$   & Battery capacity for bus $i$                                       \\
+			$\lambda_i$  & Discharge of visit over route $i$                                  &
+			$\nu$        & Minimum charge allowed on departure of visit $i$                   \\
+			$\tau_i$     & Time visit $i$ must depart the station                             &
+			$\zeta_i$    & Discharge rate for vehicle $i$                                     \\
+			$a_i$        & Arrival time of visit  $i$                                         &
+			$i_0$        & Indices associated with the initial arrival for every bus in $A$   \\
+			$i_f$        & Indices associated with the final arrival for every bus in $A$     &
+			$m_q$        & Cost of a visit being assigned to charger $q$                      \\
+			$r_q$        & Charge rate of charger $q$ per unit time                           &
+			$s_q$        & Length of vehicle $i$                                              \\
+		\hline
+		\multicolumn{4}{l}{Decision Variables} \\
+			$\delta_{ij}$ & If $v_i + s_i \leq v_j$ ($\delta = 1$) otherwise $\delta = 0$ &
+			$\eta_i$      & Initial charge for visit $i$                                 \\
+			$\sigma_{ij}$ & If $u_i + p_i \leq u_j$ ($\sigma = 1$) otherwise $\sigma = 0$ &
+			$c_i$         & Detach time from charger for visit $i$                       \\
+			$g_i$         & Linearization term for bilinear terms $g_i := p_i w_{iq}$     &
+			$p_i$         & Amount of time spent on charger for visit $i$                \\
+			$u_i$         & Initial charge time of visit $i$                             &
+			$v_i$         & Assigned queue for visit $i$                                 \\
+     			$w_{iq}$      & $w_{iq} = 1$ if bus visit $i$ is assigned to charger $q$       \\
+			\bottomrule
+	\end{tabular}
+\end{table*}
