@@ -156,7 +156,7 @@ including a linear battery dynamic model, allowing multiple charger types (fast,
 link consecutive visits to specific vehicles to accommodate revisiting BEBs.
 
 % BAP and PAP comparison
-\input{img/bappap.tex}
+%\input{img/bappap.tex}
 
 The remainder of the paper proceeds as follows: In Section \ref{sec:positionallocationproblem}, the BAP is introduced
 with a MILP formulation example. Section \ref{sec:problemformulation} constructs the PAP and introduces battery dynamics
@@ -165,7 +165,7 @@ assign vehicles while considering linear battery dynamics and meeting scheduling
 \ref{sec:conclusion} with concluding remarks.
 
 % Variable table
-\input{img/vartab.tex}
+%\input{img/vartab.tex}
 
 %%-------------------------------------------------------------------------------
 % The Position Allocation Problem
@@ -198,7 +198,7 @@ the rectangle to vary depending on its assigned position (i.e. the handling time
 	\label{fig:packexample}
 \end{figure}
 
-The BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig
+the BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig
 \ref{subfig:bapexample}). The width and height of $O$ represent the berth length $S$ and time horizon $T$, respectively.
 Similarly, the width and height for $\vmathbb{O}$ represent the time spent to service vessel $i$ and the space taken by
 docking vessel $i$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired
@@ -217,7 +217,7 @@ MILP describes the stated objective and constraints. The MILP is shown in its en
 which the PAP is constructed \cite{Qarebagh2019}.
 
 % Spatial temporal graph representation
-\input{img/baprep.tex}
+%\input{img/baprep.tex}
 
 \begin{equation}
 	\label{eq:bapobjective}
@@ -229,15 +229,15 @@ Subject to the following constraints:
 \begin{subequations}
 \label{eq:bapconstrs}
 \begin{align}
-    u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 0                 \label{subeq:baptime}         \\
-    v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 0                 \label{subeq:bapspace}        \\
+    u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 0                   \label{subeq:baptime}         \\
+    v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 0                   \label{subeq:bapspace}        \\
     \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1  \label{subeq:bapvalid_pos}    \\
-    \sigma_{ij} + \sigma_{ji} \leq 1                            \label{subeq:bapsigma}        \\
-    \delta_{ij} + \delta_{ji} \leq 1                            \label{subeq:bapdelta}        \\
-    p_i + u_i = c_i                                            \label{subeq:bapdetach}       \\
-    a_i \leq u_i \leq (T - p_i)                                \label{subeq:bapvalid_starts} \\
-    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;         \label{subeq:bapsdspace}      \\
-    v_i \in [1,2,...,S]                                      \label{subeq:bapvspace}
+    \sigma_{ij} + \sigma_{ji} \leq 1                              \label{subeq:bapsigma}        \\
+    \delta_{ij} + \delta_{ji} \leq 1                              \label{subeq:bapdelta}        \\
+    p_i + u_i = c_i                                               \label{subeq:bapdetach}       \\
+    a_i \leq u_i \leq (T - p_i)                                   \label{subeq:bapvalid_starts} \\
+    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;           \label{subeq:bapsdspace}      \\
+    v_i \in [1,2,...,S]                                           \label{subeq:bapvspace}
 \end{align}
 \end{subequations}
 
@@ -344,7 +344,7 @@ Consider the following set of constraints:
     a_i \leq u_i \leq (T - p_i)                                      \label{subeq:valid_starts} \\
     c_i \leq \tau_i                                                  \label{subeq:valid_depart} \\
     \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}                \label{subeq:sdspace}      \\
-    v_i \in [1,2, ... , Q]                                          \label{subeq:vspace}
+    v_i \in [1,2, ... , Q]                                           \label{subeq:vspace}
 \end{align}
 \end{subequations}
 
@@ -434,7 +434,7 @@ The last consideration is the objective function. The goal of the MILP is to uti
 Thus, an assignment cost $m_q$ and usage cost $\epsilon_q$ are associated with each charger, $q$. The cost for both the
 assignment and utilization of slow chargers is less than that of the fast chargers. The objective function has an
 assignment term, $w_{iq}m_q$, which is non-zero if charger $q$ is used for visit $i$. Similarly, a usage term $g_{iq}
-\epsilon_q$ is non-zero only if charge is recieved for visit $i$ at charger $q$. The resulting objective is defined in Equation
+\epsilon_q$ is non-zero only if charge is recieved for visit $i$ at charger $q$. The resulting objective is defined in Eq
 \ref{eq:objective}. The assignment cost, $w_{iq}m_q$, and the usage cost, $g_{iq}\epsilon_q$, are summed over each visit, $i$,
 and charger, $q$.
 
@@ -444,7 +444,7 @@ and charger, $q$.
 \end{equation}
 
 \subsection{The BEB Charging Problem}
-The resulting problem to be optimized is outlined in Equation \ref{eq:dynconstrs}. Constraints
+The resulting problem to be optimized is outlined in Eq \ref{eq:dynconstrs}. Constraints
 \eqref{subeq:m_time}-\eqref{subeq:m_valid_depart} are reiterations of the queuing constraints in \eqref{eq:packconstrs}.
 Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well
 as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the
@@ -465,7 +465,7 @@ selected per visit, respectively. The last constraints \eqref{subeq:wspace}-\eqr
 valid values for each.
 
 % Final set of constraints
-\input{img/dynconstrs.tex}
+%\input{img/dynconstrs.tex}
 
 %================================================================================
 % Example
@@ -508,35 +508,39 @@ but wait until after bus $j$ charges before starting its charge (Fig \ref{fig:un
 schedule caused by the cost of assignment parameter in the objective function, $m_q$. This type of constraint would not
 be achieved through a greedy scheduling algorithm.
 
+Fig \ref{fig:charges} depicts the charge for every bus over the time horizon. Every vehicle begins at 90\% charge,
+finishes at 95\% charge, and never goes below 25\% in the intermediate arrivals as stated in the constraints
+\eqref{eq:dynconstrs}. Fig \ref{fig:usage} represents the usage of each charger over the time horizon. The maximum
+amount of slow chargers used at any given time is three and only one fast charger is utilized at a time. 
+
+The pattern, for the most part, in Fig \ref{fig:schedule} is to populate the first charger and supply the other chargers as needed. Where this pattern primarily breaks down is around hour 15. Having moved each bus one charger down would have resulted in the same cost. This behavior is due to a lack of cost for the amount of total chargers being utilized. Adding a cost in the objective function to minimize the total amount of unique chargers would resolve this problem by effectively attempting to ``pack'' the chargers down reducing the peak of Fig \ref{fig:usage}. 
+
+Although this formulation effectively discourages the use of fast chargers to utilize the more cost effective slow charges more readily, there is no consideration for the cost consumption and demand cost. Consumption cost accounts for peak use of power in the system and demand cost accounts for the total energy used. These metrics are used to calculate the monetary cost of the system. Calculating the demand cost would create more bilinear terms as the objective function would have to sum over $\sum_{i=1}^N \sum_{q=1}^Q w_{iq}{r_q}(p_i)$, creating yet another linearization term. Furthermore, the demand cost would require discretization of the system. The demand utilizes the peak energy consumption over 15 minute intervals and uses the largest peak as the rate to charge. This would require tracking of when a charger is active and including another variable to enable and disable $w_{iq}r_q$. This example displays the limitation of the MILP solver as it adds effort and complexity to the system as a trade off for calculating the optimal schedule. Other metaheuristic solvers, such as simulated annealing (SA), would allow the problem to be solved without having to linearize the system. \TODO{get the citation for this}
+
 \begin{figure*}[ht]
 	\centering
-	\includegraphics[trim=1.5in 0.25in 1.5in 0.5in, width=\linewidth, height=9cm]{schedule.pdf}
+	\includegraphics[trim=1in 0.5in 1in 0.5in, width=\linewidth, height=11cm]{schedule.pdf}
 	\caption{Bus schedule generated with PAP MILP. Each color is assigned to a specific bus ID. The vertical bars indicate the time the vehicles are set to charge, the area before said bars indicate the waiting times for each visit $1 \leq i \leq N$. Similarly, the area after the bars indicate the time spent on the charger.}
 	\label{fig:schedule}
 \end{figure*}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[trim=0in 0in 0in 0in, width=\linewidth]{unoptimal.pdf}
+	\includegraphics[trim=0in 1in 0in 1in, width=\linewidth]{unoptimal.pdf}
 	\caption{An example, from Fig \ref{fig:schedule}, of a bus $i$ arriving before $j$, having $i$ wait for $j$ to arrive, and charge $i$ after $j$ is detached.}
 	\label{fig:unoptimal}
 \end{figure}
 
-Fig \ref{fig:charges} depicts the charge for every bus over the time horizon. Every vehicle begins at 90\% charge,
-finishes at 95\% charge, and never goes below 25\% in the intermediate arrivals as stated in the constraints
-\eqref{eq:dynconstrs}. Fig \ref{fig:usage} represents the usage of each charger over the time horizon. The maximum
-amount of slow chargers used at any given time is three and only one fast charger is utilized at a time.
-
 \begin{figure}[h!]
 	\centering
-	\includegraphics[trim=0in 0in 0in 0in, width=0.7\linewidth, height=10cm]{usage.pdf}
+	\includegraphics[trim=0in 0.5in 0in 1in, width=\linewidth, height=8.5cm]{usage.pdf}
 	\caption{Amount of slow and fast chargers used at any given time.}
 	\label{fig:usage}
 \end{figure}
 
 \begin{figure*}[h]
 	\centering
-	\includegraphics[trim=0in 0in 0in 0in, width=\linewidth, height=12cm]{charges.pdf}
+	\includegraphics[trim= 0in 0in 0in 0.25in, width=\linewidth, height=10cm]{charges.pdf}
 	\caption{Charge for each bus over the time horizon.}
 	\label{fig:charges}
 \end{figure*}
@@ -549,13 +553,14 @@ This work developed a MILP scheduling framework that optimally assigns slow and 
 assuming a constant schedule. The BAP was introduced with an example formulation and was then compared to the PAP. The
 PAP constructed on the BAP to allow the time spent on the charger, $p_i$, to be a decision variable. Because the
 original PAP required service time, $p_i$, to be given, linear battery dynamics were introduced to drive charging times.
-Additional constraints were also introduced to provide limits for the battery dynamics. An example was presented that
-demonstrated the ability of the formulation to utilize slow chargers when possible and fast chargers when necessary. The
-battery dynamic constraints to limit maximum and minimum charges were also observed.
+Additional constraints were also introduced to provide limits for the battery dynamics. 
+
+An example was presented that demonstrated the ability of the formulation to optimally select slow and fast chargers to meet the requirements of the time schedule and the charge consumed during the bus routes. It was also observed that the formulation was able to successfully create a charging schedule without creating conflicts (Fig \ref{fig:schedule}). The charge for each bus was tracked in Fig \ref{fig:charges} and shows that the schedule maintained the charges between the maximum charge, 100\%, and the minimum charge, 25\%.
+
+Limitations were demonstrated in the lack of objective to limit the total amount of chargers utilized and to calculate the demand and consumption costs. Further fields of interest are to utilize the formulation (Eq \eqref{eq:objective} and \eqref{eq:dynconstrs}) with nonlinear battery dynamics, calculation and utilization of the demand and consumption cost in the objective function, and utilizing this formulation in a metaheuristic solver.
 
 %%================================================================================
 % Bibliography
-\newpage
 \bibliographystyle{IEEEtran}
 \bibliography{main}
 
