@@ -519,7 +519,7 @@ resulted in the same cost. This behavior is due to a lack of cost for the amount
 Adding a cost in the objective function to minimize the total amount of unique chargers would resolve this problem by
 effectively attempting to ``pack'' the chargers down reducing the peak of Fig \ref{fig:usage}.
 
-Although this formulation effectively discourages the use of fast chargers to utilize the more cost effective slow
+Although this formulation effectively discourages the use of fast chargers to utilize the more cost-effective slow
 charges more readily, there is no consideration for the cost consumption and demand cost. Consumption cost accounts for
 peak use of power in the system and demand cost accounts for the total energy used. These metrics are used to calculate
 the monetary cost of the system. Calculating the demand cost would create more bilinear terms as the objective function
@@ -527,7 +527,7 @@ would have to sum over $\sum_{i=1}^N \sum_{q=1}^Q w_{iq}{r_q}(p_i)$, creating ye
 demand cost would require discretization of the system. The demand utilizes the peak energy consumption over 15 minute
 intervals and uses the largest peak as the rate to charge. This would require tracking of when a charger is active and
 including another variable to enable and disable $w_{iq}r_q$. This example displays the limitation of the MILP solver as
-it adds effort and complexity to the system as a trade off for calculating the optimal schedule. Other metaheuristic
+it adds effort and complexity to the system as a trade-off for calculating the optimal schedule. Other metaheuristic
 solvers, such as simulated annealing (SA), would allow the problem to be solved without having to linearize the system.
 \TODO{get the citation for this}
 
