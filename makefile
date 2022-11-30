@@ -4,8 +4,9 @@ src   := $(shell find . -type f -name "*.tex")					# Source files
 all: $(target)
 
 clean:
-	latexmk -c $(src)
+	@rm -f $(target)
+	@latexmk -c $(src)
 
 $(target) : $(src)
-	latexmk -bibtex -pdf main.tex
-	[ -f main.pdf ] && mv main.pdf $(target)
+	@latexmk -bibtex -pdf main.tex
+	@[ -f main.pdf ] && mv main.pdf $(target)
