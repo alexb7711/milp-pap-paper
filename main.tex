@@ -3,32 +3,26 @@
 
 %%-------------------------------------------------------------------------------
 % Document type
-
-%\documentclass[conference]{IEEEtran}
 \documentclass[letterpaper, 10pt, conference]{IEEEtran}
-% \IEEEoverridecommandlockouts
 
 %%-------------------------------------------------------------------------------
 % Package configuration
-\usepackage{algorithmic}
-\usepackage{amsmath, amsfonts}
-\usepackage{booktabs, tabularx}                                                 % allows for \toprule in tables
-\usepackage{caption}
-\usepackage{cite}
-\usepackage{graphicx}
-\graphicspath{ {./img/} }
-\usepackage{multirow}
-\usepackage{newtxmath}
-\usepackage{pgfplots}
-\usepackage{ragged2e}
-\usepackage{subcaption}
-\usepackage{textcomp}
-\usepackage{tikz}
-\usetikzlibrary{automata, positioning}
-\usepackage{xcolor}
+\usepackage                                                                     % LaTeX Packages
+{
+    amsmath,                                                                    % Miscellaneous enhancements for mathematics
+    amssymb,                                                                    % Math symbols
+    booktabs,                                                                   % Extend tables
+    tabularx,                                                                   % Add more contol to tables
+    cite,                                                                       % Improved citation mechanims
+    graphicx,                                                                   % Enhance graphics
+    multirow,                                                                   % Create tables spanning multiple rows
+    subcaption,                                                                 % Subcaptions in subfigures
+    tikz,                                                                       % Generate figures in LaTeX
+    xcolor                                                                      % Colors
+}
 
-\usetikzlibrary{arrows.meta}
-\pgfplotsset{compat=1.16}
+\usetikzlibrary{automata, positioning, arrows.meta}                             % Tikz macros
+\graphicspath{ {./img/} }                                                       % Paths to find images
 
 %%-------------------------------------------------------------------------------
 % Custom Commands
@@ -55,19 +49,7 @@
   \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
     \textit{Utah State University}                                             \\
     Logan, USA                                                                 \\
-    greg.droge@usu.edu}
-  \and
-  \IEEEauthorblockN{3\textsuperscript{nd} Mario Harper}
-  \IEEEauthorblockA{\textit{Department of Computer Science}                    \\
-    \textit{Utah State University}                                             \\
-    Logan, USA                                                                 \\
-    mario.harper@usu.edu}
-  \and
-  \IEEEauthorblockN{4\textsuperscript{nd} Jake Gunther}
-  \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
-    \textit{Utah State University}                                             \\
-    Logan, USA                                                                 \\
-    jake.gunther@usu.edu}}
+    greg.droge@usu.edu}}
 
 %%===============================================================================
 % Title, Authors, Abstract, Keywords
@@ -80,12 +62,7 @@
 %%---------------------------------------------------------------------------------
 % Abstract
 \begin{abstract}
-This paper introduces an electric bus scheduling framework that utilizes both fast and slow charging assuming a fixed
-route schedule. Slow chargers are prioritized for battery health and fast chargers are utilized to satisfy time
-constraints. A Berth Allocation Problem (BAP) approach is modified and utilized to construct the Position Allocation
-Problem (PAP) Mixed Integer Linear Program (MILP) that optimally assigns incoming buses to chargers while taking into
-consideration battery dynamics of the buses. Results are presented utilizing a randomly generated bus schedule for 40
-buses.
+Dependable charging schedules for an increasing interest of battery electric bus (BEB) fleets is a critical component to a successful adoption. In this paper, a BEB charging scheduling framework that considers spatiotemporal schedule constraints, route schedules, fast and slow charging, and battery charging dynamics is modeled as a mixed integer linear program (MILP). The MILP is modeled after the berth allocation problem (BAP) in a modified form known as the position allocation problem (PAP). Linear battery dynamics are included to model the charging and discharging of buses while at the station and during their routes, respectively. The model optimally assigns a predefined set of routes for a BEB fleet to queues where slow chargers are preferred for battery health and meeting bus route constraints. The model validity is demonstrated with a randomly generated set of routes for 40 buses and 220 visits to the charging station. The results show that the slow chargers are more readily selected, the charging and spatiotemporal constraints are met, as well as the battery dynamics properly being propagated. 
 \end{abstract}
 
 %%-------------------------------------------------------------------------------
@@ -172,10 +149,10 @@ assign vehicles while considering linear battery dynamics and meeting scheduling
 \section{The Position Allocation Problem}
 \label{sec:positionallocationproblem}
 The BEB charge schedule formulation in this work builds upon the PAP. The PAP is a rectangle packing problem where a set
-of rectangles ($\vmathbb{O}$) are attempted to be optimally placed in a larger rectangle ($O$) as shown in Fig
-\ref{fig:packexample}. Both the set $\vmathbb{O}$ and rectangle $O$'s width and height are used to represent
+of rectangles ($\mathbb{O}$) are attempted to be optimally placed in a larger rectangle ($O$) as shown in Fig
+\ref{fig:packexample}. Both the set $\mathbb{O}$ and rectangle $O$'s width and height are used to represent
 quantifiable values. The rectangle packing problem is an NP-hard problem that can be used to describe many real life
-problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of $\vmathbb{O}$ are held constant such
+problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of $\mathbb{O}$ are held constant such
 as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical
 width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP in some instances, allow one side of
 the rectangle to vary depending on its assigned position (i.e. the handling time is dependent on the berth)
@@ -191,7 +168,7 @@ the rectangle to vary depending on its assigned position (i.e. the handling time
 	    \draw[fill=gray] (1,7) rectangle (3,5);
 	    \draw[fill=gray] (11,1) rectangle (7,4);
         \draw [thick,<->] (0,15) node[above]{$Y$}                      --
-                                 (0,0)node[above right]{$\vmathbb{O}$} --
+                                 (0,0)node[above right]{$\mathbb{O}$} --
                                  (15,0) node[right]{$X$};
 	\end{tikzpicture}}
 	\caption{Example of rectangle packing problem}
@@ -200,7 +177,7 @@ the rectangle to vary depending on its assigned position (i.e. the handling time
 
 the BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig
 \ref{subfig:bapexample}). The width and height of $O$ represent the berth length $S$ and time horizon $T$, respectively.
-Similarly, the width and height for $\vmathbb{O}$ represent the time spent to service vessel $i$ and the space taken by
+Similarly, the width and height for $\mathbb{O}$ represent the time spent to service vessel $i$ and the space taken by
 docking vessel $i$, respectively. The vessel characteristics (length of the vessel, arrival time, handling time, desired
 departure time) are assumed to be known for all $N$ vessels to be serviced. A representation of a BAP solution is shown
 in Fig \ref{fig:bap}.
@@ -538,21 +515,21 @@ solvers, such as simulated annealing (SA), would allow the problem to be solved 
 	\label{fig:schedule}
 \end{figure*}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[trim=0in 1in 0in 1in, width=\linewidth]{unoptimal.pdf}
 	\caption{An example, from Fig \ref{fig:schedule}, of a bus $i$ arriving before $j$, having $i$ wait for $j$ to arrive, and charge $i$ after $j$ is detached.}
 	\label{fig:unoptimal}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[trim=0in 0.5in 0in 1in, width=\linewidth, height=8.5cm]{usage.pdf}
 	\caption{Amount of slow and fast chargers used at any given time.}
 	\label{fig:usage}
 \end{figure}
 
-\begin{figure*}[h]
+\begin{figure*}
 	\centering
 	\includegraphics[trim= 0in 0in 0in 0.25in, width=\linewidth, height=10cm]{charges.pdf}
 	\caption{Charge for each bus over the time horizon.}
