@@ -7,24 +7,31 @@
 		\textbf{Variable} & \textbf{Description} & \textbf{Variable} & \textbf{Description} \\
 		\toprule
 		\multicolumn{4}{l}{Input values}                                  \\
-			$A$           & Number of buses in use                    &
+			$n_B$         & Number of buses                     &
 			$M$           & An arbitrary very large upper bound value \\
-			$N$           & Number of total visits                    &
+			$n_V$           & Number of total visits                    &
 			$O$           & Bounding box for rectangle packing        \\
 			$\mathbb{O}$ & Set of rectangles to be packed in $O$     &
-			$Q$           & Number of chargers                        \\
+			$n_Q$           & Number of queues                        \\
+			$n_C$ 			& Number of chargers \\
 			$S$           & Length of charger                         &
 			$T$           & Time horizon                              \\
+			$\mathbb{V}$  & Set of visit indices, $\mathbb{V} = \{1, ..., n_V\}$ 			  &
+			$\mathbb{B}$  & Set of bus indices, $\mathbb{B} = \{1, ..., n_B\}$ 			 \\
+			$\mathbb{Q}$  & Set of queue indices, $\mathbb{Q} = \{1, ..., n_Q\}$ \\
+			$i,j$      	& Indices used to refer to visits &
+			$b$ 		& Index used to refer to a bus \\
+			$q$ 		& Index used to refer to a queue \\
 		\hline
 		\multicolumn{4}{l}{Input variables} \\
-			$\Gamma_i$   & Array of ID's for each visit $i$                                   &
+			$\Gamma_i$   & $\Gamma: \mathbb{V} \rightarrow \mathbb{B}$ with $\Gamma_i$ used to denote the bus for visit $i$                                   &
 			$\alpha_i$   & Initial charge percentage time for visit $i$                       \\
 			$\beta_i$    & Final charge percentage for bus $i$ at the end of the time horizon &
 			$\epsilon_q$ & Cost of using charger $q$ per unit time                            \\
-			$\gamma_i$   & Array of values indicating the next index visit $i$ will arrive    &
-			$\kappa_i$   & Battery capacity for bus $i$                                       \\
+			$\Upsilon_i$   & Array of values indicating the next index visit $i$ will arrive    &
+			$\kappa_b$   & Battery capacity for bus $b$                                       \\
 			$\lambda_i$  & Discharge of visit over route $i$                                  &
-			$\nu$        & Minimum charge allowed on departure of visit $i$                   \\
+			$\nu_b$        & Minimum charge allowed for bus $b$                   \\
 			$\tau_i$     & Time visit $i$ must depart the station                             &
 			$\zeta_i$    & Discharge rate for vehicle $i$                                     \\
 			$a_i$        & Arrival time of visit  $i$                                         &
