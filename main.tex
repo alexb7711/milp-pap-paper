@@ -62,7 +62,16 @@
 %%---------------------------------------------------------------------------------
 % Abstract
 \begin{abstract}
-\TODO{Revisit} Dependable charging schedules for an increasing interest of battery electric bus (BEB) fleets is a critical component to a successful adoption. In this paper, a BEB charging scheduling framework that considers spatiotemporal schedule constraints, route schedules, fast and slow charging, and battery charging dynamics is modeled as a mixed integer linear program (MILP). The MILP is modeled after the berth allocation problem (BAP) in a modified form known as the position allocation problem (PAP). Linear battery dynamics are included to model the charging and discharging of buses while at the station and during their routes, respectively. The optimization coordinates BEB charging to ensure each BEB has sufficient charge while using slow chargers where possible for sake of battery health. The model validity is demonstrated with a randomly generated set of routes for 40 buses and 220 visits to the charging station. The results show that the slow chargers are more readily selected and thecharging and spatiotemporal constraints are met while considering the battery dynamics.
+\TODO{revisit}Dependable charging schedules for an increasing interest of battery electric bus (BEB) fleets is a critical component to
+a successful adoption. In this paper, a BEB charging scheduling framework that considers spatiotemporal schedule
+constraints, route schedules, fast and slow charging, and battery charging dynamics is modeled as a mixed integer linear
+program (MILP). The MILP is modeled after the berth allocation problem (BAP) in a modified form known as the position
+allocation problem (PAP). Linear battery dynamics are included to model the charging and discharging of buses while at
+the station and during their routes, respectively. The optimization coordinates BEB charging to ensure each BEB has
+sufficient charge while using slow chargers where possible for sake of battery health. The model validity is
+demonstrated with a randomly generated set of routes for 40 buses and 220 visits to the charging station. The results
+show that the slow chargers are more readily selected and thecharging and spatiotemporal constraints are met while
+considering the battery dynamics.
 \end{abstract}
 
 %%-------------------------------------------------------------------------------
@@ -469,28 +478,28 @@ solvers, such as simulated annealing (SA), would allow the problem to be solved 
 
 \begin{figure*}[ht]
 	\centering
-	\includegraphics[trim=1in 0.5in 1in 0.5in, width=\linewidth, height=11cm]{schedule.pdf}
+	\includegraphics[trim=1in 0.25in 1in 0.5in, width=\linewidth]{schedule.pdf}
 	\caption{Bus schedule generated with PAP MILP. Each color is assigned to a specific bus ID. The vertical bars indicate the time the vehicles are set to charge, the area before said bars indicate the waiting times for each visit $1 \leq i \leq N$. Similarly, the area after the bars indicate the time spent on the charger.}
 	\label{fig:schedule}
 \end{figure*}
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[trim=0in 1in 0in 1in, width=\linewidth]{unoptimal.pdf}
+	\includegraphics[trim=0in 0in 0in 0in, width=\linewidth]{unoptimal.pdf}
 	\caption{An example, from Fig \ref{fig:schedule}, of a bus $i$ arriving before $j$, having $i$ wait for $j$ to arrive, and charge $i$ after $j$ is detached.}
 	\label{fig:unoptimal}
 \end{figure}
 
-\begin{figure}[!ht]
+\begin{figure*}
 	\centering
-	\includegraphics[trim=0in 0.5in 0in 1in, width=\linewidth, height=8.5cm]{usage.pdf}
+	\includegraphics[trim=0in 0.25in 0in 0.75in, width=\linewidth]{usage.pdf}
 	\caption{Amount of slow and fast chargers used at any given time.}
 	\label{fig:usage}
-\end{figure}
+\end{figure*}
 
 \begin{figure*}
 	\centering
-	\includegraphics[trim= 0in 0in 0in 0.25in, width=\linewidth, height=10cm]{charges.pdf}
+	\includegraphics[trim= 0.25in 0in 0.5in 0.25in, width=\linewidth]{charges.pdf}
 	\caption{Charge for each bus over the time horizon.}
 	\label{fig:charges}
 \end{figure*}
