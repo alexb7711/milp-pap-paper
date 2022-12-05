@@ -62,7 +62,7 @@
 %%---------------------------------------------------------------------------------
 % Abstract
 \begin{abstract}
-Dependable charging schedules for an increasing interest of battery electric bus (BEB) fleets is a critical component to a successful adoption. In this paper, a BEB charging scheduling framework that considers spatiotemporal schedule constraints, route schedules, fast and slow charging, and battery charging dynamics is modeled as a mixed integer linear program (MILP). The MILP is modeled after the berth allocation problem (BAP) in a modified form known as the position allocation problem (PAP). Linear battery dynamics are included to model the charging and discharging of buses while at the station and during their routes, respectively. The optimization coordinates BEB charging to ensure each BEB has sufficient charge while using slow chargers where possible for sake of battery health. The model validity is demonstrated with a randomly generated set of routes for 40 buses and 220 visits to the charging station. The results show that the slow chargers are more readily selected and thecharging and spatiotemporal constraints are met while considering the battery dynamics.
+\TODO{Revisit} Dependable charging schedules for an increasing interest of battery electric bus (BEB) fleets is a critical component to a successful adoption. In this paper, a BEB charging scheduling framework that considers spatiotemporal schedule constraints, route schedules, fast and slow charging, and battery charging dynamics is modeled as a mixed integer linear program (MILP). The MILP is modeled after the berth allocation problem (BAP) in a modified form known as the position allocation problem (PAP). Linear battery dynamics are included to model the charging and discharging of buses while at the station and during their routes, respectively. The optimization coordinates BEB charging to ensure each BEB has sufficient charge while using slow chargers where possible for sake of battery health. The model validity is demonstrated with a randomly generated set of routes for 40 buses and 220 visits to the charging station. The results show that the slow chargers are more readily selected and thecharging and spatiotemporal constraints are met while considering the battery dynamics.
 \end{abstract}
 
 %%-------------------------------------------------------------------------------
@@ -85,31 +85,28 @@ environmental impacts of petroleum based public transportation has driven an eff
 battery power, i.e., battery electric buses (BEBs), has received significant attention \cite{Li2016}. Although the
 technology provides benefits beyond reduction in emissions, such as lower driving costs, lower maintenance costs, and
 reduced vehicle noise, battery powered systems introduce new challenges such as larger upfront costs, and potentially
-several hours long ``refueling" periods \cite{Xylia2018, Li2016}. Furthermore, the problem is exacerbated by the
-constraints of the transit schedule to which the fleet must adhere, the limited amount of chargers available, as well as
+several hours long ``refueling'' periods \cite{Xylia2018, Li2016}. Furthermore, the problem is exacerbated by the
+constraints of the transit schedule to which the fleet must adhere, the limited amount of chargers available, and
 the adverse affects in the health of the battery due to fast charging \cite{Lutsey2019}. This paper presents a
 continuous scheduling framework for a BEB fleet that shares limited fast and slow chargers. This framework takes into
-consideration linear charging dynamics and a fixed bus schedule while meeting a certain battery percentage threshold for
-intermediate and final charges.
+consideration linear charging dynamics and a fixed bus schedule while meeting a certain battery charge threshold throughout the day.
 
-Recent research efforts have been made into solving the problem of scheduling and charging fleets as well as determining
-the infrastructure that they rely upon. Much attention has been given to solving both problems simultaneously \cite{Wei2018,
-  Sebastiani2016, Hoke2014, Wang2017}. The added complexity of considering both the BEB charge scheduling and the
+Many recent efforts have been made simultaneously solve the problems of scheduling and charging fleets and determining
+the infrastructure upon which they rely, e.g., \cite{Wei2018,
+Sebastiani2016, Hoke2014, Wang2017}. The added complexity of considering both the BEB charge scheduling and the
 infrastructure problems necessitates simplifications for sake of computation. First, only fast chargers are utilized in
 planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant
 simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020,
-  Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger
+Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger
 \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge
 \cite{Liu2020}.
 
-\TODO{Wordsmith} Furthermore, the above described research shows a need for in determining a system that outputs an optimal charging
-schedule. In \cite{Wei2018, Sebastiani2016, Wang2017}, initial interest is demonstrated in this topic.
-\cite{Sebastiani2016} uses simulation alongside an optimization strategy to identify charging station locations and
+\TODO{Need a better literature review} A host of techniques have been used to generate the optimal charging
+schedule. \cite{Sebastiani2016} uses simulation alongside an optimization strategy to identify charging station locations and
 average stop times to supply enough charge for BEBs to complete their routes. \cite{Wei2018} utilizes a network flow
 approach to optimize the deployment strategy of BEBs; however, the focus is primarily on replacing diesel or CNG buses.
 In \cite{Hoke2014}, the focus is on developing a strategy to optimally charge batteries for electric vehicles
-considering different sources of battery degradation. \cite{Wang2017}, who also touches on the need for further research
-in the recharging problem, addresses a similar problem as this paper where the overall objective is to minimize the
+considering different sources of battery degradation. \cite{Wang2017} addresses a similar problem as this paper where the overall objective is to minimize the
 annual total electric bus recharging system operating costs. Similarly to other works, such as \cite{Wei2018}, discrete
 network flow approaches are utilized. Although effective, having to discretize the system introduces variables scaled
 proportionally to the fidelity of the discretization of the model. This work attempts to remedy this by utilizing the
@@ -129,9 +126,6 @@ The main contribution of this work is the extension of the PAP to BEB charger sc
 The remainder of the paper proceeds as follows: In Section \ref{sec:positionallocationproblem}, the PAP is introduced
 with a formulation of the resulting MILP. Section \ref{sec:problemformulation} constructs the MILP for BEB scheduling, including modifications to the PAP queuing constraints and development of a dynamic charging model. Section \ref{sec:example} demonstrates an example of using the formulation to coordinate 40 buses over 220 total visits to the station. The paper ends in Section
 \ref{sec:conclusion} with concluding remarks.
-
-% Variable table
-\input{img/vartab.tex}
 
 %%-------------------------------------------------------------------------------
 % The Position Allocation Problem
@@ -263,6 +257,9 @@ position.
 \label{sec:problemformulation}
 Applying the PAP to BEB charging requires four fundamental changes. The first is that the time that a BEB spends charging is allowed to vary. Thus, $p_i$ becomes a variable of optimization. Second, in the PAP each charging visit is assumed to be a different vehicle. For the BEB charging problem, each bus may make multiple visits to the station throughout the day and the resulting charge for a bus at a given time is dependent upon each of the prior visits made. Third, in the PAP, the charger is one continuous bar with vehicle width effectively restricting the number of vehicles charging simultaneously. For the BEB, it is assumed that a specific number of chargers exist and these chargers can charge the vehicle at a different rate. The fourth fundamental change is related to the first three. The charge of each bus must be tracked in the optimization to ensure that charging across multiple visits is sufficient to allow each bus to execute its route throughout the day.
 
+% Variable table
+\input{img/vartab.tex}
+
 The discussion of the four changes are separated into two sections. Section \ref{sec:queuing} discusses the changes in the spatial-temporal constraint formulation to form a queuing constraint. Section \ref{sec:batt_dynamics} then discusses the addition of the bus charge management. This section ends with a brief discussion of a modified objective in Section \ref{sec:objective-function} and the statement of the full problem in Section \ref{sec:BEB_MILP}. The notation is explained throughout and summarized in Table \ref{tab:variables}.
 
 \subsection{Queuing Constraints}
@@ -328,8 +325,9 @@ denoted as $r_q$. Note that a value of $r_q = 0$ corresponds to a queue where no
 The binary decision variable $w_{iq}$ is introduced to determine whether visit $i$ uses charger $q$. This allows the
 charge of the bus coming into visit $\Upsilon_i$ to be written in summation form as
 \begin{subequations}
+    \label{subeq:pre_next_charge}
 \begin{align}
-    \eta_{\Upsilon_i} = \eta_i + \sum_{q=1}^{n_Q} p_i w_{iq} r_q - \lambda_i \\
+    \eta_{\Upsilon_i} = \eta_i + \sum_{q=1}^{n_Q} p_i w_{iq} r_q - \lambda_i  \\
     \sum_{q=1}^{n_Q} w_{iq} = 1 \\
     w_{iq} \in \{0,1\}
 \end{align}
@@ -343,6 +341,7 @@ Maximum and minimum values for the charges are included to ensure the battery is
 sufficient charge for subsequent visits. The upper and lower battery charge bounds for bus $b$ are $\kappa_b$ and $\nu_b$, respectively. As $\eta_i$ corresponds to the charge at the beginning of the visit, the upper bound constraint must also include the charge received during the visit as follows.
 \TODO{I changed the lower bound constraint as there is no real need to include the charge, but we may need to add in a final constraint.}
 \begin{subequations}
+    \label{subeq:pre_min_max}
 \begin{align}
     \eta_i + \sum_{q=1}^{n_Q} p_i w_{iq} r_q \leq \kappa_{\Gamma_i}                 \\
     \eta_i + \geq \nu_{\Gamma_i}
@@ -362,6 +361,7 @@ the slack variable $g_{iq}$ to be equal to $p_i w_{iq}$, $g_{iq}$ can be defined
 \end{equation}
 Equation \eqref{eq:giq_cases} can be expressed as a mixed integer constraint using big-M notation with the following four constraints. \TODO{Check to see if modification is correct}
 \begin{subequations}
+    \label{eq:slack_gain}
 \begin{align}
     p_i - (1 - w_{iq})M \leq g_{iq}  \label{subeq:repgpgret} \\
     p_i \geq g_{iq}                 \label{subeq:repgples} \\
@@ -374,43 +374,34 @@ Equation \eqref{eq:giq_cases} can be expressed as a mixed integer constraint usi
 where $M$ is a large value. If $w_{iq} = 1$ then \eqref{subeq:repgpgret} and \eqref{subeq:repgples} become $p_i \leq g_{iq}$ and $p_i \geq g_{iq}$, effectively stating $p_i = g_{iq}$ with \eqref{subeq:repgwgret} being inactive.
 If $w_{iq} = 0$, \eqref{subeq:repgpgret} is inactive and \eqref{subeq:repgwgret} and \eqref{subeq:repgwles} force $g_{iq} = 0$.
 
-\subsection{The Objective Function} \label{sec:objective-function}
+\subsection{The BEB Charging Problem} \label{sec:BEB_MILP}
 The goal of the MILP is to utilize chargers as little as possible to reduce energy costs with the fast charging penalized greater to reduce battery damage. \TODO{Can we just eliminate the $w_{iq} m_q$ term? }
 Thus, an assignment cost $m_q$ and usage cost $\epsilon_q$ are associated with each charger, $q$. The cost for both the
 assignment and utilization of slow chargers is less than that of the fast chargers. The objective function has an
 assignment term, $w_{iq}m_q$, which is non-zero if charger $q$ is used for visit $i$. Similarly, a usage term $g_{iq}
-\epsilon_q$ is non-zero only if charge is recieved for visit $i$ at charger $q$. The resulting objective is defined in Eq
+\epsilon_q$ is non-zero only if charge is received for visit $i$ at charger $q$. The resulting objective is defined in Eq
 \ref{eq:objective}. The assignment cost, $w_{iq}m_q$, and the usage cost, $g_{iq}\epsilon_q$, are summed over each visit, $i$,
 and charger, $q$.
-
 \begin{equation}
 \label{eq:objective}
 	\min \sum_{i=1}^N \sum_{q=1}^{n_Q} \Big( w_{iq} m_q + g_{iq} \epsilon_q \Big) \\
 \end{equation}
-
-\subsection{The BEB Charging Problem} \label{sec:BEB_MILP}
-The resulting problem to be optimized is outlined in Eq \ref{eq:dynconstrs}. Constraints
-\eqref{subeq:m_time}-\eqref{subeq:m_valid_depart} are reiterations of the queuing constraints in \eqref{eq:packconstrs}.
+Subject to the constraints in Eq \ref{eq:dynconstrs}.
+\input{img/dynconstrs.tex}
+Constraints \eqref{subeq:m_time}-\eqref{subeq:m_valid_depart} are reiterations of the queuing constraints in \eqref{eq:packconstrs}.
 Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and terminal conditions as well
 as intermediate constraints to provide continuity in vehicle charges. Constraint \eqref{subeq:init_charge} states the
-first arrival for each bus is initialized with a charge of $\alpha \kappa_{\Gamma_i}$. Constraint \eqref{subeq:next_charge} defines
-that the previous charge, $\eta_i$, plus the charging done by charger $q$ minus the discharge amount due to completing
-route, $\lambda_i$. This constraint is only used with indices with valid next visit values (i.e. $\Upsilon_i \neq -1$). Constraint
-\eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the initial charge, $\eta_i$, plus
-the charge from $q$ and the discharge from route, $\lambda_i$, must be greater than some percentage of its capacity,
-$\kappa_{\Gamma_i}$, in order to guarantee sufficient charge to complete the next route. Constraint \eqref{subeq:max_charge}
-states that the charging done for visit $i$ cannot be greater than the capacity of the battery, $\kappa_{\Gamma_i}$. Constraint
-\eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of $\beta \kappa_{\Gamma_i}$.
-Constraint \eqref{subeq:gpgret} is included to guarantee a minimum initial charge for the next working day.
-
-The constraints \eqref{subeq:gples}-\eqref{subeq:gwles} represent the linear form of the bilinear term the $g_{iq} :=
-p_i w_{iq}$. The set of constraints \eqref{subeq:wmax}-\eqref{subeq:wone} define the linking constraint between the
-queuing constraint and $w_{iq}$ (i.e $1w_{i1} + 2w_{i2} + \cdots + n_Qw_{in_Q} = v_i$) and enforces that only a single $w$ may be
-selected per visit, respectively. The last constraints \eqref{subeq:wspace}-\eqref{subeq:qspace} defines the sets of
-valid values for each.
-
-% Final set of constraints
-\input{img/dynconstrs.tex}
+first arrival for each bus is initialized with a charge of \TODO{fix:} $\alpha \kappa_{\Gamma_i}$.
+Constraints \eqref{subeq:next_charge}, \eqref{subeq:min_charge}, and \eqref{subeq:max_charge} define the battery charge dynamics using \eqref{subeq:pre_next_charge} and \eqref{subeq:pre_min_max} with the gain slack variables $g_{iq}$ used in place of the bilinear term.
+Constraints \eqref{subeq:gpgret} through \eqref{subeq:gwles} define $g_{iq}$ using \eqref{eq:slack_gain}.
+% that the previous charge, $\eta_i$, plus the charging done by charger $q$ minus the discharge amount due to completing
+% route, $\lambda_i$. This constraint is only used with indices with valid next visit values (i.e. $\Upsilon_i \neq -1$). Constraint
+% \eqref{subeq:min_charge} is similar to \eqref{subeq:next_charge}, except it states that the initial charge, $\eta_i$, plus
+% the charge from $q$ and the discharge from route, $\lambda_i$, must be greater than some percentage of its capacity,
+% $\kappa_{\Gamma_i}$, in order to guarantee sufficient charge to complete the next route.
+Constraint \eqref{subeq:max_charge} ensures that the charging done for visit $i$ cannot be greater than the capacity of the battery, $\kappa_{\Gamma_i}$. Constraint
+\eqref{subeq:final_charge} states that the last visit for each vehicle must have a minimum charge of \TODO{update}$\beta \kappa_{\Gamma_i}$, guaranteeing a minimum initial charge for the next working day.
+The last constraints \eqref{subeq:wspace}-\eqref{subeq:qspace} define the sets of valid values for each variable.
 
 %================================================================================
 % Example
