@@ -3,7 +3,7 @@
 
 %%-------------------------------------------------------------------------------
 % Document type
-\documentclass[letterpaper, 10pt, conference]{IEEEtran}
+\documentclass[utf8]{FrontiersinHarvard}
 
 %%-------------------------------------------------------------------------------
 % Package configuration
@@ -18,42 +18,47 @@
     multirow,                                                                   % Create tables spanning multiple rows
     subcaption,                                                                 % Subcaptions in subfigures
     tikz,                                                                       % Generate figures in LaTeX
-    xcolor                                                                      % Colors
+    xcolor,                                                                     % Colors
+    microtype,
+    lineno,                                                                     % Add line numbers to page
 }
 
+\linenumbers
 \usetikzlibrary{automata, positioning, arrows.meta}                             % Tikz macros
 \graphicspath{ {./img/} }                                                       % Paths to find images
 
 %%-------------------------------------------------------------------------------
 % Custom Commands
 \newcommand{\TODO}[1]{{\color{green} To do: #1}}                                % For adding notes to paper
-
-%%-------------------------------------------------------------------------------
-% Bibliography
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-
-%%-------------------------------------------------------------------------------
-% Title
-\title{A Position Allocation Approach to the Scheduling of Battery Electric Bus Charging}
+\def\keyFont{\fontsize{8}{11}\helveticabold }
 
 %%-------------------------------------------------------------------------------
 % Authors
-\author{\IEEEauthorblockN{1\textsuperscript{st} Alexander Brown}
-  \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
-    \textit{Utah State University}                                             \\
-    Logan, USA                                                                 \\
-    A01704744@usu.edu}
-  \and
-  \IEEEauthorblockN{2\textsuperscript{nd} Greg Droge}
-  \IEEEauthorblockA{\textit{Department of Electrical and Computer Engineering} \\
-    \textit{Utah State University}                                             \\
-    Logan, USA                                                                 \\
-    greg.droge@usu.edu}}
+\def\keyFont{\fontsize{8}{11}\helveticabold }
+\def\firstAuthorLast{Brown {et~al.}} %use et al only if is more than 1 author
+\def\Authors{Alexander Brown\,$^{1,*}$, Greg Droge\,$^{2}$}
+% Affiliations should be keyed to the author's name with superscript numbers and be listed as follows: Laboratory, Institute, Department, Organization, City, State abbreviation (USA, Canada, Australia), and Country (without detailed address information such as city zip codes or street names).
+% If one of the authors has a change of address, list the new address below the correspondence details using a superscript symbol and use the same symbol to indicate the author in the author list.
+\def\Address{$^{1}$Department of Electrical and Computer Engineering, Logan, UT, USA \\
+$^{2}$Department of Electrical and Computer Engineering, Logan, UT, USA}
+% The Corresponding Author should be marked with an asterisk
+% Provide the exact contact address (this time including street name and city zip code) and email of the corresponding author
+\def\corrAuthor{Alexander Brown}
+\def\corrEmail{A01704744@usu.edu}
+
+\author[\firstAuthorLast ]{\Authors} %This field will be automatically populated
+\address{} %This field will be automatically populated
+\correspondance{} %This field will be automatically populated
 
 %%===============================================================================
 % Title, Authors, Abstract, Keywords
 \begin{document}
+\onecolumn
+\firstpage{1}
+
+%%-------------------------------------------------------------------------------
+% Title
+\title{A Position Allocation Approach to the Scheduling of Battery Electric Bus Charging}
 
 %%---------------------------------------------------------------------------------
 % Create title
@@ -70,16 +75,13 @@ allocation problem (PAP). Linear battery dynamics are included to model the char
 the station and during their routes, respectively. The optimization coordinates BEB charging to ensure each BEB has
 sufficient charge while using slow chargers where possible for sake of battery health. The model validity is
 demonstrated with a randomly generated set of routes for 40 buses and 220 visits to the charging station. The results
-show that the slow chargers are more readily selected and thecharging and spatiotemporal constraints are met while
+show that the slow chargers are more readily selected and the charging and spatiotemporal constraints are met while
 considering the battery dynamics.
-\end{abstract}
 
-%%-------------------------------------------------------------------------------
-% Keywords
-\begin{IEEEkeywords}
-Berth Allocation Problem (BAP), Position Allocation Problem (PAP), Mixed Integer Linear Program (MILP), Battery Electric
-Bus (BEB), Scheduling
-\end{IEEEkeywords}
+\tiny
+ \keyFont{ \section{Keywords:} Berth Allocation Problem (BAP), Position Allocation Problem (PAP), Mixed Integer Linear Program (MILP), Battery Electric
+Bus (BEB), Scheduling} %All article types: you may provide up to 8 keywords; at least 5 are mandatory.
+\end{abstract}
 
 %%===============================================================================
 % Paper
@@ -90,48 +92,48 @@ Bus (BEB), Scheduling
 \label{sec:introduction}
 The public transportation system is crucial in any urban area; however, the increased awareness and concern of
 environmental impacts of petroleum based public transportation has driven an effort to reduce the pollutant footprint
-\cite{DeFilippo2014, Xylia2018, Guida2017, Li2016}. Particularly, the electrification of public bus transportation via
-battery power, i.e., battery electric buses (BEBs), has received significant attention \cite{Li2016}. Although the
+\citep{DeFilippo2014, Xylia2018, Guida2017, Li2016}. Particularly, the electrification of public bus transportation via
+battery power, i.e., battery electric buses (BEBs), has received significant attention \citep{Li2016}. Although the
 technology provides benefits beyond reduction in emissions, such as lower driving costs, lower maintenance costs, and
 reduced vehicle noise, battery powered systems introduce new challenges such as larger upfront costs, and potentially
-several hours long ``refueling" periods \cite{Xylia2018, Li2016}. Furthermore, the problem is exacerbated by the
+several hours long ``refueling" periods \citep{Xylia2018, Li2016}. Furthermore, the problem is exacerbated by the
 constraints of the transit schedule to which the fleet must adhere, the limited amount of chargers available, as well as
-the adverse affects in the health of the battery due to fast charging \cite{Lutsey2019}. This paper presents a
+the adverse affects in the health of the battery due to fast charging \citep{Lutsey2019}. This paper presents a
 continuous scheduling framework for a BEB fleet that shares limited fast and slow chargers. This framework takes into
 consideration linear charging dynamics and a fixed bus schedule while meeting a certain battery percentage threshold for
 intermediate and final charges.
 
 Recent research efforts have been made into solving the problem of scheduling and charging fleets as well as determining
-the infrastructure that they rely upon. Much attention has been given to solving both problems simultaneously \cite{Wei2018,
+the infrastructure that they rely upon. Much attention has been given to solving both problems simultaneously \citep{Wei2018,
   Sebastiani2016, Hoke2014, Wang2017}. The added complexity of considering both the BEB charge scheduling and the
 infrastructure problems necessitates simplifications for sake of computation. First, only fast chargers are utilized in
-planning \cite{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant
-simplifications to the charging models are made. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020,
+planning \citep{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant
+simplifications to the charging models are made. Some approaches assume full charge \citep{Wei2018, Wang2017, Zhou2020,
   Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger
-\cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge
-\cite{Liu2020}.
+\citep{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge
+\citep{Liu2020}.
 
 \TODO{Wordsmith} Furthermore, the above described research shows a need for in determining a system that outputs an
-optimal charging schedule. In \cite{Wei2018, Sebastiani2016, Wang2017}, initial interest is demonstrated in this topic.
-\cite{Sebastiani2016} uses simulation alongside an optimization strategy to identify charging station locations and
-average stop times to supply enough charge for BEBs to complete their routes. \cite{Wei2018} utilizes a network flow
+optimal charging schedule. In \citep{Wei2018, Sebastiani2016, Wang2017}, initial interest is demonstrated in this topic.
+\citep{Sebastiani2016} uses simulation alongside an optimization strategy to identify charging station locations and
+average stop times to supply enough charge for BEBs to complete their routes. \citep{Wei2018} utilizes a network flow
 approach to optimize the deployment strategy of BEBs; however, the focus is primarily on replacing diesel or CNG buses.
-In \cite{Hoke2014}, the focus is on developing a strategy to optimally charge batteries for electric vehicles
-considering different sources of battery degradation. \cite{Wang2017}, who also touches on the need for further research
+In \citep{Hoke2014}, the focus is on developing a strategy to optimally charge batteries for electric vehicles
+considering different sources of battery degradation. \citep{Wang2017}, who also touches on the need for further research
 in the recharging problem, addresses a similar problem as this paper where the overall objective is to minimize the
-annual total electric bus recharging system operating costs. Similarly to other works, such as \cite{Wei2018}, discrete
+annual total electric bus recharging system operating costs. Similarly to other works, such as \citep{Wei2018}, discrete
 network flow approaches are utilized. Although effective, having to discretize the system introduces variables scaled
 proportionally to the fidelity of the discretization of the model. This work attempts to remedy this by utilizing the
 Position Allocation Problem (PAP) which utilizes a continuous model to describe the system.
 
 This work builds upon the Position Allocation Problem, a modification of the Berth Allocation Problem (BAP), as a means
-to schedule the charging of electric vehicles \cite{Qarebagh2019}. The BAP solves the problem of allocating space for
+to schedule the charging of electric vehicles \citep{Qarebagh2019}. The BAP solves the problem of allocating space for
 incoming vessels to be berthed. Each arriving vessel requires both time and space to be serviced and is assigned a
-berthing location \cite{Imai2001}. Vessels are lined up parallel to the berth to be serviced and are horizontally queued
+berthing location \citep{Imai2001}. Vessels are lined up parallel to the berth to be serviced and are horizontally queued
 as shown in Fig \ref{subfig:bapexample}. The PAP utilizes this notion of queuing for scheduling vehicles to be charged,
 as shown in Fig \ref{subfig:papexample}. The PAP is formulated as a rectangle packing problem by assuming that vehicle
 charging will take a fixed amount of time, the amount of vehicles that can charge is limited by the physical width of
-the vehicles, and each vehicle visits the charger a single time \cite{Qarebagh2019}.
+the vehicles, and each vehicle visits the charger a single time \citep{Qarebagh2019}.
 
 The main contribution of this work is the extension of the PAP to BEB charger scheduling. This includes modeling and
 incorporation of a proportional charging model into the MILP framework, consideration of multiple charger types, and
@@ -139,51 +141,28 @@ inclusion of the route schedule for each bus. The result is a MILP formulation t
 charger type for every visit that each bus makes to the station while considering a dynamic charge model and scheduling
 constraints.
 
-% BAP and PAP comparison
-\input{img/bappap.tex}
-
 The remainder of the paper proceeds as follows: In Section \ref{sec:positionallocationproblem}, the PAP is introduced
 with a formulation of the resulting MILP. Section \ref{sec:problemformulation} constructs the MILP for BEB scheduling,
 including modifications to the PAP queuing constraints and development of a dynamic charging model. Section
 \ref{sec:example} demonstrates an example of using the formulation to coordinate 40 buses over 220 total visits to the
 station. The paper ends in Section \ref{sec:conclusion} with concluding remarks.
 
-% Variable table
-\input{img/vartab.tex}
-
 %%-------------------------------------------------------------------------------
 % The Position Allocation Problem
 \section{The Position Allocation Problem}
 \label{sec:positionallocationproblem}
 The BEB charge schedule formulation in this work builds upon the PA, which, in turn, builds upon the BAP. This section
-provides a brief overview of the BAP and a detailed formulation of PAP as presented in \cite{Qarebagh2019}.
+provides a brief overview of the BAP and a detailed formulation of PAP as presented in \citep{Qarebagh2019}.
 
 \subsection{Overview of BAP}
 The BAP is a rectangle packing problem where a set
 of rectangles ($\mathbb{O}$) are attempted to be optimally placed in a larger rectangle ($O$) as shown in Fig
 \ref{fig:packexample}. The rectangle packing problem is an NP-hard problem that can be used to describe many real life
-problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of $\mathbb{O}$ are held constant such
+problems \citep{Bruin2013,Murata1995}. In some of these problems, the dimensions of $\mathbb{O}$ are held constant such
 as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical
-width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, in some formulations, allow one side of
+width and heights of the modules \citep{Murata1995}. Other problems, such as the BAP, in some formulations, allow one side of
 the rectangle to vary depending on its assigned position (i.e. the handling time is dependent on the berth)
-\cite{Buhrkal2010}.
-
-\begin{figure}
-	\centerline{\begin{tikzpicture}[scale=0.25]
-	    \draw [thick, -] (0,0) rectangle (12,12) node[right]{$O$};
-	    \draw[fill=gray] (1,1) rectangle (6,4);
-	    \draw[fill=gray] (11,11) rectangle (9,5);
-	    \draw[fill=gray] (8,11) rectangle (4,5);
-	    \draw[fill=gray] (1,11) rectangle (3,8);
-	    \draw[fill=gray] (1,7) rectangle (3,5);
-	    \draw[fill=gray] (11,1) rectangle (7,4);
-        \draw [thick,<->] (0,15) node[above]{$Y$}                      --
-                                 (0,0)node[above right]{$\mathbb{O}$} --
-                                 (15,0) node[right]{$X$};
-	\end{tikzpicture}}
-	\caption{Example of rectangle packing problem}
-	\label{fig:packexample}
-\end{figure}
+\citep{Buhrkal2010}.
 
 the BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig
 \ref{subfig:bapexample}). The width and height of $O$ represent the berth length $S$ and time horizon $T$, respectively.
@@ -194,7 +173,7 @@ in Fig \ref{fig:bap}.
 
 The BAP objective is generally represented as minimizing some operational time for a given vessel $i$. The operational
 time may be chosen to minimize the difference between arrival and departure times, time spent being serviced, or overall
-waiting time \cite{Voss2007, Buhrkal2010,Frojan2015}. The model must then constrain the vessel placement as to not allow
+waiting time \citep{Voss2007, Buhrkal2010,Frojan2015}. The model must then constrain the vessel placement as to not allow
 overlap spatially or temporally.
 
 \subsection{The PAP Formulation}
@@ -223,7 +202,7 @@ formulation.
     \item $\delta_{ij}$ : binary variable that determines relative position of vehicles $i$ and $j$ when charging simultaneously
 \end{itemize}
 
-To determine the values for each of these decision variables, a MILP is formulated in \cite{Qarebagh2019} and shown here
+To determine the values for each of these decision variables, a MILP is formulated in \citep{Qarebagh2019} and shown here
 for sake of completeness.
 
 \begin{equation}
@@ -248,16 +227,12 @@ Subject to:
 
 \noindent
 
-% Spatial temporal graph representation
-\input{img/baprep.tex}
-
-
 The objective function \eqref{eq:bapobjective} minimizes the time spent to service each vehicle by minimizing over the
 sum of differences between the departure time, $c_i$, and arrival time, $a_i$. i.e., It seeks to get each vehicle
 charged and on its way as quickly as possible.
 
 Constraints \ref{subeq:baptime}-\ref{subeq:bapdelta} are used to ensure that individual rectangles do not overlap. For
-the PAP, they ensure that two vehicles charging simulateously are at different positions and, similarly, two vehicles
+the PAP, they ensure that two vehicles charging simultaneously are at different positions and, similarly, two vehicles
 that have overlapping positions do not overlap temporally. Constraint \eqref{subeq:baptime} establishes temporal
 ordering when active ($\sigma_{ij}=1$). Similarly, when $\delta_{ij} =1$ in \eqref{subeq:bapspace} then spatial ordering is
 established. Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} enforce that spatial and/or temporal ordering is
@@ -272,24 +247,6 @@ than or equal to the service start time, $u_i$, which in turn must be less than 
 may begin to be serviced to stay within the time horizon. Constraint \eqref{subeq:bapsdspace} ensures that $\sigma_{ij}$ and
 $\delta_{ij}$ are binary. Constraint \eqref{subeq:bapvspace} ensures that the assigned value of $v_i$ is a valid charging
 position.
-
-\begin{figure}
-	\centerline{
-	\begin{tikzpicture}[scale=0.35]
-		\draw [thick,<->] (0,15) node[above]{Quay Length} --
-					 (0,0)                    --
-					 (15,0) node[right]{Time};
-
-		\node[rectangle, draw, minimum width=1.5cm, minimum height = 2cm] at (5,8) {$i$};
-		\node[rectangle, draw, minimum width=1cm, minimum height = 1cm] at (2,2) {$j$};
-		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (5,12) {$k_1$};
-		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (7,6) {$k_3$};
-		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (4,2) {$k_2$};
-	\end{tikzpicture}
-	}
-	\caption{Examples of different methods of overlapping. Space overlap: $v_{k_1} < v_{i} + s_i \therefore \delta_{k_{1}i} = 0$. Time overlap $u_{k_1} < u_{j} + p_j \therefore \sigma_{k_{2}j} = 0$. Both space and time overlap $\sigma_{k_{3}i} = 0$ and $\delta_{k_{3}j} = 0$.}
-	\label{fig:multipleassign}
-\end{figure}
 
 %%-------------------------------------------------------------------------------
 %
@@ -398,8 +355,8 @@ written as $\nu \kappa_{\Gamma_i}$. The upper and lower bound constraints are wr
 \end{subequations}
 
 Note that the term $p_i w_{iq}$ is a bilinear term (two decision variables being multiplied together) which is nonlinear
-\cite{Rodriguez2013}. A standard way of linearizing a bilinear term that contains a continuous and integer term is by
-introducing a new term, an either/or constraint, and utilizing big-M notation \cite{Chen2010,Rodriguez2013}. Introducing
+\citep{Rodriguez2013}. A standard way of linearizing a bilinear term that contains a continuous and integer term is by
+introducing a new term, an either/or constraint, and utilizing big-M notation \citep{Chen2010,Rodriguez2013}. Introducing
 the slack variable $g_{iq}$ to be equal to $p_i w_{iq}$, $g_{iq}$ can be defined using the following constraints
 
 \begin{subequations}
@@ -479,11 +436,10 @@ utilization, $\epsilon_q = r_q$, in the objective, \eqref{eq:objective}.
 The bus schedules are randomly generated. It is assumed that each bus has no more than 30 minutes between route
 departures. Bus routes are created by generating a random list of arrival times, assigning bus ID's to each visit, then
 generating route durations. They may vary anywhere from a minimum of the average time between the current and next
-arrival to a maximum of the next arrival time (i.e. $\frac{a_i + a_{\gamma_i}}{2}$ to $a_{\gamma_i}$). The discharge is assumed to
-be linear and is calculated via $\lambda_i = \text{rand}(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta_{\gamma_i}$ where $1 \leq i \leq N$ and $\zeta_i$
+arrival to a maximum of the next arrival time (i.e. $\frac{a_i + a_{\gamma_i}}{2}$ to $a_{\gamma_i}$). The discharge is assumed to be linear and is calculated via $\lambda_i = \text{rand}(\frac{a_i + a_{\gamma_i}}{2},a_{\gamma_i})\zeta_{\gamma_i}$ where $1 \leq i \leq N$ and $\zeta_i$
 is the discharge rate for each bus.
 
-The optimization was performed using the Gurobi MILP solver \cite{Hespanha2018} on a machine running a quad-core Intel
+The optimization was performed using the Gurobi MILP solver \citep{Hespanha2018} on a machine running a quad-core Intel
 i7-9700 4.7 GHz processor. The optimizer ran for 5 seconds to completion to produce the optimal solution.
 
 \subsection{Results}
@@ -522,34 +478,6 @@ it adds effort and complexity to the system as a trade-off for calculating the o
 solvers, such as simulated annealing (SA), would allow the problem to be solved without having to linearize the system.
 \TODO{get the citation for this}
 
-\begin{figure*}[ht]
-	\centering
-	\includegraphics[trim=1in 0.25in 1in 0.5in, width=\linewidth]{schedule.pdf}
-	\caption{Bus schedule generated with PAP MILP. Each color is assigned to a specific bus ID. The vertical bars indicate the time the vehicles are set to charge, the area before said bars indicate the waiting times for each visit $1 \leq i \leq N$. Similarly, the area after the bars indicate the time spent on the charger.}
-	\label{fig:schedule}
-\end{figure*}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[trim=0in 0in 0in 0in, width=\linewidth]{unoptimal.pdf}
-	\caption{An example, from Fig \ref{fig:schedule}, of a bus $i$ arriving before $j$, having $i$ wait for $j$ to arrive, and charge $i$ after $j$ is detached.}
-	\label{fig:unoptimal}
-\end{figure}
-
-\begin{figure*}
-	\centering
-	\includegraphics[trim=0in 0.25in 0in 0.75in, width=\linewidth]{usage.pdf}
-	\caption{Amount of slow and fast chargers used at any given time.}
-	\label{fig:usage}
-\end{figure*}
-
-\begin{figure*}
-	\centering
-	\includegraphics[trim= 0.25in 0in 0.5in 0.25in, width=\linewidth]{charges.pdf}
-	\caption{Charge for each bus over the time horizon.}
-	\label{fig:charges}
-\end{figure*}
-
 %%-------------------------------------------------------------------------------
 % Conclusion
 \section{Conclusion}
@@ -573,8 +501,99 @@ in the objective function, and utilizing this formulation in a metaheuristic sol
 
 %%================================================================================
 % Bibliography
-\bibliographystyle{IEEEtran}
+%\bibliographystyle{Frontiers-Harvard}
+\bibliographystyle{plain}
 \bibliography{main}
+
+%%================================================================================
+% Figures
+\section*{Figure Captions}
+%%--------------------------------------------------------------------------------
+% BAP and PAP comparison
+\input{img/bappap.tex}
+
+%%--------------------------------------------------------------------------------
+% Variable table
+\input{img/vartab.tex}
+
+%%--------------------------------------------------------------------------------
+%
+\begin{figure}[htbp]
+	\centerline{\begin{tikzpicture}[scale=0.25]
+	    \draw [thick, -] (0,0) rectangle (12,12) node[right]{$O$};
+	    \draw[fill=gray] (1,1) rectangle (6,4);
+	    \draw[fill=gray] (11,11) rectangle (9,5);
+	    \draw[fill=gray] (8,11) rectangle (4,5);
+	    \draw[fill=gray] (1,11) rectangle (3,8);
+	    \draw[fill=gray] (1,7) rectangle (3,5);
+	    \draw[fill=gray] (11,1) rectangle (7,4);
+        \draw [thick,<->] (0,15) node[above]{$Y$}                      --
+                                 (0,0)node[above right]{$\mathbb{O}$} --
+                                 (15,0) node[right]{$X$};
+	\end{tikzpicture}}
+	\caption{Example of rectangle packing problem}
+	\label{fig:packexample}
+\end{figure}
+
+%%--------------------------------------------------------------------------------
+% Spatial temporal graph representation
+\input{img/baprep.tex}
+
+%%--------------------------------------------------------------------------------
+%
+\begin{figure}[htbp]
+	\centerline{
+	\begin{tikzpicture}[scale=0.35]
+		\draw [thick,<->] (0,15) node[above]{Quay Length} --
+					 (0,0)                                   --
+					 (15,0) node[right]{Time};
+
+		\node[rectangle, draw, minimum width=1.5cm, minimum height = 2cm] at (5,8) {$i$};
+		\node[rectangle, draw, minimum width=1cm, minimum height = 1cm] at (2,2) {$j$};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (5,12) {$k_1$};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (7,6) {$k_3$};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (4,2) {$k_2$};
+	\end{tikzpicture}
+	}
+	\caption{Examples of different methods of overlapping. Space overlap: $v_{k_1} < v_{i} + s_i \therefore \delta_{k_{1}i} = 0$. Time overlap $u_{k_1} < u_{j} + p_j \therefore \sigma_{k_{2}j} = 0$. Both space and time overlap $\sigma_{k_{3}i} = 0$ and $\delta_{k_{3}j} = 0$.}
+	\label{fig:multipleassign}
+\end{figure}
+
+%%--------------------------------------------------------------------------------
+%
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[trim=1in 0.25in 1in 0.5in, width=\linewidth]{schedule.pdf}
+	\caption{Bus schedule generated with PAP MILP. Each color is assigned to a specific bus ID. The vertical bars indicate the time the vehicles are set to charge, the area before said bars indicate the waiting times for each visit $1 \leq i \leq N$. Similarly, the area after the bars indicate the time spent on the charger.}
+	\label{fig:schedule}
+\end{figure}
+
+%%--------------------------------------------------------------------------------
+%
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[trim=0in 0in 0in 0in, width=\linewidth]{unoptimal.pdf}
+	\caption{An example, from Fig \ref{fig:schedule}, of a bus $i$ arriving before $j$, having $i$ wait for $j$ to arrive, and charge $i$ after $j$ is detached.}
+	\label{fig:unoptimal}
+\end{figure}
+
+%%--------------------------------------------------------------------------------
+%
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[trim=0in 0.25in 0in 0.75in, width=\linewidth]{usage.pdf}
+	\caption{Amount of slow and fast chargers used at any given time.}
+	\label{fig:usage}
+\end{figure}
+
+%%--------------------------------------------------------------------------------
+%
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[trim= 0.25in 0in 0.5in 0.25in, width=\linewidth]{charges.pdf}
+	\caption{Charge for each bus over the time horizon.}
+	\label{fig:charges}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
