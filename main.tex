@@ -12,15 +12,15 @@
     amsmath,                                                                    % Miscellaneous enhancements for mathematics
     amssymb,                                                                    % Math symbols
     booktabs,                                                                   % Extend tables
-    tabularx,                                                                   % Add more contol to tables
     cite,                                                                       % Improved citation mechanims
     graphicx,                                                                   % Enhance graphics
+    lineno,                                                                     % Add line numbers to page
+    microtype,
     multirow,                                                                   % Create tables spanning multiple rows
     subcaption,                                                                 % Subcaptions in subfigures
+    tabularx,                                                                   % Add more contol to tables
     tikz,                                                                       % Generate figures in LaTeX
     xcolor,                                                                     % Colors
-    microtype,
-    lineno,                                                                     % Add line numbers to page
 }
 
 \linenumbers
@@ -49,6 +49,7 @@ $^{2}$Department of Electrical and Computer Engineering, Logan, UT, USA}
 \author[\firstAuthorLast ]{\Authors} %This field will be automatically populated
 \address{} %This field will be automatically populated
 \correspondance{} %This field will be automatically populated
+\extraAuth{corresponding Author2 \\ Laboratory X2, Institute X2, Department X2, Organization X2, Street X2, City X2 , State XX2 (only USA, Canada and Australia), Zip Code2, X2 Country X2, email2@uni2.edu}
 
 %%===============================================================================
 % Title, Authors, Abstract, Keywords
@@ -470,7 +471,10 @@ in the objective function, and utilizing this formulation in a metaheuristic sol
 
 %%================================================================================
 % Figures
+
+\newpage
 \section*{Figure Captions}
+
 %%--------------------------------------------------------------------------------
 % BAP and PAP comparison
 \input{img/bappap.tex}
