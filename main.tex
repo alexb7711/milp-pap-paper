@@ -16,6 +16,7 @@
     graphicx,                                                                   % Enhance graphics
     lineno,                                                                     % Add line numbers to page
     microtype,
+    multicol,                                                                   % Create tables spanning multiple columns
     multirow,                                                                   % Create tables spanning multiple rows
     subcaption,                                                                 % Subcaptions in subfigures
     tabularx,                                                                   % Add more contol to tables
@@ -24,6 +25,7 @@
 }
 
 \linenumbers
+\setlength{\columnsep}{2cm}
 \usetikzlibrary{automata, positioning, arrows.meta}                             % Tikz macros
 \graphicspath{ {./img/} }                                                       % Paths to find images
 
@@ -256,9 +258,6 @@ charge the vehicle at a different rate. The fourth fundamental change is related
 bus must be tracked in the optimization to ensure that charging across multiple visits is sufficient to allow each bus
 to execute its route throughout the day.
 
-% Variable table
-\input{img/vartab.tex}
-
 The discussion of the four changes are separated into two sections. Section \ref{sec:queuing} discusses the changes in
 the spatial-temporal constraint formulation to form a queuing constraint. Section \ref{sec:batt_dynamics} then discusses
 the addition of the bus charge management. This section ends with a brief discussion of a modified objective in Section
@@ -266,7 +265,6 @@ the addition of the bus charge management. This section ends with a brief discus
 explained throughout and summarized in Table \ref{tab:variables}.
 
 \subsection{Queuing Constraints} \label{sec:queuing}
-
 \noindent
 The queuing constraints help to ensure that the busses enter queues for charging or waiting as they come into the
 station. There are three sets to differentiate between different entities. $\mathbb{B} = \{1, ..., n_B\}$ is the set of
@@ -281,20 +279,21 @@ visit $i$ will be using. Thus, when $\delta_{ij} = 1$, the visits must be at dif
 variable $S$ is likewise replaced with $n_Q$. Note that $n_Q = n_B + n_C$, where $n_B$ is the number of busses and $n_C$
 is the number of chargers. The rationale for having extra queues is to allow buses to sit idle instead of charging. The
 modified queuing constraints can be written as follows.
+
 \begin{subequations}
 \label{eq:packconstrs}
 \begin{align}
-    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                      \label{subeq:time}         \\
-    v_i - v_j - (\delta_{ij} - 1)n_Q \geq 1                            \label{subeq:space}        \\
-    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1     \label{subeq:valid_pos}    \\
-    \sigma_{ij} + \sigma_{ji} \leq 1                                 \label{subeq:sigma}        \\
-    \delta_{ij} + \delta_{ji} \leq 1                                 \label{subeq:delta}        \\
-    p_i + u_i = c_i                                                  \label{subeq:detach}       \\
-    a_i \leq u_i \leq (T - p_i)                                      \label{subeq:valid_starts} \\
-    c_i \leq \tau_i                                                  \label{subeq:valid_depart} \\
-    p_i \geq 0                                                       \label{subeq:pos_charge} \\
-    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}                \label{subeq:sdspace}      \\
-    v_i \in \mathbb{Q}                                           \label{subeq:vspace}
+    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0   \label{subeq:time}         \\
+    v_i - v_j - (\delta_{ij} - 1)n_Q \geq 1       \label{subeq:space}        \\
+    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1 \label{subeq:valid_pos}    \\
+    \sigma_{ij} + \sigma_{ji} \leq 1                   \label{subeq:sigma}        \\
+    \delta_{ij} + \delta_{ji} \leq 1                   \label{subeq:delta}        \\
+    p_i + u_i = c_i                       \label{subeq:detach}       \\
+    a_i \leq u_i \leq (T - p_i)                 \label{subeq:valid_starts} \\
+    c_i \leq \tau_i                             \label{subeq:valid_depart} \\
+    p_i \geq 0                               \label{subeq:pos_charge} \\
+    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}   \label{subeq:sdspace}      \\
+    v_i \in \mathbb{Q}                               \label{subeq:vspace}
 \end{align}
 \end{subequations}
 

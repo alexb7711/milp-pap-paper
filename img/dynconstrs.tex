@@ -1,29 +1,77 @@
+\begin{multicols}{2}
 \begin{subequations}
 \label{eq:dynconstrs}
-\begin{align}
-    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                             \label{subeq:m_time}         \\
-    v_i - v_j - (\delta_{ij} - 1)n_Q \geq 1                             \label{subeq:m_space}        \\
-    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1            \label{subeq:m_valid_pos}    \\
-    \sigma_{ij} + \sigma_{ji} \leq 1                                        \label{subeq:m_sigma}        \\
-    \delta_{ij} + \delta_{ji} \leq 1                                        \label{subeq:m_delta}        \\
-    p_i + u_i = c_i                                                         \label{subeq:m_detach}       \\
-    a_i \leq u_i \leq (T - p_i)                                             \label{subeq:m_valid_starts} \\
-    c_i \leq \tau_i                                                         \label{subeq:m_valid_depart} \\
+\begin{equation}
+    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0                   \label{subeq:m_time}         \\
+\end{equation}
+\begin{equation}
+    v_i - v_j - (\delta_{ij} - 1)n_Q \geq 1                       \label{subeq:m_space}        \\
+\end{equation}
+\begin{equation}
+    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1                 \label{subeq:m_valid_pos}    \\
+\end{equation}
+\begin{equation}
+    \sigma_{ij} + \sigma_{ji} \leq 1                                   \label{subeq:m_sigma}        \\
+\end{equation}
+\begin{equation}
+    \delta_{ij} + \delta_{ji} \leq 1                                   \label{subeq:m_delta}        \\
+\end{equation}
+\begin{equation}
+    p_i + u_i = c_i                                       \label{subeq:m_detach}       \\
+\end{equation}
+\begin{equation}
+    a_i \leq u_i \leq (T - p_i)                                 \label{subeq:m_valid_starts} \\
+\end{equation}
+\begin{equation}
+    c_i \leq \tau_i                                             \label{subeq:m_valid_depart} \\
+\end{equation}
+\begin{equation}
     \eta_{i_0} = \alpha_{i_0} \kappa_{\Gamma_{i_0}}                         \label{subeq:init_charge}    \\
-    \eta_i + \sum_{q=1}^{n_Q} g_{iq} r_q - \lambda_i = \eta_{\gamma_i}          \label{subeq:next_charge}    \\
-    \eta_i + \sum_{q=1}^{n_Q} g_{iq} r_q - \lambda_i \geq \nu \kappa_{\Gamma_i} \label{subeq:min_charge}     \\
-    \eta_i + \sum_{q=1}^{n_Q} g_{iq} r_q \leq \kappa_{\Gamma_i}                 \label{subeq:max_charge}     \\
-    \eta_{i_f} \geq \beta_{i_f} \kappa_{\Gamma_{i_f}} \mbox{\TODO{confusing}}                      \label{subeq:final_charge}   \\
-    p_i - (1 - w_{iq})M \leq g_{iq}                                          \label{subeq:gpgret}         \\
-    p_i \geq g_{iq}                                                          \label{subeq:gples}          \\
-    Mw_{iq} \geq g_{iq}                                                     \label{subeq:gwgret}         \\
-    0 \leq g_{iq}                                                           \label{subeq:gwles}          \\
-    v_i = \sum_{q=1}^{n_Q} qw_{iq}                                               \label{subeq:wmax}           \\
-    \sum_{q=1}^{n_Q} w_{iq} = 1                                                 \label{subeq:wone}           \\
-    w_{iq} \in \{0,1\}                                                      \label{subeq:wspace}         \\
-    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;                     \label{subeq:ssdspace}        \\
-    v_i \in  \mathbb{Q}                                                    \label{subeq:vvspace}        \\
-    i \in \mathbb{V}                                                        \label{subeq:vispace}         \\
-    q \in \mathbb{Q} 							   \label{subeq:qspace}
-\end{align}
+\end{equation}
+\begin{equation}
+    \eta_i + \sum_{q=1}^{n_Q} g_{iq} r_q - \lambda_i = \eta_{\gamma_i}        \label{subeq:next_charge}    \\
+\end{equation}
+\begin{equation}
+    \eta_i + \sum_{q=1}^{n_Q} g_{iq} r_q - \lambda_i \geq \nu \kappa_{\Gamma_i}      \label{subeq:min_charge}     \\
+\end{equation}
+\begin{equation}
+    \eta_i + \sum_{q=1}^{n_Q} g_{iq} r_q \leq \kappa_{\Gamma_i}              \label{subeq:max_charge}     \\
+\end{equation}
+\begin{equation}
+    \eta_{i_f} \geq \beta_{i_f} \kappa_{\Gamma_{i_f}} \mbox{\TODO{confusing}} \label{subeq:final_charge}   \\
+\end{equation}
+\begin{equation}
+    p_i - (1 - w_{iq})M \leq g_{iq}                          \label{subeq:gpgret}         \\
+\end{equation}
+\begin{equation}
+    p_i \geq g_{iq}                                          \label{subeq:gples}          \\
+\end{equation}
+\begin{equation}
+    Mw_{iq} \geq g_{iq}                                      \label{subeq:gwgret}         \\
+\end{equation}
+\begin{equation}
+    0 \leq g_{iq}                                            \label{subeq:gwles}          \\
+\end{equation}
+\begin{equation}
+    v_i = \sum_{q=1}^{n_Q} qw_{iq}                           \label{subeq:wmax}           \\
+\end{equation}
+\begin{equation}
+    \sum_{q=1}^{n_Q} w_{iq} = 1                              \label{subeq:wone}           \\
+\end{equation}
+\begin{equation}
+    w_{iq} \in \{0,1\}                                      \label{subeq:wspace}         \\
+\end{equation}
+\begin{equation}
+    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}\;                 \label{subeq:ssdspace}        \\
+\end{equation}
+\begin{equation}
+    v_i \in  \mathbb{Q}                                              \label{subeq:vvspace}        \\
+\end{equation}
+\begin{equation}
+    i \in \mathbb{V}                                        \label{subeq:vispace}         \\
+\end{equation}
+\begin{equation}
+    q \in \mathbb{Q} 						  \label{subeq:qspace}
+\end{equation}
 \end{subequations}
+\end{multicols}
