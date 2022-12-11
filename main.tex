@@ -75,9 +75,10 @@ as a mixed integer linear program (MILP). The MILP is modeled after the berth al
 form known as the position allocation problem (PAP). Linear battery dynamics are included to model the charging and
 discharging of buses while at the station and during their routes, respectively. The optimization coordinates BEB
 charging to ensure each BEB has sufficient charge while using slow chargers where possible for sake of battery health.
-The model validity is demonstrated with a randomly generated set of routes for \TODO{NUMBER} buses and \TODO{NUMBER}
-visits to the charging station. The results show that the slow chargers are more readily selected and the charging and
-spatiotemporal constraints are met while considering the battery dynamics.
+The model also minimizes the total number of chargers utilized and prioritizes slow chargers. The model validity is
+demonstrated with a randomly generated set of routes for \TODO{NUMBER} buses and \TODO{NUMBER} visits to the charging
+station. The results show that the slow chargers are more readily selected and the charging and spatiotemporal
+constraints are met while considering the battery dynamics.
 
 \tiny \keyFont{ \section{Keywords:} Berth Allocation Problem (BAP), Position Allocation Problem (PAP), Mixed Integer
   Linear Program (MILP), Battery Electric Bus (BEB), Scheduling} %All article types: you may provide up to 8 keywords;
@@ -104,16 +105,15 @@ scheduling framework for a BEB fleet that shares limited fast and slow chargers.
 linear charging dynamics and a fixed bus schedule while meeting a certain battery charge threshold throughout the day.
 
 Many recent efforts have been made simultaneously solve the problems of scheduling and charging fleets and determining
-the infrastructure upon which they rely, e.g., \citep{Wei2018,
-Sebastiani2016, Hoke2014, Wang2017}. The added complexity of considering both the BEB charge scheduling and the
-infrastructure problems necessitates simplifications for sake of computation. First, only fast chargers are utilized in
-planning \citep{Wei2018, Sebastiani2016, Wang2017, Zhou2020, Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant
-simplifications to the charging models are made. Some approaches assume full charge \citep{Wei2018, Wang2017, Zhou2020,
-Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger
-\citep{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge
-\citep{Liu2020}.
+the infrastructure upon which they rely, e.g., \citep{Wei2018, Sebastiani2016, Hoke2014, Wang2017}. The added complexity
+of considering both the BEB charge scheduling and the infrastructure problems necessitates simplifications for sake of
+computation. First, only fast chargers are utilized in planning \citep{Wei2018, Sebastiani2016, Wang2017, Zhou2020,
+  Liu2020, Yang2018, Wang2017a, Qin2016}. Second, significant simplifications to the charging models are made. Some
+approaches assume full charge \citep{Wei2018, Wang2017, Zhou2020, Wang2017a}. Others have assumed that the charge
+received is proportional to the time spent on the charger \citep{Liu2020, Yang2018}, which can be a valid assumption
+when the battery state-of-charge (SOC) is below 80\% charge \citep{Liu2020}.
 
-\TODO{Need a better literature review} A host of techniques have been used to generate the optimal charging schedule.
+\TODO{Need a better literature review} A host of techniques has been used to generate the optimal charging schedule.
 \citep{Sebastiani2016} uses simulation alongside an optimization strategy to identify charging station locations and
 average stop times to supply enough charge for BEBs to complete their routes. \citep{Wei2018} utilizes a network flow
 approach to optimize the deployment strategy of BEBs; however, the focus is primarily on replacing diesel or CNG buses.
@@ -245,14 +245,13 @@ position.
 
 %%-------------------------------------------------------------------------------
 %
-\section{Problem Formulation}
-\label{sec:problemformulation}
+\section{Problem Formulation}  \label{sec:problemformulation}
 Applying the PAP to BEB charging requires four fundamental changes. The first is that the time that a BEB spends
 charging is allowed to vary. Thus, $p_i$ becomes a variable of optimization. Second, in the PAP each charging visit is
 assumed to be a different vehicle. For the BEB charging problem, each bus may make multiple visits to the station
 throughout the day and the resulting charge for a bus at a given time is dependent upon each of the prior visits made.
 Third, in the PAP, the charger is one continuous bar with vehicle width effectively restricting the number of vehicles
-charging simultaneously. For the BEB, it is assumed that a specific number of chargers exist and these chargers can
+charging simultaneously. For the BEB, it is assumed that a specific number of chargers exist, and these chargers can
 charge the vehicle at a different rate. The fourth fundamental change is related to the first three. The charge of each
 bus must be tracked in the optimization to ensure that charging across multiple visits is sufficient to allow each bus
 to execute its route throughout the day.
@@ -266,8 +265,8 @@ the addition of the bus charge management. This section ends with a brief discus
 \ref{sec:objective-function} and the statement of the full problem in Section \ref{sec:BEB_MILP}. The notation is
 explained throughout and summarized in Table \ref{tab:variables}.
 
-\subsection{Queuing Constraints}
-\label{sec:queuing}
+\subsection{Queuing Constraints} \label{sec:queuing}
+
 \noindent
 The queuing constraints help to ensure that the busses enter queues for charging or waiting as they come into the
 station. There are three sets to differentiate between different entities. $\mathbb{B} = \{1, ..., n_B\}$ is the set of
