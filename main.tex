@@ -323,10 +323,10 @@ same bus index as long as $\Upsilon_i$ is not the null element, $\varnothing$. T
 are no future visits by that same bus.
 
 \TODO{Need to fix the following notation} to drive time spent on the charger, $p_i$, as well as define initial, final,
-and intermediate bus charges for neach visit $i$. The initial and final bus charges are predefined and are represented
-by the equations $\eta_{i_0} = \alpha_{i_0} \kappa_{i_0}$ and $\eta_{i_f} = \beta_{i_f} \kappa_{i_f}$, respectively, where $\alpha_{i_0}$ and
-$\beta_{i_f}$ are percentages of the battery capacity for the first and final visits for each bus, $b$, respectively. The
-intermediate charges must be determined at solve time.
+and intermediate bus charges for each visit $i$. The initial and final bus charges are predefined and are represented by
+the equations $\eta_{i_0} = \alpha_{i_0} \kappa_{i_0}$ and $\eta_{i_f} = \beta_{i_f} \kappa_{i_f}$, respectively, where $\alpha_{i_0}$ and $\beta_{i_f}$
+are percentages of the battery capacity for the first and final visits for each bus, $b$, respectively. The intermediate
+charges must be determined at solve time.
 
 % To accomplish such a task, each arrival $i$ must be associated with an initial charge, $\eta_i$, which represents the
 % charge received from the previous visit minus the discharge observed while on route. However, because the PAP assumes
@@ -370,14 +370,13 @@ The choice of queue for visit $i$, $v_i$, becomes a slack variable and is define
 Maximum and minimum values for the charges are included to ensure the battery is not overcharged and to guarantee
 sufficient charge for subsequent visits. The upper and lower battery charge bounds for bus $b$ are $\kappa_b$ and $\nu_b$,
 respectively. As $\eta_i$ corresponds to the charge at the beginning of the visit, the upper bound constraint must also
-include the charge received during the visit as follows. \TODO{I changed the lower bound constraint as there is no real
-  need to include the charge, but we may need to add in a final constraint.}
+include the charge received during the visit as follows.
 
 \begin{subequations}
     \label{subeq:pre_min_max}
 \begin{align}
     \eta_i + \sum_{q=1}^{n_Q} p_i w_{iq} r_q \leq \kappa_{\Gamma_i}                 \\
-    \eta_i + \geq \nu_{\Gamma_i}
+    \eta_i \geq \nu_{\Gamma_i} \kappa_{\Gamma_i}
 \end{align}
 \end{subequations}
 
@@ -396,7 +395,7 @@ equal to $p_i w_{iq}$, $g_{iq}$ can be defined as
 \end{equation}
 
 Equation \eqref{eq:giq_cases} can be expressed as a mixed integer constraint using big-M notation with the following
-four constraints. \TODO{Check to see if modification is correct}
+four constraints.
 
 \begin{subequations}
     \label{eq:slack_gain}
@@ -415,12 +414,12 @@ g_{iq}$ and $p_i \geq g_{iq}$, effectively stating $p_i = g_{iq}$ with \eqref{su
 
 \subsection{The BEB Charging Problem} \label{sec:BEB_MILP}
 The goal of the MILP is to utilize chargers as little as possible to reduce energy costs with the fast charging
-penalized greater to reduce battery damage. \TODO{Can we just eliminate the $w_{iq} m_q$ term? } Thus, an assignment
-cost $m_q$ and usage cost $\epsilon_q$ are associated with each charger, $q$. The cost for both the assignment and utilization
-of slow chargers is less than that of the fast chargers. The objective function has an assignment term, $w_{iq}m_q$,
-which is non-zero if charger $q$ is used for visit $i$. Similarly, a usage term $g_{iq} \epsilon_q$ is non-zero only if
-charge is received for visit $i$ at charger $q$. The resulting objective is defined in Eq \ref{eq:objective}. The
-assignment cost, $w_{iq}m_q$, and the usage cost, $g_{iq}\epsilon_q$, are summed over each visit, $i$, and charger, $q$.
+penalized greater to reduce battery damage. Thus, an assignment cost $m_q$ and usage cost $\epsilon_q$ are associated with each
+charger, $q$. The cost for both the assignment and utilization of slow chargers is less than that of the fast chargers.
+The objective function has an assignment term, $w_{iq}m_q$, which is non-zero if charger $q$ is used for visit $i$.
+Similarly, a usage term $g_{iq} \epsilon_q$ is non-zero only if charge is received for visit $i$ at charger $q$. The resulting
+objective is defined in Eq \ref{eq:objective}. The assignment cost, $w_{iq}m_q$, and the usage cost, $g_{iq}\epsilon_q$, are
+summed over each visit, $i$, and charger, $q$.
 
 \begin{equation}
 \label{eq:objective}
@@ -595,7 +594,9 @@ in the objective function, and utilizing this formulation in a metaheuristic sol
 		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (4,2) {$k_2$};
 	\end{tikzpicture}
 	}
-	\caption{Examples of different methods of overlapping. Space overlap: $v_{k_1} < v_{i} + s_i \therefore \delta_{k_{1}i} = 0$. Time overlap $u_{k_1} < u_{j} + p_j \therefore \sigma_{k_{2}j} = 0$. Both space and time overlap $\sigma_{k_{3}i} = 0$ and $\delta_{k_{3}j} = 0$.}
+	\caption{Examples of different methods of overlapping. Space overlap: $v_{k_1} < v_{i} + s_i \therefore \delta_{k_{1}i} = 0$.
+          Time overlap $u_{k_1} < u_{j} + p_j \therefore \sigma_{k_{2}j} = 0$. Both space and time overlap $\sigma_{k_{3}i} = 0$ and
+          $\delta_{k_{3}j} = 0$.}
 	\label{fig:multipleassign}
 \end{figure}
 
@@ -604,7 +605,9 @@ in the objective function, and utilizing this formulation in a metaheuristic sol
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[trim=1in 0.25in 1in 0.5in, width=\linewidth]{schedule.pdf}
-	\caption{Bus schedule generated with PAP MILP. Each color is assigned to a specific bus ID. The vertical bars indicate the time the vehicles are set to charge, the area before said bars indicate the waiting times for each visit $1 \leq i \leq N$. Similarly, the area after the bars indicate the time spent on the charger.}
+	\caption{Bus schedule generated with PAP MILP. Each color is assigned to a specific bus ID. The vertical bars
+          indicate the time the vehicles are set to charge, the area before said bars indicate the waiting times for
+          each visit $1 \leq i \leq N$. Similarly, the area after the bars indicate the time spent on the charger.}
 	\label{fig:schedule}
 \end{figure}
 
