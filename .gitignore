@@ -1,3 +1,4 @@
+*.csv
 *.bcf
 *.swp
 *.log
@@ -13,3 +14,5 @@
 *converted-to.pdf
 build/
 main.pdf
+./
+fig/data/routes.csv

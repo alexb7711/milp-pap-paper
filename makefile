@@ -1,5 +1,5 @@
 target = a-position-allocation-approach-to-the-scheduling-of-beb-charging.pdf	# Name of file
-src   := $(shell find . -type f -name "*.tex")					# Source files
+src   := $(shell find . -maxdepth 1 -type f -name "*.tex")			# Source files
 
 all: $(target)
 
@@ -8,5 +8,5 @@ clean:
 	@latexmk -c $(src)
 
 $(target) : $(src)
-	@latexmk -bibtex -pdf main.tex
+	@latexmk -bibtex -shell-escape -pdf main.tex
 	@[ -f main.pdf ] && mv main.pdf $(target)

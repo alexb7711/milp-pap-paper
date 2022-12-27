@@ -1,0 +1,49 @@
+\pgfplotstableread[col sep = comma]{fig/data/qm-charge.csv}\chargedataquin
+\pgfplotstableread[col sep = comma]{fig/data/milp-charge.csv}\chargedatamilp
+
+\begin{subfigures}
+    % Quinn ----------
+    \begin{figure}[htpb]
+        \centering
+        \begin{tikzpicture}[scale=0.65]
+        \pgfplotstablegetcolsof{\chargedataquin}
+        \pgfmathtruncatemacro\NumCols{\pgfplotsretval/2-1} 
+        \begin{axis}[title={Quin Charges},
+                     xlabel={Time [hr]},
+                     xmin=0, xmax=24,
+                     ylabel={Charge [kwh]}]
+            \foreach \i in {0, ..., \NumCols}
+            {
+                \pgfmathsetmacro{\u}{\fpeval{2*\i} + 0}
+                \pgfmathsetmacro{\etas}{\fpeval{2*\i} + 1}
+                \addplot +[mark=none] table[x index=\u, y index =\etas]{\chargedataquin};
+            }
+        \end{axis}
+        \end{tikzpicture}
+    \caption{Bus charges for the Quin Modified charging schedule. The charging scheme of the Quin charger is more predictable during the working day.}
+    \label{subfig:quin-charge}
+    \end{figure}
+    \hfill
+    % MILP ----------
+    \begin{figure}[htpb]
+        \centering
+        \begin{tikzpicture}[scale=0.65]
+        \pgfplotstablegetcolsof{\chargedataquin}
+        \pgfmathtruncatemacro\NumCols{\pgfplotsretval/2-1} 
+        \begin{axis}[title={MILP Charges},
+                     xlabel={Time [hr]},
+                     xmin=0, xmax=24,
+                     ylabel={Charge [kwh]}]
+            \foreach \i in {0, ..., \NumCols}
+            {
+                \pgfmathsetmacro{\u}{\fpeval{2*\i} + 0}
+                \pgfmathsetmacro{\etas}{\fpeval{2*\i} + 1}
+                \addplot +[mark=none] table[x index=\u, y index =\etas]{\chargedatamilp};
+            }
+        \end{axis}
+        \end{tikzpicture}
+    \label{subfig:milp-charge}
+    \caption{The bus charges for the MILP PAP charging schedule. The MILP model allows for guarantees of minimum/maximum changes during the working day as well as charges at the end of the day.}
+    \label{subfig:milp-charge}
+    \end{figure}
+\end{subfigures}

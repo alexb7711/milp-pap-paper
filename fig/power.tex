@@ -1,0 +1,21 @@
+\pgfplotstableread[col sep = comma]{fig/data/qm-power-usage.csv}\powerdataquin
+\pgfplotstableread[col sep = comma]{fig/data/milp-power-usage.csv}\powerdatamilp
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[title={Power Usage},
+                 xlabel={Time [hr]}, ylabel={Power Usage [kw]},
+                 xmin=0, xmax=24, ymin=0]
+        % Quin ----------
+        \addplot[blue!80!black, fill=blue, fill opacity=0.25, no markers]
+                     table[x=time, y=power] {\powerdataquin};
+        \addlegendentry{Quin}
+        % MILP ----------
+        \addplot[red!80!black, fill=red, fill opacity=0.25, no markers]
+                    table[x=time, y=power] {\powerdatamilp};
+        \addlegendentry{MILP}
+    \end{axis}
+    \end{tikzpicture}
+\caption{Caption}
+\end{figure}

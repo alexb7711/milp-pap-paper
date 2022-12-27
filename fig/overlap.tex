@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+	\centerline{
+	\begin{tikzpicture}[scale=0.35]
+		\draw [thick,<->] (0,15) node[above]{Quay Length} --
+					 (0,0)                                   --
+					 (15,0) node[right]{Time};
+
+		\node[rectangle, draw, minimum width=1.5cm, minimum height = 2cm] at (5,8) {$i$};
+		\node[rectangle, draw, minimum width=1cm, minimum height = 1cm] at (2,2) {$j$};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (5,12) {$k_1$};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (7,6) {$k_3$};
+		\node[rectangle, draw, dashed, minimum width=1cm, minimum height = 1.2cm] at (4,2) {$k_2$};
+	\end{tikzpicture}
+	}
+	\caption{Examples of different methods of overlapping. Space overlap: $v_{k_1} < v_{i} + s_i \therefore \delta_{k_{1}i} = 0$.
+          Time overlap $u_{k_1} < u_{j} + p_j \therefore \sigma_{k_{2}j} = 0$. Both space and time overlap $\sigma_{k_{3}i} = 0$ and
+          $\delta_{k_{3}j} = 0$.}
+	\label{fig:multipleassign}
+\end{figure}

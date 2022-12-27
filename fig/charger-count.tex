@@ -1,0 +1,40 @@
+\pgfplotstableread[col sep = comma]{fig/data/qm-charge-cnt.csv}\usagedataquin
+\pgfplotstableread[col sep = comma]{fig/data/milp-charge-cnt.csv}\usagedatamilp
+
+\begin{subfigures}
+    % Fast ----------
+    \begin{figure}[htpb]
+        \centering
+        \begin{tikzpicture}[scale=0.65]
+        \begin{axis}[title={Fast Charger Usage},
+                     xlabel={Time [hr]},ylabel={Count},
+                     xmin=0, xmax=24,
+                     ytick distance=1]
+            \addplot[blue!80!black, fill=blue, fill opacity=0.25, no markers] table[x=visit, y=fast] {\usagedataquin};
+            \addlegendentry{Quin}
+            \addplot[red!80!black, fill=red, fill opacity=0.5, no markers] table[x=visit, y=fast] {\usagedatamilp};
+            \addlegendentry{MILP}
+        \end{axis}
+        \end{tikzpicture}
+    \caption{Number of fast chargers for Quin and MILP PAP.}
+    \label{fig:fast-charger-usage}
+    \end{figure}
+    \hfill
+    % Slow ----------
+    \begin{figure}[htpb]
+        \centering
+        \begin{tikzpicture}[scale=0.65]
+        \begin{axis}[title={Slow Charge Usage},
+                     xlabel={Time [hr]},ylabel={Count},
+                     xmin=0, xmax=24,
+                     ytick distance=1]
+            \addplot[blue!80!black, fill=blue, fill opacity=0.25, no markers] table[x=visit, y=slow] {\usagedataquin};
+            \addlegendentry{Quin}
+            \addplot[red!80!black, fill=red, fill opacity=0.15, no markers] table[x=visit, y=slow] {\usagedatamilp};
+            \addlegendentry{MILP}
+        \end{axis}
+        \end{tikzpicture}
+    \caption{Number of slow chargers for Quin and MILP PAP.}
+    \label{fig:slow-charger-usage}
+    \end{figure}%
+\end{subfigures}
