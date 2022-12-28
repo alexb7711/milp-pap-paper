@@ -8,5 +8,5 @@ clean:
 	@latexmk -c $(src)
 
 $(target) : $(src)
-	@latexmk -bibtex -shell-escape -pdf main.tex
+	@latexmk -f -bibtex -shell-escape -pdf main.tex
 	@[ -f main.pdf ] && mv main.pdf $(target)
