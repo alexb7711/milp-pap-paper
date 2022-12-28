@@ -45,7 +45,7 @@
 % Experiment information
 %% Experiment parameters
 \newcommand{\A}{26 }                                                            % Number of buses
-\newcommand{\N}{266 }                                                           % Number of visits
+\newcommand{\N}{250 }                                                           % Number of visits
 \newcommand{\acharge}{0.9}                                                      % BOD charge percentage
 \newcommand{\bcharge}{0.7 }                                                     % EOD charge percentage
 \newcommand{\mincharge}{25\% }                                                  % Min visit charge percent
@@ -485,8 +485,8 @@ rate is used. Planning is done over a 24-hour time horizon. $n_C = \fpeval{\fast
 \slow of the chargers are slow charging (\slows KWh) and \fast are fast charging (\fasts KWh).
 
 To encourage the MILP PAP problem to utilize the fewest number of chargers, the value of $m_q$ in the objective
-function, \eqref{eq:objective}, is $m_q = 1000q$. The value of $\epsilon = 1$ for all chargers. This effectively means that
-the effort to reduce time on every charger is the same.
+function, \eqref{eq:objective}, is $\forall q \in Q; m_q = 1000q$. The value of $\epsilon = 1$ for all chargers. This effectively means
+that the effort to reduce time on every charger is the same.
 
 Another heuristic-based optimization strategy, known as Quin-Modified, is also employed as a means of comparison with
 the results of the MILP PAP. The Quin-Modified strategies is a based on the threshold strategy of \cite{Qin2016}. The
@@ -542,6 +542,8 @@ linearize the system. \TODO{get the citation for this}
 % Conclusion
 \section{Conclusion}
 \label{sec:conclusion}
+\TODO{Rewrite}
+
 This work developed a MILP scheduling framework that optimally assigns slow and fast chargers to a BEB bus fleet
 assuming a constant schedule. The BAP was introduced with an example formulation and was then compared to the PAP. The
 PAP constructed on the BAP to allow the time spent on the charger, $p_i$, to be a decision variable. Because the
