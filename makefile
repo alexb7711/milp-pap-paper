@@ -1,5 +1,6 @@
 target = a-position-allocation-approach-to-the-scheduling-of-beb-charging.pdf	# Name of file
-src   := $(shell find . -maxdepth 1 -type f -name "*.tex")			# Source files
+src   := $(shell find . -type f -name "*.tex")					# Source files
+src   += $(shell find . -type f -name "*.csv")					# Source files
 
 all: $(target)
 

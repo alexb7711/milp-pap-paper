@@ -10,14 +10,13 @@
         \pgfmathtruncatemacro\NumCols{\pgfplotsretval/3 - 1}
         \begin{axis}[title={Quin Schedule},
                      xlabel={Time [hr]}, ylabel={Active charge times},
-                     xmin=0, xmax=24,
-                     ytick=data]
+                     xmin=0, xmax=24]
             \foreach \i in {0, ..., \NumCols}
             {
                 \pgfmathsetmacro{\v}{\fpeval{3*\i} + 0}
                 \pgfmathsetmacro{\u}{\fpeval{3*\i} + 1}
                 \pgfmathsetmacro{\p}{\fpeval{3*\i} + 2}
-                \addplot +[only marks, mark=o, error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledataquin};
+                \addplot +[only marks, error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledataquin};
             }
         \end{axis}
         \end{tikzpicture}
@@ -33,14 +32,13 @@
         \pgfmathtruncatemacro\NumCols{\pgfplotsretval/3 - 1}
         \begin{axis}[title={MILP Schedule},
                      xlabel={Time [hr]}, ylabel={Active charge times},
-                     xmin=0, xmax=24,
-                     ytick=data]
+                     xmin=0, xmax=24]
             \foreach \i in {0, ..., \NumCols}
             {
                 \pgfmathsetmacro{\v}{\fpeval{3*\i} + 0}
                 \pgfmathsetmacro{\u}{\fpeval{3*\i} + 1}
                 \pgfmathsetmacro{\p}{\fpeval{3*\i} + 2}
-                \addplot +[only marks, mark=o, error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledatamilp};
+                \addplot +[only marks, error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledatamilp};
             }
         \end{axis}
         \end{tikzpicture}
