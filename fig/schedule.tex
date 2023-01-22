@@ -16,7 +16,7 @@
                 \pgfmathsetmacro{\v}{\fpeval{3*\i} + 0}
                 \pgfmathsetmacro{\u}{\fpeval{3*\i} + 1}
                 \pgfmathsetmacro{\p}{\fpeval{3*\i} + 2}
-                \addplot +[only marks, error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledataquin};
+                \addplot +[error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledataquin};
             }
         \end{axis}
         \end{tikzpicture}
@@ -38,7 +38,7 @@
                 \pgfmathsetmacro{\v}{\fpeval{3*\i} + 0}
                 \pgfmathsetmacro{\u}{\fpeval{3*\i} + 1}
                 \pgfmathsetmacro{\p}{\fpeval{3*\i} + 2}
-                \addplot +[only marks, error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledatamilp};
+                \addplot +[error bars/.cd, x dir=plus, x explicit] table[x index=\u, x error index=\p, y index =\v]{\scheduledatamilp};
             }
         \end{axis}
         \end{tikzpicture}
