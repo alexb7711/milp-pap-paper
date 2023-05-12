@@ -58,21 +58,20 @@
 
 %% Solve output
 \newcommand{\timeran}{14400 }                                                   % Time ran for MILP
-\newcommand{\gappercent}{52.5\% }                                                 % Gap percent after runtime
+\newcommand{\gappercent}{52.5\% }                                               % Gap percent after runtime
 \newcommand{\processor}{Ryzen 9 }                                               % Processor type
 
 %%-------------------------------------------------------------------------------
 % Authors
 \def\keyFont{\fontsize{8}{11}\helveticabold }
 \def\firstAuthorLast{Brown {et~al.}} %use et al only if is more than 1 author
-\def\Authors{Alexander Brown\,$^{1,*}$, Greg Droge\,$^{2}$}
+\def\Authors{Alexander Brown\,$^{1,*}$, Greg Droge\,$^{1}$, Jacob Gunther\,$^{1}$}
 % Affiliations should be keyed to the author's name with superscript numbers and be listed as follows: Laboratory,
 % Institute, Department, Organization, City, State abbreviation (USA, Canada, Australia), and Country (without detailed
 % address information such as city zip codes or street names). If one of the authors has a change of address, list the
 % new address below the correspondence details using a superscript symbol and use the same symbol to indicate the author
 % in the author list.
-\def\Address{$^{1}$Department of Electrical and Computer Engineering, Logan, UT, USA \\
-$^{2}$Department of Electrical and Computer Engineering, Logan, UT, USA}
+\def\Address{$^{1}$Department of Electrical and Computer Engineering, Logan, UT, USA}
 % The Corresponding Author should be marked with an asterisk Provide the exact contact address (this time including
 % street name and city zip code) and email of the corresponding author
 \def\corrAuthor{Alexander Brown}
@@ -100,7 +99,7 @@ $^{2}$Department of Electrical and Computer Engineering, Logan, UT, USA}
 %%---------------------------------------------------------------------------------
 % Abstract
 \begin{abstract}
-Dependable charging schedules for an increasing interest of battery electric bus (BEB) fleets is a critical component to
+Robust charging schedules for an increasing interest of battery electric bus (BEB) fleets is a critical component to
 a successful adoption. In this paper, a BEB charging scheduling framework that considers spatiotemporal schedule
 constraints, route schedules, fast and slow charging, and battery charging dynamics is modeled as a mixed integer linear
 program (MILP). The MILP is modeled after the berth allocation problem (BAP) in a modified form known as the position
@@ -111,8 +110,7 @@ total number of chargers utilized and prioritizes slow chargers. The model valid
 sampled from Utah Transit Authority (UTA) for \A buses and \N visits to the charging station. The model is also compared
 to a heuristic based algorithm, referred to as the Quin-Modified method. The results presented show that the slow
 chargers are more readily selected and the charging and spatiotemporal constraints are met while considering the battery
-dynamics, minimizing the charger count, and consumption cost. The results are also compared to that of the Quin-Modified
-schedule.
+dynamics, minimizing the charger count, and consumption cost.
 
 \tiny \keyFont{ \section{Keywords:} Berth Allocation Problem (BAP), Position Allocation Problem (PAP), Mixed Integer
   Linear Program (MILP), Battery Electric Bus (BEB), Scheduling} %All article types: you may provide up to 8 keywords;
@@ -138,21 +136,18 @@ adverse affects in the health of the battery due to fast charging \cite{Lutsey20
 scheduling framework for a BEB fleet that shares limited fast and slow chargers. This framework takes into consideration
 linear charging dynamics and a fixed bus schedule while meeting a certain battery charge threshold throughout the day.
 
-Many recent efforts have been made simultaneously solve the problems of scheduling and charging fleets and determining
-the infrastructure upon which they rely, e.g., \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}. The added complexity
-of considering both the BEB charge scheduling and the infrastructure problems necessitates simplifications for sake of
-computation of the charge scheduling problem. Further complexities are introduced in the form of schemes to introduce
-BEBs into existing fleets by replacing existing buses \cite{Zhou2020-1, Rinaldi2020, Duan2021}, assigning BEBs to
-routes, and introducing uncertainties into the models \cite{Tang2019, Duan2021}. These simplifications to the charge
+Many recent efforts have been made to simultaneously solve the problems of route scheduling, and charging fleets and determining
+the infrastructure upon which they rely, e.g., \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}. Several simplifications
+are made to make these problems computationally feasible \todo{citations}. These simplifications to the charge
 scheduling model include utilizing only fast chargers while planning \cite{Wei2018, Sebastiani2016, Wang2017,
   Zhou2020-0, Liu2020, Yang2018, Wang2017a, Qin2016}. If slow chargers are used, they are only employed at the depot and
-not the station \cite{He2020, Tang2019}. Some approaches assume full charge \cite{Wei2018, Wang2017, Zhou2020-0,
+not the station \cite{He2020, Tang2019}. Some approaches also simplify by assuming a full charge is always achieved \cite{Wei2018, Wang2017, Zhou2020-0,
   Wang2017a}. Others have assumed that the charge received is proportional to the time spent on the charger
 \cite{Liu2020, Yang2018}, which can be a valid assumption when the battery state-of-charge (SOC) is below 80\% charge
 \cite{Liu2020}.
 
-This work builds upon the Position Allocation Problem, a modification of the well studied Berth Allocation Problem
-(BAP), as a means to schedule the charging of electric vehicles \cite{Qarebagh2019, Buhrkal2010, Frojan2015, Imai2001}.
+This work builds upon the Position Allocation Problem \cite{Qarebagh2019}, a modification of the well studied Berth Allocation Problem
+(BAP), as a means to schedule the charging of electric vehicles \cite{Buhrkal2010, Frojan2015, Imai2001}.
 The BAP is a continuous time model that solves the problem of allocating space for incoming vessels to be berthed. Each
 arriving vessel requires both time and space to be serviced and is assigned a berthing location \cite{Imai2001}. Vessels
 are lined up parallel to the berth to be serviced and are horizontally queued as shown in Fig \ref{subfig:bapexample}.
@@ -163,8 +158,9 @@ charger a single time \cite{Qarebagh2019}.
 
 The main contribution of this work is the extension of the PAP novel approach to BEB charger scheduling. This includes
 modeling and incorporation of a proportional charging model into the MILP framework, consideration of multiple charger
-types, and inclusion of the route schedule for each bus. The result is a MILP formulation that coordinates charging
-times and charger type for every visit that each bus makes to the station while considering a dynamic charge model and
+types, and inclusion of the route schedule for each bus. The last contribution is of importance because both the BAP and PAP
+consider each arrival to be unique; thus, a method of tracking buses must be implemented.
+The result is a MILP formulation that coordinates charging times and charger type for every visit that each bus makes to the station while considering a dynamic charge model and
 scheduling constraints.
 
 The remainder of the paper proceeds as follows: In Section \ref{sec:positionallocationproblem}, the PAP is introduced
@@ -177,8 +173,7 @@ including modifications to the PAP queuing constraints and development of a dyna
 % The Position Allocation Problem
 \section{The Position Allocation Problem}
 \label{sec:positionallocationproblem}
-The BEB charge schedule formulation in this work builds upon the PA, which, in turn, builds upon the BAP. This section
-provides a brief overview of the BAP and a detailed formulation of PAP as presented in \cite{Qarebagh2019}.
+This section provides a brief overview of the BAP and a detailed formulation of PAP as presented in \cite{Qarebagh2019}.
 
 \subsection{Overview of BAP}
 The BAP is a rectangle packing problem where a set
@@ -186,8 +181,8 @@ of rectangles ($\mathbb{O}$) are attempted to be optimally placed in a larger re
 \ref{fig:packexample}. The rectangle packing problem is an NP-hard problem that can be used to describe many real life
 problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions of $\mathbb{O}$ are held constant such
 as in the problem of packing modules on a chip, where the widths and height of the rectangles represent the physical
-width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP, in some formulations, allow one side of
-the rectangle to vary depending on its assigned position (i.e. the handling time is dependent on the berth)
+width and heights of the modules \cite{Murata1995}. Other problems, such as the BAP can allow one side of
+the rectangle to vary depending on its assigned position (e.g. the handling time is dependent on the berth)
 \cite{Buhrkal2010}.
 
 The BAP solves the problem of optimally assigning incoming vessels to berth positions to be serviced (Fig
@@ -197,20 +192,19 @@ docking vessel $i$, respectively. The vessel characteristics (length of the vess
 departure time) are assumed to be known for all $N$ vessels to be serviced. A representation of a BAP solution is shown
 in Fig \ref{fig:bap}.
 
-The BAP objective is generally represented as minimizing some operational time for a given vessel $i$. The operational
-time may be chosen to minimize the difference between arrival and departure times, time spent being serviced, or overall
-waiting time \cite{Voss2007, Buhrkal2010,Frojan2015}. The model must then constrain the vessel placement as to not
-allow overlap spatially or temporally.
-
 \subsection{The PAP Formulation}
-The BAP formulation forms the basis of the PAP; however, there are some differences in the way the variables are
+The BAP forms the basis of the PAP; however, there are some differences in the way the variables are
 perceived. For the $i^{th}$ visit, starting service time, $u_i$, is now the starting charge time, the berth location,
-$v_i$, is now the charger queue for assignment, and the service time, $p_i$, is now the time to charge. The PAP utilizes
-a number of parameters. The following parameters are constants.
+$v_i$, is now the charger queue for assignment, and the service time, $p_i$, is now the time to charge. There are also a few
+key concepts on the model. The PAP models the set of chargers as one continuous line. In order to define distint chargers, the 
+line is discrtized into $n_Q$ queues with a unit length of 1 and \todo{charge rate} of $r_q$. The charge times are continuous and 
+can be placed anywhere on the time horizon, $[0,T]$, as long as the allocated times do not interfere with other scheduled charge times.
+The PAP utilizes a number of parameters. The following parameters are constants. 
+
 \begin{itemize}
-	\item $S$   : charger length
-	\item $T$   : time horizon
-	\item $N$   : number of incoming vehicles
+	\item $n_Q$ : total number of chargers
+	\item $T$   : 
+	\item $n_V$ : total number of incoming vehicles
 	\item $p_i$ : charging time for vehicle $i;\; 1 \leq i \leq N$
 	\item $s_i$ : width of vehicle $i;\; 1 \leq i \leq N$
 	\item $a_i$ : arrival time of vehicle $i;\; 1 \leq i \leq N$
@@ -220,8 +214,8 @@ These constants define the problem bounds. The following list provides a series 
 formulation.
 
 \begin{itemize}
-    \item $u_i$    : starting time of service for vehicle $i;\; 1 \leq i \leq N$
-    \item $v_i$    : charge location $i;\; 1 \leq i \leq N$
+    \item $u_i$    : starting charge time for vehicle $i;\; 1 \leq i \leq N$
+    \item $v_i$    : assigned charge queue for vehicle $i;\; 1 \leq i \leq N$
     \item $c_i$    : departure time for vehicle $i;\; 1 \leq i \leq N$
     \item $\sigma_{ij}$ : binary variable that determines ordering of vehicles $i$ and $j$ in time
     \item $\delta_{ij}$ : binary variable that determines relative position of vehicles $i$ and $j$ when charging simultaneously
@@ -239,7 +233,7 @@ Subject to:
 \label{eq:bapconstrs}
 \begin{align}
     u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 0                  \label{subeq:baptime}          \\
-    v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 0                  \label{subeq:bapspace}         \\
+    v_j - v_i - s_i - (\delta_{ij} - 1)Q \geq 0                  \label{subeq:bapspace}         \\
     \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1 \label{subeq:bapvalid_pos}     \\
     \sigma_{ij} + \sigma_{ji} \leq 1                              \label{subeq:bapsigma}        \\
     \delta_{ij} + \delta_{ji} \leq 1                              \label{subeq:bapdelta}        \\
@@ -275,7 +269,7 @@ position.
 
 %%-------------------------------------------------------------------------------
 %
-\section{Problem Formulation}  \label{sec:problemformulation}
+\section{A Rectangle Packing Formulation for BEB Charging}  \label{sec:problemformulation}
 Applying the PAP to BEB charging requires four fundamental changes. The first is that the time that a BEB spends
 charging is allowed to vary. Thus, $p_i$ becomes a variable of optimization. Second, in the PAP each charging visit is
 assumed to be a different vehicle. For the BEB charging problem, each bus may make multiple visits to the station
