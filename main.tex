@@ -381,8 +381,7 @@ include the charge received during the visit as follows.
 \end{align}
 \end{subequations}
 
-Note that the term $p_i w_{iq}$ is a bilinear term (two decision variables being multiplied together) which is nonlinear
-\cite{Rodriguez2013}. A standard way of linearizing a bilinear term that contains an integer variable is by introducing
+Note that the term $p_i w_{iq}$ is a bilinear term. A standard way of linearizing a bilinear term that contains an integer variable is by introducing
 a slack variable with an either/or constraint \cite{Chen2010,Rodriguez2013}. Allowing the slack variable $g_{iq}$ to be
 equal to $p_i w_{iq}$, $g_{iq}$ can be defined as
 
@@ -410,41 +409,30 @@ four constraints.
 
 \noindent
 where $M$ is a large value. If $w_{iq} = 1$ then \eqref{subeq:repgpgret} and \eqref{subeq:repgples} become $p_i \leq
-g_{iq}$ and $p_i \geq g_{iq}$, effectively stating $p_i = g_{iq}$ with \eqref{subeq:repgwgret} being inactive. If $w_{iq} =
+g_{iq}$ and $p_i \geq g_{iq}$, forcing $p_i = g_{iq}$ with \eqref{subeq:repgwgret} being inactive. If $w_{iq} =
 0$, \eqref{subeq:repgpgret} is inactive and \eqref{subeq:repgwgret} and \eqref{subeq:repgwles} force $g_{iq} = 0$.
 
 \subsection{The BEB Charging Problem} \label{sec:BEB_MILP}
-The goal of the MILP is to utilize chargers as little as possible to reduce energy costs with the fast charging
-penalized greater to reduce battery damage. Thus, an assignment cost $m_q$ and usage cost $\epsilon_q$ are associated with each
-charger, $q$. The cost for both the assignment and utilization of slow chargers is less than that of the fast chargers.
-The objective function has an assignment term, $w_{iq}m_q$, which is non-zero if charger $q$ is used for visit $i$.
-Similarly, a usage term $g_{iq} \epsilon_q$ is non-zero only if charge is received for visit $i$ at charger $q$. The resulting
-objective is defined in Eq \ref{eq:objective}. The assignment cost, $w_{iq}m_q$, and the usage cost, $g_{iq}\epsilon_q$, are
-summed over each visit, $i$, and charger, $q$.
+The goal of the MILP is to utilize chargers as little as possible to reduce energy costs with the fast charging being
+penalized more to reduce battery damage. Thus, an assignment cost $m_q$ and usage cost $\epsilon_q$ are associated with each
+charger, $q$. These weights can be adjusted based on charger type or time of day that the visit occurs.
+The assignment term takes the form $w_{iq}m_q$, and the usage term takes the form $g_{iq} \epsilon_q$. The resulting
+BEB charging problem is defined in Eq \ref{eq:objective}.
 
 \begin{equation}
 \label{eq:objective}
 	\min \sum_{i=1}^N \sum_{q=1}^{n_Q} \Big( w_{iq} m_q + g_{iq} \epsilon_q \Big) \\
 \end{equation}
 
-Subject to the constraints in Eq \ref{eq:dynconstrs}.
+Subject to the constraints
 
 % Overall constraint equations
 \input{eq/dynconstrs.tex}
 
 Constraints \eqref{subeq:m_time}-\eqref{subeq:m_valid_depart} are reiterations of the queuing constraints in
-\eqref{eq:packconstrs}. Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide initialization and
-terminal conditions as well as intermediate constraints to provide continuity in vehicle charges. Constraint
-\eqref{subeq:init_charge} states the first arrival for each bus is initialized with a charge of $\alpha \kappa_{\Gamma^0_i}$.
-Constraints \eqref{subeq:next_charge}, \eqref{subeq:min_charge}, and \eqref{subeq:max_charge} define the battery charge
-dynamics using \eqref{subeq:pre_next_charge} and \eqref{subeq:pre_min_max} with the gain slack variables $g_{iq}$ used
-in place of the bilinear term. Constraints \eqref{subeq:gpgret} through \eqref{subeq:gwles} define $g_{iq}$ using
-\eqref{eq:slack_gain}.
-
-Constraint \eqref{subeq:max_charge} ensures that the charging done for visit $i$ cannot be greater than the capacity of
-the battery, $\kappa_{\Gamma_i}$. Constraint \eqref{subeq:final_charge} states that the last visit for each vehicle must have a
-minimum charge of $\beta \kappa_{\Gamma^f_i}$, guaranteeing a minimum initial charge for the next working day. The last constraints
-\eqref{subeq:wspace}-\eqref{subeq:qspace} define the sets of valid values for each variable.
+\eqref{eq:packconstrs}. Constraints \eqref{subeq:init_charge}-\eqref{subeq:final_charge} provide the battery charge constraints.
+Constraints \eqref{subeq:gpgret} through \eqref{subeq:gwles} define the charge gain of every visit/queue pairing.
+The last constraints \eqref{subeq:wspace}-\eqref{subeq:qspace} define the sets of valid values for each variable.
 
 %================================================================================
 % Example
