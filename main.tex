@@ -138,7 +138,7 @@ linear charging dynamics and a fixed bus schedule while meeting a certain batter
 
 Many recent efforts have been made to simultaneously solve the problems of route scheduling, and charging fleets and determining
 the infrastructure upon which they rely, e.g., \cite{Wei2018, Sebastiani2016, Hoke2014, Wang2017}. Several simplifications
-are made to make these problems computationally feasible \todo{citations}. These simplifications to the charge
+are made to make these problems computationally feasible \TODO{citations}. These simplifications to the charge
 scheduling model include utilizing only fast chargers while planning \cite{Wei2018, Sebastiani2016, Wang2017,
   Zhou2020-0, Liu2020, Yang2018, Wang2017a, Qin2016}. If slow chargers are used, they are only employed at the depot and
 not the station \cite{He2020, Tang2019}. Some approaches also simplify by assuming a full charge is always achieved \cite{Wei2018, Wang2017, Zhou2020-0,
@@ -196,14 +196,14 @@ in Fig \ref{fig:bap}.
 The BAP forms the basis of the PAP; however, there are some differences in the way the variables are
 perceived. For the $i^{th}$ visit, starting service time, $u_i$, is now the starting charge time, the berth location,
 $v_i$, is now the charger queue for assignment, and the service time, $p_i$, is now the time to charge. There are also a few
-key concepts on the model. The PAP models the set of chargers as one continuous line. In order to define distint chargers, the 
-line is discrtized into $n_Q$ queues with a unit length of 1 and \todo{charge rate} of $r_q$. The charge times are continuous and 
+key concepts on the model. The PAP models the set of chargers as one continuous line; that is, the natural behavior of the PAP model is
+to allow vehicles to be queued anywhere in $[0,S]$. Similarly, the charge times are continuous and 
 can be placed anywhere on the time horizon, $[0,T]$, as long as the allocated times do not interfere with other scheduled charge times.
 The PAP utilizes a number of parameters. The following parameters are constants. 
 
 \begin{itemize}
-	\item $n_Q$ : total number of chargers
-	\item $T$   : 
+	\item $S$   : Size of the vehicle
+	\item $T$   : time horizon
 	\item $n_V$ : total number of incoming vehicles
 	\item $p_i$ : charging time for vehicle $i;\; 1 \leq i \leq N$
 	\item $s_i$ : width of vehicle $i;\; 1 \leq i \leq N$
@@ -233,7 +233,7 @@ Subject to:
 \label{eq:bapconstrs}
 \begin{align}
     u_j - u_i - p_i - (\sigma_{ij} - 1)T \geq 0                  \label{subeq:baptime}          \\
-    v_j - v_i - s_i - (\delta_{ij} - 1)Q \geq 0                  \label{subeq:bapspace}         \\
+    v_j - v_i - s_i - (\delta_{ij} - 1)S \geq 0                \label{subeq:bapspace}         \\
     \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1 \label{subeq:bapvalid_pos}     \\
     \sigma_{ij} + \sigma_{ji} \leq 1                              \label{subeq:bapsigma}        \\
     \delta_{ij} + \delta_{ji} \leq 1                              \label{subeq:bapdelta}        \\
@@ -275,20 +275,21 @@ charging is allowed to vary. Thus, $p_i$ becomes a variable of optimization. Sec
 assumed to be a different vehicle. For the BEB charging problem, each bus may make multiple visits to the station
 throughout the day and the resulting charge for a bus at a given time is dependent upon each of the prior visits made.
 Third, in the PAP, the charger is one continuous bar with vehicle width effectively restricting the number of vehicles
-charging simultaneously. For the BEB, it is assumed that a specific number of chargers exist, and these chargers can
-charge the vehicle at a different rate. The fourth fundamental change is related to the first three. The charge of each
+charging simultaneously. For the BEB, it is assumed that a discrete number of chargers exist. Moreover, it is assumed that these chargers can
+charge the vehicles at a different rates. The fourth fundamental change is related to the first three. The charge of each
 bus must be tracked in the optimization to ensure that charging across multiple visits is sufficient to allow each bus
 to execute its route throughout the day.
 
+\TODO{make sure this is still accurate}
 The discussion of the four changes are separated into two sections. Section \ref{sec:queuing} discusses the changes in
 the spatial-temporal constraint formulation to form a queuing constraint. Section \ref{sec:batt_dynamics} then discusses
-the addition of the bus charge management. This section ends with a brief discussion of a modified objective in Section
-\ref{sec:objective-function} and the statement of the full problem in Section \ref{sec:BEB_MILP}. The notation is
+the addition of the bus charge management. This section ends with a brief discussion of a modified objective function
+and the statement of the full problem in Section \ref{sec:BEB_MILP}. The notation is
 explained throughout and summarized in Table \ref{tab:variables}.
 
 \subsection{Queuing Constraints} \label{sec:queuing}
 \noindent
-The queuing constraints help to ensure that the busses enter queues for charging or waiting as they come into the
+The queuing constraints ensure that the busses entering the queues for charging are assigned in a feasible manner as they come into the
 station. There are three sets to differentiate between different entities. $\mathbb{B} = \{1, ..., n_B\}$ is the set of
 bus indices with index $b$ used to denote an individual bus, $\mathbb{Q} = \{1, ..., n_Q\}$ is the set of queues with index $q$
 used to denote an individual queue, and $\mathbb{V} = \{1, ..., n_V\}$ is a set of visits to the station with $i,j$ used
@@ -296,73 +297,58 @@ to refer to individual visits. The mapping $\Gamma: \mathbb{V} \rightarrow \math
 the shorthand $\Gamma_i$ used to refer to the bus index for visit $i$.
 
 Most variables are now defined in terms of a visit. Two separate visits could correspond to different buses or visits by
-the same bus. The spatial variable $s_i$ is removed and $v_i$ is made to be an integer corresponding to which queue
-visit $i$ will be using. Thus, when $\delta_{ij} = 1$, the visits must be at different chargers, i.e., $v_i-v_j \geq 1$. The
+the same bus. The PAP spatial variable, $s_i$, is removed and $v_i$ is made to be an integer corresponding to which queue
+visit $i$ will be using. Thus, when $\delta_{ij} = 1$, vehicle $i$ is queued to a charger that has a larger index than the
+charger that vehicle $j$ is queued, i.e., $v_i-v_j \geq 1$. The
 variable $S$ is likewise replaced with $n_Q$. Note that $n_Q = n_B + n_C$, where $n_B$ is the number of busses and $n_C$
-is the number of chargers. The rationale for having extra queues is to allow buses to sit idle instead of charging. The
-modified queuing constraints can be written as follows.
+is the number of chargers. The rationale for having more queues than chargers is to allow buses to sit idle instead of 
+requiring the bus to charge at each visit. The modified queuing constraints can be written as follows.
 
 \begin{subequations}
 \label{eq:packconstrs}
 \begin{align}
-    u_i - u_j - p_j - (\sigma_{ij} - 1)T \geq 0   \label{subeq:time}         \\
     v_i - v_j - (\delta_{ij} - 1)n_Q \geq 1       \label{subeq:space}        \\
-    \sigma_{ij} + \sigma_{ji} + \delta_{ij} + \delta_{ji} \geq 1 \label{subeq:valid_pos}    \\
-    \sigma_{ij} + \sigma_{ji} \leq 1                   \label{subeq:sigma}        \\
-    \delta_{ij} + \delta_{ji} \leq 1                   \label{subeq:delta}        \\
-    p_i + u_i = c_i                       \label{subeq:detach}       \\
-    a_i \leq u_i \leq (T - p_i)                 \label{subeq:valid_starts} \\
     c_i \leq \tau_i                             \label{subeq:valid_depart} \\
     p_i \geq 0                               \label{subeq:pos_charge} \\
-    \sigma_{ij} \in \{0,1\},\;\delta_{ij} \in \{0,1\}   \label{subeq:sdspace}      \\
-    v_i \in \mathbb{Q}                               \label{subeq:vspace}
+    v_i \in \mathbb{Q}                       \label{subeq:vspace}
 \end{align}
 \end{subequations}
 
-Constraints \eqref{subeq:time}-\eqref{subeq:valid_starts} and \eqref{subeq:sdspace} are nearly identical to those
-described in Section \ref{sec:positionallocationproblem} with the sole change in \eqref{subeq:space} being described
-above to conform to a queue. Constraint \eqref{subeq:valid_depart} is added to ensure that the ending charge time,
-$c_i$, must be less than or equal to the required departure time from the station, $\tau_i$. This enables the bus schedules
-to be considered during optimization. Finally, \eqref{subeq:vspace} enforces $v_i$ to be an integer in the set of
-possible queues.
+\TODO{\eqref{subeq:pos_charge} can probabably be removed}
+
+Constraint \eqref{subeq:space} is nearly identical to \eqref{subeq:bapspace}, but rather than viewing the charger as
+a continuous strip of length $S$, it is discretized into $n_Q$ queues a width of unit length one. A BEB is also assigned a unit
+length of one which is reflected in \eqref{subeq:space} by $\cdot \geq 1$. Constraint \eqref{subeq:valid_depart} ensures that the
+time the BEB is detatched from the charger is before its departure time. Constraint \eqref{subeq:vspace} defines the integer set of
+indices for queues for $v_i$.
 
 \subsection{Battery Charge Dynamic Constraints}
 \label{sec:batt_dynamics}
-Using purely the constraints in \eqref{eq:packconstrs} with the objective in \eqref{eq:bapobjective} would result in
-$c_i$ being chosen as small as possible by employing $p_i = 0,\; u_i = c_i$. Thus, the vehicles would not charge.
-Furthermore, it does not encode any revisiting of the BEB to the charging station. To remedy this, battery dynamic
-constraints are introduced.
-
-Battery charge dynamic constraints are used to model the charge in each bus with the purpose of ensuring sufficient time
-is spent charging. Two constraints are enforced on the bus charge: busses must always have sufficient charge to execute
+Battery dynamic constraints are now introduced to relate busses to visits and guarantee that buses have sufficient
+time to charge. Two constraints are enforced on the bus charge: busses must always have sufficient charge to execute
 their respective routes and each bus must end the day with a specific charge threshold, preparatory to execution for the
 next day.
 
 The charge at the beginning of visit $i$ is denoted as $\eta_i$. As a charge on the bus is dependent upon the visits that
 bus makes to the station, the mapping $\Upsilon: \mathbb{V} \rightarrow \mathbb{V} \bigcup \{\varnothing\}$ is used to determine the next visit
 that corresponds to the same bus, with $\Upsilon_i$ being shorthand notation. Thus, $\Gamma_i$ and $\Gamma_{\Upsilon_i}$ would both map to the
-same bus index as long as $\Upsilon_i$ is not the null element, $\varnothing$. The null element is used to denote that there
-are no future visits by that same bus.
+same bus index as long as $\Upsilon_i$ is not the null element, $\varnothing$. That is, $\Gamma_{\Upsilon_i}$ where $\Upsilon_i = 0$ indicates that
+there are no future visits for bus $i$.
 
 To drive time spent on the charger, $p_i$, as well as define initial, final, and intermediate bus charges for each visit
 $i$, the sets for initial and final visits must be defined. Let the mapping of the first visit by each bus be denoted as
-$\Gamma^0_i : \mathbb{V} \rightarrow \mathbb{V} \bigcup \{\varnothing \}$. The indexed value of $\Gamma^0_i$ represents the index for the first
-visit of bus $b$ or the null element, $\varnothing$. Similarly, let $\Gamma^f_i : \mathbb{V} \rightarrow \mathbb{V} \bigcup \{\varnothing \}$
-contain the indexes for the final visit of each bus $b$ or the null element. The initial and final bus charges can then
-be represented by the constraint equations $\eta_{\Gamma^0_i} = \alpha \kappa_{\Gamma^0_i}$ and \(\eta_{\Gamma^f_i} = \beta \kappa_{\Gamma^f_i}\), respectively,
-where $\alpha$ and $\beta$ are percentages of the battery for first and final visit, respectively. The intermediate charges must
-be determined at solve time.
+$\Gamma^0_i : \mathbb{V} \rightarrow \mathbb{B}$. The indexed value of $\Gamma^0_i$ represents the index for the first
+visit of bus $b$ or the null element, $\varnothing$. Similarly, let $\Gamma^f_i : \mathbb{V} \rightarrow \mathbb{B}}$
+contain the indexes for the final visit of each bus $b$ or the null element. The initial and final bus charge percentages, $\alpha$ and $\beta$, can then
+be represented by the constraint equations $\eta_{\Gamma^0_i} = \alpha \kappa_{\Gamma^0_i}$ and \(\eta_{\Gamma^f_i} = \beta \kappa_{\Gamma^f_i}\), respectively.
+The intermediate charges mustbe determined at solve time.
 
 It is assumed that the charge received is proportional to the time spent charging. The charge rate for charger $q$ is
 denoted as $r_q$. Note that a value of $r_q = 0$ corresponds to a queue where no charging occurs. A bus in such a queue
-is simply waiting for the departure time. Thus, $n_Q = n_C + n_B$ where the final $n_B$ queues have $r_q = 0$ to allow
-an arbitrary number of buses to not charge at any given moment in time. The amount of discharge between visits $i$ and
+is simply waiting for the departure time. The queue indices are ordered such that the final $n_B$ queues have $r_q = 0$ to allow
+an arbitrary number of buses to sit idle at any given moment in time. The amount of discharge between visits $i$ and
 $\Upsilon_i$, the next visit of the same bus, is denoted as $\lambda_i$. If visit $i$ occurred at charger $q$, the charge of the bus
-coming into visit $\Upsilon_i$ would be
-
-\begin{equation}
-	\eta_{\Upsilon_i} = \eta_i + p_i r_q - \lambda_i.
-\end{equation}
+coming into visit $\Upsilon_i$ would be	$\eta_{\Upsilon_i} = \eta_i + p_i r_q - \lambda_i$.
 
 The binary decision variable $w_{iq}$ is introduced to determine whether visit $i$ uses charger $q$. This allows the
 charge of the bus coming into visit $\Upsilon_i$ to be written in summation form as
@@ -376,13 +362,13 @@ charge of the bus coming into visit $\Upsilon_i$ to be written in summation form
 \end{align}
 \end{subequations}
 
-The choice of queue for visit $i$, $v_i$, becomes a slack variable and is defined in terms of $w_{iq}$ as
+The choice of queue for visit $i$, becomes a slack variable and is defined in terms of $w_{iq}$ as
 
 \begin{equation}
     v_i = \sum_{q=1}^{n_Q} qw_{iq}
 \end{equation}
 
-Maximum and minimum values for the charges are included to ensure the battery is not overcharged and to guarantee
+Maximum and minimum values for the charges are included to ensure that the battery is not overcharged and to guarantee
 sufficient charge for subsequent visits. The upper and lower battery charge bounds for bus $b$ are $\kappa_b$ and $\nu_b$,
 respectively. As $\eta_i$ corresponds to the charge at the beginning of the visit, the upper bound constraint must also
 include the charge received during the visit as follows.
