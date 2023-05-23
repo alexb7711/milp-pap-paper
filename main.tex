@@ -163,6 +163,7 @@ PAP consider each arrival to be unique; thus, a method of tracking buses must be
 formulation that coordinates charging times and charger type for every visit that each bus makes to the station while
 considering a dynamic charge model and scheduling constraints.
 
+\TODO{Double check that this is still accurate}
 The remainder of the paper proceeds as follows: In Section \ref{sec:positionallocationproblem}, the PAP is introduced
 with a formulation of the resulting MILP. Section \ref{sec:problemformulation} constructs the MILP for BEB scheduling,
 including modifications to the PAP queuing constraints and development of a dynamic charging model. Section
@@ -176,8 +177,8 @@ station. The paper ends in Section \ref{sec:conclusion} with concluding remarks.
 This section provides a brief overview of the BAP and a detailed formulation of PAP as presented in \cite{Qarebagh2019}.
 
 \subsection{Overview of BAP}
-The BAP is a rectangle packing problem where a set of rectangles ($\mathbb{O}$) are attempted to be optimally placed in
-a larger rectangle ($O$) as shown in Fig \ref{fig:packexample}. The rectangle packing problem is an NP-hard problem that
+The BAP is a rectangle packing problem where a set of rectangles, $\mathbb{O}$, are attempted to be optimally placed in
+a larger rectangle, $O$, as shown in Fig \ref{fig:packexample}. The rectangle packing problem is an NP-hard problem that
 can be used to describe many real life problems \cite{Bruin2013,Murata1995}. In some of these problems, the dimensions
 of $\mathbb{O}$ are held constant such as in the problem of packing modules on a chip, where the widths and height of
 the rectangles represent the physical width and heights of the modules \cite{Murata1995}. Other problems, such as the
@@ -195,33 +196,33 @@ in Fig \ref{fig:bap}.
 The BAP forms the basis of the PAP; however, there are some differences in the way the variables are perceived. For the
 $i^{th}$ visit, starting service time, $u_i$, is now the starting charge time, the berth location, $v_i$, is now the
 charger queue for assignment, and the service time, $p_i$, is now the time to charge. There are also a few key concepts
-on the model. The PAP models the set of chargers as one continuous line; that is, the natural behavior of the PAP model
-is to allow vehicles to be queued anywhere in $[0,S]$. Similarly, the charge times are continuous and can be placed
-anywhere on the time horizon, $[0,T]$, as long as the allocated times do not interfere with other scheduled charge
-times. The PAP utilizes a number of parameters. The following parameters are constants.
+about how the system is modeled. The PAP models the set of chargers as one continuous line; that is, the natural
+behavior of the PAP model is to allow vehicles to be queued anywhere along $[0,S]$. Similarly, the charge times are
+continuous and can be placed anywhere on the time horizon, $[0,T]$, as long as the allocated times do not interfere with
+other scheduled charge times. The PAP utilizes a number of parameters. The following parameters are constants.
 
 \begin{itemize}
 	\item $S$   : Size of the vehicle
 	\item $T$   : time horizon
 	\item $n_V$ : total number of incoming vehicles
-	\item $p_i$ : charging time for vehicle $i;\; 1 \leq i \leq N$
-	\item $s_i$ : width of vehicle $i;\; 1 \leq i \leq N$
-	\item $a_i$ : arrival time of vehicle $i;\; 1 \leq i \leq N$
+	\item $p_i$ : charging time for vehicle $i;\; 1 \leq i \leq n_N$
+	\item $s_i$ : width of vehicle $i;\; 1 \leq i \leq n_N$
+	\item $a_i$ : arrival time of vehicle $i;\; 1 \leq i \leq n_N$
 \end{itemize}
 
 These constants define the problem bounds. The following list provides a series of decision variables used in the
 formulation.
 
 \begin{itemize}
-    \item $u_i$    : starting charge time for vehicle $i;\; 1 \leq i \leq N$
-    \item $v_i$    : assigned charge queue for vehicle $i;\; 1 \leq i \leq N$
-    \item $c_i$    : departure time for vehicle $i;\; 1 \leq i \leq N$
+    \item $u_i$    : starting charge time for vehicle $i;\; 1 \leq i \leq n_N$
+    \item $v_i$    : assigned charge queue for vehicle $i;\; 1 \leq i \leq n_N$
+    \item $c_i$    : departure time for vehicle $i;\; 1 \leq i \leq n_N$
     \item $\sigma_{ij}$ : binary variable that determines ordering of vehicles $i$ and $j$ in time
     \item $\delta_{ij}$ : binary variable that determines relative position of vehicles $i$ and $j$ when charging simultaneously
 \end{itemize}
 
 To determine the values for each of these decision variables, a MILP is formulated in \cite{Qarebagh2019} and shown
-here for sake of completeness.
+here for completeness.
 
 \begin{equation}
 	\label{eq:bapobjective}
@@ -254,9 +255,9 @@ the PAP, they ensure that two vehicles charging simultaneously are at different 
 that have overlapping positions do not overlap temporally. Constraint \eqref{subeq:baptime} establishes temporal
 ordering when active ($\sigma_{ij}=1$). Similarly, when $\delta_{ij} =1$ in \eqref{subeq:bapspace} then spatial ordering is
 established. Constraints \ref{subeq:bapvalid_pos}-\ref{subeq:bapdelta} enforce that spatial and/or temporal ordering is
-established between each possible vehicle pair. Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta} enforce
-consistency. For example, \eqref{subeq:bapsigma} enforces that vehicle $i$ cannot come before vehicle $j$ and vehicle
-$j$ simultaneously come before vehicle $i$.
+established between each possible queue/vehicle pair. Constraints \eqref{subeq:bapsigma} and \eqref{subeq:bapdelta}
+enforce consistency. For example, \eqref{subeq:bapsigma} enforces that vehicle $i$ cannot come before vehicle $j$ and
+vehicle $j$ simultaneously come before vehicle $i$.
 
 The last constraints force relationships between arrival time, charge start time, and departure time. Constraint
 \eqref{subeq:bapdetach} states that the service start time, $u_i$, plus the time to service vehicle $i$, $p_i$, must
@@ -336,7 +337,7 @@ that there are no future visits for bus $i$.
 To drive time spent on the charger, $p_i$, as well as define initial, final, and intermediate bus charges for each visit
 $i$, the sets for initial and final visits must be defined. Let the mapping of the first visit by each bus be denoted as
 $\Gamma^0_i : \mathbb{V} \rightarrow \mathbb{B}$. The indexed value of $\Gamma^0_i$ represents the index for the first visit of bus $b$ or
-the null element, $\varnothing$. Similarly, let $\Gamma^f_i : \mathbb{V} \rightarrow \mathbb{B}}$ contain the indexes for the final
+the null element, $\varnothing$. Similarly, let $\Gamma^f_i : \mathbb{V} \rightarrow \mathbb{B}$ contain the indexes for the final
 visit of each bus $b$ or the null element. The initial and final bus charge percentages, $\alpha$ and $\beta$, can then be
 represented by the constraint equations $\eta_{\Gamma^0_i} = \alpha \kappa_{\Gamma^0_i}$ and \(\eta_{\Gamma^f_i} = \beta \kappa_{\Gamma^f_i}\), respectively. The
 intermediate charges mustbe determined at solve time.
