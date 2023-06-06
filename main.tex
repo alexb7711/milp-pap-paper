@@ -446,15 +446,15 @@ planning strategies are presented, analyzed, and discussed.
 
 \subsection{BEB Scenario}
 
-To display the capabilities of the model, an example scenario is presented. The scenario was ran over a time horizon of
+To display the capabilities of the model, an example scenario is presented. The scenario was run over a time horizon of
 $T=24$ hours, utilizes $A = \A$ buses with $N = \N$ visits to the station divided between the $A$ buses. Each bus has a
 \batsize KWh battery that is required to stay above \mincharge charge (\fpeval{\batsize * \mincharge / 100} KWh) to
 maintain battery health, and the bus is assumed to begin the working day with \fpeval{\acharge*100}\% charge
 (\fpeval{\acharge * \batsize} KWh). Additionally, each bus is required to end the day with a minimum charge of
-\fpeval{\bcharge * 100}\% (\fpeval{\bcharge * \batsize} KWh). Each bus is assumed to discharge at a rate of 30 KWh. Note
+\fpeval{\bcharge * 100}\% (\fpeval{\bcharge * \batsize} KWh). Each bus is assumed to discharge at a rate of 30 KW. Note
 that there are many factors that play a factor in the rate of discharge; however, for the sake of simplicity an average
 rate is used. $n_C = \fpeval{\fast + \slow}$ chargers are utilized where \slow of the chargers are slow charging (\slows
-KWh) and \fast are fast charging (\fasts KWh).
+KW) and \fast are fast charging (\fasts KW).
 
 To encourage the MILP PAP problem to utilize the fewest number of chargers, the value of $m_q$ in the objective
 function, \eqref{eq:objective}, is $\forall q \in Q; m_q = 1000q$. The charge duration scalar, $\epsilon_q$, is defined as $\epsilon_q = r_q$
@@ -566,43 +566,43 @@ is of interest to allow flexibility in the arrival and departure times.
 
 %%--------------------------------------------------------------------------------
 % BAP and PAP comparison
-\input{fig/bappap.tex}
+\input{fig/bappap}
 
 %%--------------------------------------------------------------------------------
 % Variable table
-\input{fig/vartab.tex}
+\input{fig/vartab}
 
 %%--------------------------------------------------------------------------------
 % Berth spatio-temporal graph
-\input{fig/berth-time-space.tex}
+\input{fig/berth-time-space}
 
 %%--------------------------------------------------------------------------------
 % Spatial temporal graph representation
-\input{fig/baprep.tex}
+\input{fig/baprep}
 
 %%--------------------------------------------------------------------------------
 %
-\input{fig/overlap.tex}
+\input{fig/overlap}
 
 %%--------------------------------------------------------------------------------
 % Charge Schedule
-\input{fig/schedule.tex}
+\input{fig/schedule}
 
 %%--------------------------------------------------------------------------------
 % Bus charges
-\input{fig/charge.tex}
+\input{fig/charge}
 
 %%--------------------------------------------------------------------------------
 % Power consumption
-\input{fig/power.tex}
+\input{fig/power}
 
 %%--------------------------------------------------------------------------------
 % Power consumption
-\input{fig/energy.tex}
+\input{fig/energy}
 
 %%--------------------------------------------------------------------------------
 % Charger usage count
-\input{fig/charger-count.tex}
+\input{fig/charger-count}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
